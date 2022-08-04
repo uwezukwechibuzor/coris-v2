@@ -5,7 +5,7 @@ import {
   UrbanistSemiBoldBlack24px,
   ValignTextMiddle,
 } from "../../../styledMixins";
-import { periodsInDays } from '../../Util/format';
+import { periodsInDays } from '../../../lib/Util/format';
 
 function GovParams(props) {
     const {

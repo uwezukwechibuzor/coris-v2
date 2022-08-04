@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../Util/format"
+import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../../lib/Util/format"
 import ValidatorTilte from "./ValidatorsTitle";
 import styled from "styled-components";
 import Tabs from 'react-bootstrap/Tabs'

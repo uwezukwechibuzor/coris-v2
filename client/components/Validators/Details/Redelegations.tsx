@@ -6,7 +6,7 @@ import {
   UrbanistMediumAbsoluteZero172px, 
  ValignTextMiddle
 } from "../../../styledMixins";
-import { formatHash } from "../../Util/format";
+import { formatHash } from "../../../lib/Util/format";
 
 function RedelegationsContent(props) {
      //get relgations details

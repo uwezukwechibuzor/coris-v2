@@ -13,7 +13,7 @@ import {
   ValignTextMiddle,
 } from "../../styledMixins";
 import SearchButton from './SearchButton';
-import { formatTimeDateYear } from '../Util/format';
+import { formatTimeDateYear } from '../../lib/Util/format';
 import { useRouter } from 'next/router';
 
 function ProposalsContent(props) {

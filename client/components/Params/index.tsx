@@ -5,7 +5,7 @@ import {
   UrbanistNormalBlack24px,
   UrbanistBoldBlack40px,
 } from "../../styledMixins";
-import { periodsInDays, periodsInMinutes } from '../Util/format';
+import { periodsInDays, periodsInMinutes } from '../../lib/Util/format';
 import DistributionParams from './Distribution';
 import GovParams from './Gov';
 import MintParams from './Minting';

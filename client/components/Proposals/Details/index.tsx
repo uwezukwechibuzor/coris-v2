@@ -9,7 +9,7 @@ import {
   UrbanistBoldBlack40px,
   ValignTextMiddle,
 } from "../../../styledMixins";
-import { formatTimeDateYear } from '../../Util/format';
+import { formatTimeDateYear } from '../../../lib/Util/format';
 
 function ProposalDetailsContents(props) {
   const {

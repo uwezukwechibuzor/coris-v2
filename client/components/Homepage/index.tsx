@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { formatTime, formatHash, getValidatorsLogoFromWebsites } from "../Util/format"
+import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces } from "../../lib/Util/format"
 import styled from "styled-components";
 import Details from './Details'
 import Details2 from './Details2'
@@ -13,32 +13,33 @@ import {
 } from "../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery } from "../../lib/chainApi";
+import { useGetChainActiveValidatorsQuery, useGetChainPoolQuery } from "../../lib/chainApi";
 import dynamic from 'next/dynamic'
+import axios from "axios";
+import OnlineVotingPowerChart from "./Details/votingPowerChart";
+import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 
-//import pricechart dynamically
+//importing dynamically
 const PriceChart = dynamic(() => import('./Details/priceChart'), {
   ssr: false
 })
+
+const PoolChart = dynamic(() => import('./Details/poolChart'), {
+  ssr: false
+})
+
+let coinID = 'cosmos'
 
 function HomePageContent(props) {
   const {
     title,
     apr,
-    text1,
+    aprValue,
     place1,
-    address1,
-    percent1,
-    percent2,
     inflation,
-    percent3,
+    inflationValue,
     communityPool,
-    address2,
-    tokenomics,
-    place2,
-    bonded,
-    phone1,
-    phone2,
+    communityPoolValue,
     latestBlocks,
     viewAll,
     getBlocks,
@@ -64,29 +65,67 @@ function HomePageContent(props) {
     return getActiveChainValidators
   })
 
-
   //console.log(joinedBlocksValidatorsData)
   joinedBlocksValidatorsData.map((data, i) => {
-    console.log(data)
+    //console.log(data)
   })
 
+  //function to get coin details
+  const [coinData, setCoin]: any = useState([])
+    let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
+    useEffect(() => {
+        axios.get(API_Call).then((response) => {
+            setCoin(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
+   //console.log(coinData)
+
+   
+   
+   //get Bonded Token and Not bonded Token
+   const denom = 1000000;
+   const getPool = useGetChainPoolQuery()
+   const bondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.bonded_tokens/denom).toFixed(2) : null
+   const notBondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.not_bonded_tokens/1000000).toFixed(2) : null
+
+
+
+   const detailsData = {
+    onlineVotingPower: "Online Voting power",
+    x36516M1: "365.16m",
+    place: "from",
+    x36516M2: "365.16m",
+  };
+  
+  const details2Data = {
+    activeValidators: "Active Validators",
+    number1: "100",
+    outOf: "out of",
+    number2: "251",
+  };
 
   return (
     <>
       <Title>{title}</Title>
       <Grid>
         <GridItem className="first-item">
-          <PriceChart />
+          <PriceChart coinData={coinData} />
         </GridItem>
         <GridItem className="second-item p-3">
           <FlexCol className="h-100">
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCap</MarketCapDef>
-              <MarketCapVal className="w-50">$88999</MarketCapVal>
+              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
+            </Flex> 
+            <Flex className="h-50 align-items-center">
+              <MarketCapDef className="w-50">marketCapRank</MarketCapDef>
+              <MarketCapVal className="w-50">{coinData?.market_cap_rank? coinData.market_cap_rank : null}</MarketCapVal>
             </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">24h Vol</MarketCapDef>
-              <MarketCapVal className="w-50">$88999</MarketCapVal>
+              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
             </Flex>
           </FlexCol>
         </GridItem>
@@ -94,17 +133,17 @@ function HomePageContent(props) {
           <Flex className="h-100">
             <FlexCol className="w-50 align-items-center justify-content-center">
               <LatestBlock>latest Block</LatestBlock>
-              <Phone00>{getBlocks[0]?.height}</Phone00>
+              <Phone00>{getBlocks? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <BlockTime>Block Time</BlockTime>
-              <X602s>{formatTime(getBlocks[0]?.time)}</X602s>
+              <X602s>{getBlocks? formatTime(getBlocks[0]?.time) : null}</X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <Chain>chain</Chain>
-              <Corichain1>Coris</Corichain1>
+              <Corichain1>{coinData? coinData?.id : null}</Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
@@ -114,7 +153,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <div>
               <APR1>{apr}</APR1>
-              <Text1>{text1}</Text1>
+              <Text1>{aprValue}</Text1>
             </div>
           </FlexCenter>
         </GridItem1>
@@ -122,7 +161,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <OverlapGroup13>
               <Place>{place1}</Place>
-              <Address>{address1}</Address>
+              <Address>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
@@ -135,8 +174,9 @@ function HomePageContent(props) {
               x36516M2={detailsData.x36516M2}
             />
             <OverlapGroup2>
-              <Percent>{percent1}</Percent>
-              <Ellipse9></Ellipse9>
+              <Percent>
+                <OnlineVotingPowerChart />
+              </Percent>
             </OverlapGroup2>
           </OnlineVotingPower>
         </GridItem1>
@@ -149,8 +189,9 @@ function HomePageContent(props) {
               number2={details2Data.number2}
             />
             <OverlapGroup3>
-              <Vector src="/img/ellipse-11@2x.svg" />
-              <Percent1>{percent2}</Percent1>
+              <Percent1>
+                 <ActiveValidatorsChart />
+              </Percent1>
             </OverlapGroup3>
           </ActiveValidators>
         </GridItem1>
@@ -160,7 +201,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <Inflation>
               <APR1>{inflation}</APR1>
-              <Text1>{percent3}</Text1>
+              <Text1>{inflationValue}</Text1>
             </Inflation>
           </FlexCenter>
         </GridItem1>
@@ -168,31 +209,30 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <OverlapGroup14>
               <Place>{communityPool}</Place>
-              <Address>{address2}</Address>
+              <Address>{communityPoolValue}</Address>
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
         <GridItem1 className="third-item span-last-ends">
           <Flex className="h-100 w-100 align-items-center" style={{ padding: "20px" }}>
             <FlexCol className="w-100">
-              <APR1>{tokenomics}</APR1>
+              <APR1>Pool</APR1>
               <Flex>
                 <FlexCol><Bullet /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Place1>{place2}</Place1>
-                  <Phone>{phone1}</Phone>
+                  <Place1>Bonded</Place1>
+                  <Phone>{numberWithSpaces(bondedTokens)}</Phone>
                 </FlexCol>
                 <FlexCol><Bullet className="light" /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Bonded>{bonded}</Bonded>
-                  <Phone1>{phone2}</Phone1>
+                  <Bonded>Not Bonded</Bonded>
+                  <Phone1>{numberWithSpaces(notBondedTokens)}</Phone1>
                 </FlexCol>
               </Flex>
             </FlexCol>
             <Flex className="h-100 p-3">
               <OverlapGroup2>
-                <Percent>{percent1}</Percent>
-                <Ellipse9></Ellipse9>
+                <PoolChart bondedTokens={bondedTokens} notBondedTokens={notBondedTokens} />
               </OverlapGroup2>
             </Flex>
           </Flex>
@@ -219,7 +259,7 @@ function HomePageContent(props) {
             {joinedBlocksValidatorsData.map((details) => {
               return details?.map((data) => {
                 if (data !== undefined) {
-                  console.log(data)
+                  //console.log(data)
                   return (
                     <tr>
                       <Link href='/blocks[height]' as={`/blocks/${data.block.height}`} ><a>
@@ -412,20 +452,6 @@ const Bullet = styled.div`
     background: #d1d6ff;
   }
 `;
-
-const detailsData = {
-  onlineVotingPower: "Online Voting power",
-  x36516M1: "365.16m",
-  place: "from",
-  x36516M2: "365.16m",
-};
-
-const details2Data = {
-  activeValidators: "Active Validators",
-  number1: "100",
-  outOf: "out of",
-  number2: "251",
-};
 
 const Title = styled.h1`
   ${UrbanistBoldBlack40px}

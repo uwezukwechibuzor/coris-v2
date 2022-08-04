@@ -1,15 +1,24 @@
 export const formatTime = (t: Date) => {
-    const d = new Date(t)
+  if (t == null){
+    return null
+  }
+  const d = new Date(t)
     return d.toLocaleTimeString()
   }
 
 export const formatTimeDateYear = (t: Date) => {
-    const d = new Date(t)
+  if (t == null){
+    return null
+  }
+  const d = new Date(t)
     return d.toLocaleString()
   }
   
   export const formatGetHour = (t: Date) => {
-    const d = new Date(t)
+    if (t == null){
+      return null
+    }
+   const d = new Date(t)
     return d.getHours();
   }
 
@@ -57,3 +66,8 @@ export const periodsInMinutes = (periodsInSeconds: any) => {
    const  periodDays  = Math.floor(t/(60))+ 'minutes'     
   return periodDays
 } 
+
+//function that gives space to numbers
+export const numberWithSpaces = (x: any) => {
+  return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}

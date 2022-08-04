@@ -13,7 +13,7 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails'],
+  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool'],
   endpoints: (builder) => ({
      getChainBlockHeight: builder.query<any, any>({
       query: (height) => `/blocks/${height}`,
@@ -78,6 +78,18 @@ export const chainApi = createApi({
     getChainProposalDetails: builder.query<any, any>({
       query: (proposal_id) => `/cosmos/gov/v1beta1/proposals/${proposal_id}`,
       providesTags:  ['ProposalDetails'],
+    }), 
+    getChainAnnualProvisions: builder.query<any, void>({
+      query: () => `/cosmos/mint/v1beta1/annual_provisions`,
+      providesTags:  ['AnnualProvisions'],
+    }), 
+    getChainInflation: builder.query<any, void>({
+      query: () => `/cosmos/mint/v1beta1/inflation`,
+      providesTags:  ['Inflation'],
+    }),
+    getChainCommunityPool: builder.query<any, void>({
+      query: () => `/cosmos/distribution/v1beta1/community_pool`,
+      providesTags:  ['CommunityPool'],
     }),
   }),
 });
@@ -100,6 +112,9 @@ export const {
   useGetChainNodeInfoQuery,
   useGetChainProposalsQuery,
   useGetChainProposalDetailsQuery,
+  useGetChainAnnualProvisionsQuery,
+  useGetChainInflationQuery,
+  useGetChainCommunityPoolQuery,
   util: { getRunningOperationPromises },
 } = chainApi;
 

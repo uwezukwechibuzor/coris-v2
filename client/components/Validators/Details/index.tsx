@@ -7,7 +7,7 @@ import {
   UrbanistBoldBlack40px,
 } from "../../../styledMixins";
 import DelegationsContent from "./Delegation";
-import { formatTime, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../Util/format";
+import { formatTime, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../../lib/Util/format";
 import Link from "next/link";
 import { useGetChainPoolQuery, useGetChainDelegationsQuery, useGetChainUnDelegationsQuery, useGetChainRedelegationsQuery } from '../../../lib/chainApi';
 import ProgressBar from 'react-bootstrap/ProgressBar'

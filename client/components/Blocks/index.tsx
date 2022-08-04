@@ -1,6 +1,6 @@
 import  React from "react";
 import Link from "next/link";
-import {formatTime, formatHash, getValidatorsLogoFromWebsites} from "../Util/format"
+import {formatTime, formatHash, getValidatorsLogoFromWebsites} from "../../lib/Util/format"
 import LatestBlocksTilte from "./BlocksTitle";
 import styled from "styled-components";
 import {

@@ -5,7 +5,7 @@ import {
   UrbanistSemiBoldBlack24px,
   ValignTextMiddle,
 } from "../../../styledMixins";
-import { periodsInMinutes } from '../../Util/format';
+import { periodsInMinutes } from '../../../lib/Util/format';
 
 function SlashingParams(props) {
     const {

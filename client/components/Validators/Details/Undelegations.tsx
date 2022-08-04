@@ -5,7 +5,7 @@ import {
   UrbanistMediumAbsoluteZero172px, 
  ValignTextMiddle
 } from "../../../styledMixins";
-import { formatHash, formatTimeDateYear, sortUnDelegationsByBalance } from "../../Util/format";
+import { formatHash, formatTimeDateYear, sortUnDelegationsByBalance } from "../../../lib/Util/format";
 
 function UndelegationsContent(props) {
     const UndelegationsData = props?.data?.unbonding_responses?.map((delegator) => {

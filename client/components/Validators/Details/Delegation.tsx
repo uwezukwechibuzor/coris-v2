@@ -5,7 +5,7 @@ import {
   UrbanistMediumAbsoluteZero172px,
   ValignTextMiddle
 } from "../../../styledMixins";
-import { sortDelegatorsByAmount } from "../../Util/format";
+import { sortDelegatorsByAmount } from "../../../lib/Util/format";
 
 function DelegationsContent(props) {
     const delegatorsData = props?.data?.delegation_responses?.map((delegator) => {
