@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import {CircleProgress} from 'react-gradient-progress'
 
  
-function ActiveValidatorsChart() {
+function ActiveValidatorsChart(props) {
+   
   const [percentage, setPercentage] = useState(0);
- 
-  useEffect(() => {
-        setPercentage(percentage+1);
-  }, [percentage]);
- 
+   useEffect(() => {
+   setPercentage(props.percentageOfActiveValidators)
+   })
+
   return (
     <div className="app">
       <div style={{ width: 90, marginLeft: 40, marginTop: -25}}>
-      <CircleProgress percentage={75} strokeWidth={8} width={100} primaryColor={['#3a428a','#3a428a']} />
+      <CircleProgress percentage={percentage} strokeWidth={8} width={100} primaryColor={['#3a428a','#3a428a']} />
       </div>
     </div>
   );

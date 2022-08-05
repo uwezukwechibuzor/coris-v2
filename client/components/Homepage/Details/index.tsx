@@ -10,9 +10,11 @@ function Details(props) {
     <Details1>
       <OnlineVotingPower>{onlineVotingPower}</OnlineVotingPower>
       <Group7328>
-        <X36516m>{x36516M1}</X36516m>
+        <X36516m>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
+        })}</X36516m>
         <Place>{place}</Place>
-        <X36516m1>{x36516M2}</X36516m1>
+        <X36516m1>{x36516M2.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
+        })}</X36516m1>
       </Group7328>
     </Details1>
   );

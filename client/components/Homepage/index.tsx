@@ -13,7 +13,7 @@ import {
 } from "../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery, useGetChainPoolQuery } from "../../lib/chainApi";
+import { useGetChainActiveValidatorsQuery, useGetChainPoolQuery, useGetChainValidatorsQuery } from "../../lib/chainApi";
 import dynamic from 'next/dynamic'
 import axios from "axios";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
@@ -29,6 +29,7 @@ const PoolChart = dynamic(() => import('./Details/poolChart'), {
 })
 
 let coinID = 'cosmos'
+const denom = 1000000;
 
 function HomePageContent(props) {
   const {
@@ -82,28 +83,50 @@ function HomePageContent(props) {
     }, [])
    //console.log(coinData)
 
-   
-   
    //get Bonded Token and Not bonded Token
-   const denom = 1000000;
    const getPool = useGetChainPoolQuery()
    const bondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.bonded_tokens/denom).toFixed(2) : null
    const notBondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.not_bonded_tokens/1000000).toFixed(2) : null
 
-
+  //get voting power and the active validators
+  const getAllValidators = useGetChainValidatorsQuery()
+  const getAllActiveValidators = useGetChainActiveValidatorsQuery()
+  const totalValidators = getAllValidators.isLoading == false? getAllValidators?.data?.validators?.length : null
+  const totalActiveValidators = getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators?.length : null
+  
+   //percentage of active Validators
+   const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined? Math.round(Number(totalActiveValidators/totalValidators)*100) : null
+  
+  //get the validators total voting power
+  let totalVotingPower = 0
+  getAllValidators.isLoading == false? getAllValidators?.data?.validators.map(validatorsDetails =>{
+   totalVotingPower += Number(validatorsDetails.tokens/denom)
+   return totalVotingPower
+  }) : null
+  
+  //get the validators total active voting power
+  let totalActiveVotingPower = 0
+  getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators.map(validatorsDetails =>{
+   totalActiveVotingPower += Number(validatorsDetails.tokens/denom)
+    return totalActiveVotingPower
+  }) : null
+  
+  //percentage of online Voting Power
+  const percentageOfVotingPower = totalVotingPower != undefined && totalActiveVotingPower != undefined? Math.round(Number(totalActiveVotingPower/totalVotingPower)*100) : null
+  console.log(percentageOfVotingPower)
 
    const detailsData = {
     onlineVotingPower: "Online Voting power",
-    x36516M1: "365.16m",
+    x36516M1: totalActiveVotingPower,
     place: "from",
-    x36516M2: "365.16m",
+    x36516M2: totalVotingPower,
   };
   
   const details2Data = {
     activeValidators: "Active Validators",
-    number1: "100",
+    number1: totalActiveValidators,
     outOf: "out of",
-    number2: "251",
+    number2: totalValidators,
   };
 
   return (
@@ -175,7 +198,7 @@ function HomePageContent(props) {
             />
             <OverlapGroup2>
               <Percent>
-                <OnlineVotingPowerChart />
+                <OnlineVotingPowerChart percentageOfVotingPower={percentageOfVotingPower} />
               </Percent>
             </OverlapGroup2>
           </OnlineVotingPower>
@@ -190,7 +213,7 @@ function HomePageContent(props) {
             />
             <OverlapGroup3>
               <Percent1>
-                 <ActiveValidatorsChart />
+                 <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
               </Percent1>
             </OverlapGroup3>
           </ActiveValidators>
