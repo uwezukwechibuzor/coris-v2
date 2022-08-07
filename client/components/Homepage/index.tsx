@@ -112,7 +112,7 @@ function HomePageContent(props) {
   }) : null
   
   //percentage of online Voting Power
-  const percentageOfVotingPower = totalVotingPower != undefined && totalActiveVotingPower != undefined? Math.round(Number(totalActiveVotingPower/totalVotingPower)*100) : null
+  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false? Math.round(Number(totalActiveVotingPower/totalVotingPower)*100) : null
   console.log(percentageOfVotingPower)
 
    const detailsData = {
@@ -264,7 +264,7 @@ function HomePageContent(props) {
 
       <Flex className="align-items-center justify-content-between">
         <LatestBlocks>{latestBlocks}</LatestBlocks>
-        <ViewAll>{viewAll}</ViewAll>
+        <Link href='/blocks' ><a><ViewAll>{viewAll}</ViewAll></a></Link>
       </Flex>
       <Container className="w-100">
         <Responsive>
@@ -291,7 +291,7 @@ function HomePageContent(props) {
                       <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
                         <td>
                           <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          {data?.validator?.description?.moniker}
+                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
                         </td>
                       </a></Link>
                       <td>{data?.block?.noTxs}</td>

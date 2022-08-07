@@ -1,7 +1,6 @@
 import  React from "react";
 import Link from "next/link";
 import {formatTime, formatHash, getValidatorsLogoFromWebsites} from "../../lib/Util/format"
-import LatestBlocksTilte from "./BlocksTitle";
 import styled from "styled-components";
 import {
   UrbanistNormalNewCar172px,
@@ -34,9 +33,7 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
     const bech32Address = Bech32.encode("cosmosvalcons", addressData);
      
     if (bech32Address === proposerToBech32){
-      
       return {validator, block}
-
     }
    })
    return getActiveChainValidators
@@ -59,158 +56,44 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
                   <th>Time</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
+              {joinedBlocksValidatorsData.map((details) => {
+          return details?.map((data) => {
+             if (data !== undefined){
+               //console.log(data)
+            return(
+              //<tbody>
+                <tr >
+                  <td className="text-primary">
+                  <Link href='/blocks[height]' as={`/blocks/${data.block.height }`} ><a>
+                    {data.block?.height? data.block.height : null}
+                    </a></Link>
+                  </td>
+                  <td>{data.block?.hash? formatHash(data.block.hash, 15, '....') : null}
+                  </td>
                   <td>
+                  <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
                     <Container>
                       <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
+                        <Container className="text-primary ml-3"><img className="img" src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
+                  <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                  </Container>
                       </InLineFlex>
                     </Container>
+                    </a></Link>
                   </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container style={{minWidth: "200px"}}>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
+                  <td>{data?.block?.noTxs}</td>
+                  <td>{data?.block?.time? formatTime(data?.block.time): null}
                   </td>
-                  <td>3</td>
-                  <td>6s ago</td>
                 </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-                <tr>
-                  <td className="text-primary">56435335</td>
-                  <td>edf4d3d34f33rd34d324d4d34r</td>
-                  <td>
-                    <Container>
-                      <InLineFlex>
-                        <Circle>{" "}</Circle>
-                        <Container className="text-primary ml-3">Digital Stroke</Container>
-                      </InLineFlex>
-                    </Container>
-                  </td>
-                  <td>3</td>
-                  <td>6s ago</td>
-                </tr>
-              </tbody>
+              //</tbody>
+                 )}
+                })
+            })
+           }
             </table>
           </Responsive>
         </Card>
       </Container>
-      
-
-
-
-
-
 
     {/* <LatestBlocks1>
       <LatestBlocksTilte
@@ -245,17 +128,13 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
    }   
     </LatestBlocks1> */}
     <style jsx>{`
-           .img {
-           margin-right: 10px;
+           Link{ 
+            text-decoration: inherit;
            }
          `}</style>
     </>
   );
 }
-
-
-
-
 
 const Card = styled.div`
   border-radius: 20px;
@@ -289,44 +168,6 @@ const Responsive = styled.div`
     width: calc(100vw - 40px)
   }
   `;
-
-const Circle= styled.div`
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background:red;
-`;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const BlocksTitleData = {
-  height: "Block Height",
-  hash: "Hash",
-  proposer: "Proposer",
-  noOfTxs: "No. of Txs",
-  time: "Time",
-};
 
 const Title = styled.h1`
   ${UrbanistBoldBlack40px}

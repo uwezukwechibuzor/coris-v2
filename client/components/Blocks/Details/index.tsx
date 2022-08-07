@@ -1,97 +1,51 @@
 import React from 'react'
 import styled from "styled-components";
+import { formatTime, formatTimeDateYear, getValidatorsLogoFromWebsites } from '../../../lib/Util/format';
 import {
   UrbanistMediumAbsoluteZero172px,
   UrbanistBoldBlack26px,
-  UrbanistSemiBoldSoap24px,
   UrbanistSemiBoldBlack172px,
-  UrbanistSemiBoldBlueBell24px,
   UrbanistNormalBlack24px,
   UrbanistNormalNewCar172px,
   UrbanistNormalBlack172px,
-  UrbanistSemiBoldCoconut24px,
-  UrbanistBoldBlack20px,
   UrbanistBoldBlack40px,
-  UrbanistLightBlack15px,
-  UrbanistMediumBlack18px,
   ValignTextMiddle,
 } from "../../../styledMixins";
+import { sha256 } from "@cosmjs/crypto";
+import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
+import { useGetChainActiveValidatorsQuery } from '../../../lib/chainApi';
+import Link from "next/link";
 
-function BlockHeightContent(props) {
+
+function BlockHeightContent(props: any) {
   const {
     title,
-    address1,
-    height1,
-    text1,
-    time1,
-    mannyel,
-    proposer,
-    address2,
-    timeAgo,
-    number1,
-    noOfCrs,
-    x0975Coris,
-    crTotalFee,
-    x34Gd73874Gf783Ff374G,
-    hash1,
-    iconCopy,
-    signatures,
-    validators2,
-    dgtizeStake1,
-    dgtizeStake2,
-    dgtizeStake3,
-    dgtizeStake4,
-    dgtizeStake5,
-    dgtizeStake6,
-    dgtizeStake7,
-    dgtizeStake8,
-    dgtizeStake9,
-    dgtizeStake10,
-    dgtizeStake11,
-    transactions,
-    height2,
-    hash2,
-    status,
-    fee,
-    message,
-    type,
-    time2,
-    phone1,
-    x34567EfE34G6J7K85H1,
-    place1,
-    number2,
-    number3,
-    x34567EfE34G6J7K85H2,
-    x6SAgo1,
-    phone2,
-    x34567EfE34G6J7K85H3,
-    place2,
-    number4,
-    number5,
-    x34567EfE34G6J7K85H4,
-    x6SAgo2,
-    phone3,
-    x34567EfE34G6J7K85H5,
-    place3,
-    number6,
-    number7,
-    x34567EfE34G6J7K85H6,
-    x6SAgo3,
-    phone4,
-    x34567EfE34G6J7K85H7,
-    place4,
-    number8,
-    number9,
-    x34567EfE34G6J7K85H8,
-    x6SAgo4,
-    phone5,
-    x34567EfE34G6J7K85H9,
-    place5,
-    number10,
-    number11,
-    x34567EfE34G6J7K85H10,
-    x6SAgo5,
+    blockData
   } = props;
+   
+  //convert single proposer address to cosmosvalcons
+  //const proposerToBech32 =  blockData?.block?.header != undefined?  toBech32("cosmosvalcons", fromHex(blockData?.block?.header?.proposer_address)) : null
+
+  //get the proposer adddress from signatures
+  const getChainValidators = useGetChainActiveValidatorsQuery()
+  const validatorsSignaturesDetails = blockData?.block?.last_commit?.signatures.map((validatorSignatureData) => {
+    //convert proposer address from signatures to cosmosvalcons
+   const proposerToBech32 = toBech32("cosmosvalcons", fromHex(validatorSignatureData.validator_address))
+    const getActiveChainValidators = getChainValidators?.data?.validators.map((validator) => {
+      //fetch just the active validators
+      //get the consensus pubkey
+      const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
+      const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+      const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+      if (bech32Address === proposerToBech32) {
+        return { validator, validatorSignatureData}
+       }
+    })
+    return getActiveChainValidators
+  }) 
+
+
+  //console.log(validatorsSignaturesDetails)
   return (
     <>
       <Title>{title}</Title>
@@ -100,7 +54,7 @@ function BlockHeightContent(props) {
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>425353535345</h4>
+                <h4>{blockData?.block?.header? blockData?.block?.header.height : null}</h4>
                 <h6 className="text-center">Height</h6>
               </div>
             </FlexCenter>
@@ -108,7 +62,7 @@ function BlockHeightContent(props) {
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>425353535345</h4>
+                <h4>{blockData?.block?.header? formatTime(blockData?.block?.header?.time): null}</h4>
                 <h6 className="text-center">Time</h6>
               </div>
             </FlexCenter>
@@ -120,7 +74,7 @@ function BlockHeightContent(props) {
                   <Circle className="bg-primary"></Circle>
                   <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
                 </Flex>
-                <h6 className="text-center">Height</h6>
+                <h6 className="text-center">Proposer</h6>
               </div>
             </FlexCenter>
           </Card>
@@ -161,83 +115,36 @@ function BlockHeightContent(props) {
       <Container className='my-3'>
         <h5>Signatures</h5>
         <Card className='p-3'>
-          <table className='w-100'>
+        <Responsive>
+        <table className="w-100 mt-3">
             <thead>
               <tr>
-                <td>Validators</td>
+                <th>Validators</th>
+                <th>Time</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
 
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-
-                </td>
-              </tr>
-              <tr>
-                <td>
-
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-
-                </td>
-              </tr>
-              <tr>
-                <td>
-
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-
-                </td>
-              </tr>
-              <tr>
-                <td>
-
-                  <div>
-                    <Flex style={{ alignItems: "center" }}>
-                      <Circle className="bg-primary"></Circle>
-                      <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
-                    </Flex>
-                  </div>
-
-                </td>
-              </tr>
-            </tbody>
+            {validatorsSignaturesDetails?.map((details) => {
+              return details?.map((data) => {
+                if (data !== undefined) {
+                  console.log(data)
+                  return (
+                    <tr>
+                      <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
+                        <td>
+                          <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
+                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                        </td>
+                      </a></Link>
+                      <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}</td>
+                    </tr>
+                  )
+                }
+              })
+            })
+        }
           </table>
+          </Responsive>
         </Card>
       </Container>
 
@@ -348,11 +255,8 @@ function BlockHeightContent(props) {
               <Hash>{hash1}</Hash>
             </FlexCol4>
             <OutlineFilesCopy src={iconCopy} />
-
-
           </OverlapGroup16>
           <Signatures>{signatures}</Signatures>
-
           <LatestBlocks>
             <Validators1>{validators2}</Validators1>
             <OverlapGroup10>
@@ -400,9 +304,6 @@ function BlockHeightContent(props) {
               <DgtizeStake>{dgtizeStake11}</DgtizeStake>
             </OverlapGroup8>
           </LatestBlocks>
-
-
-
           <Transactions>{transactions}</Transactions>
           <OverlapGroup11>
             <LatestBlocksTilte>
@@ -464,8 +365,6 @@ function BlockHeightContent(props) {
   )
 }
 
-
-
 const Hash = styled.h4`
   text-align: center;
   padding: 0px 20px;
@@ -473,7 +372,6 @@ const Hash = styled.h4`
    font-size: 14px;
   }
 `
-
 
 const Card = styled.div`
   border-radius: 20px;
@@ -534,79 +432,6 @@ const Circle = styled.div`
   border-radius: 50%;
   background:red;
 `;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const Title = styled.h1`
   ${UrbanistBoldBlack40px}

@@ -11,7 +11,7 @@ function OnlineVotingPowerChart(props) {
  
   return (
     <div className="app">
-      <div style={{ width: 90, marginLeft: 5, marginTop: -25}}>
+      <div style={{ width: 90, marginTop: -25}}>
       <CircleProgress percentage={percentage} strokeWidth={8} width={100} primaryColor={['#3a428a','#3a428a']} />
       </div>
     </div>
