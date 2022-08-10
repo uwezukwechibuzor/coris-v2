@@ -2,18 +2,20 @@ import React from 'react'
 import Layout from "../../components/layout/Layout";
 
 import {
-  useGetChainValidatorDetailsQuery,
-} from '../../lib/chainApi';
+  useGetChainTxDetailsQuery
+  } from '../../lib/chainApi';
 import { useRouter } from 'next/router'
 import TransactionContents from '../../components/Transaction';
 
 function TransactionDetails(props) {
     const {query} = useRouter()
-    //const getValidatorDetails =  useGetChainValidatorDetailsQuery(query.address)
-
+    
+    const getTxDetails = useGetChainTxDetailsQuery(query.hash)
+    const transactionDetails = getTxDetails.isLoading === false && getTxDetails.isSuccess === true? getTxDetails?.data : null
+   
     return (
        <>
-       <TransactionContents />
+       <TransactionContents txDetails={transactionDetails} />
        </>
     )
 }

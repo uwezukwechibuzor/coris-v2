@@ -13,7 +13,7 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions'],
+  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails'],
   endpoints: (builder) => ({
      getChainBlockHeight: builder.query<any, any>({
       query: (height) => `/blocks/${height}`,
@@ -95,6 +95,10 @@ export const chainApi = createApi({
       query: (height) => `/cosmos/tx/v1beta1/txs?events=tx.height=${height}`,
       providesTags:  ['Transactions'],
     }),
+    getChainTxDetails: builder.query<any, any>({
+      query: (hash) => `/cosmos/tx/v1beta1/txs/${hash}`,
+      providesTags:  ['TransactionDetails'],
+    }),
   }),
 });
 
@@ -120,6 +124,7 @@ export const {
   useGetChainInflationQuery,
   useGetChainCommunityPoolQuery,
   useGetChainTxsQuery,
+  useGetChainTxDetailsQuery,
   util: { getRunningOperationPromises },
 } = chainApi;
 

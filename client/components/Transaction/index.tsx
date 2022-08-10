@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
 import { Accordion } from 'react-bootstrap';
 import styled from 'styled-components';
+import { abbrMessage, formatTimeDateYear } from '../../lib/Util/format';
 import { UrbanistBoldBlack40px } from '../../styledMixins';
 
-function TransactionContents() {
+function TransactionContents(props) {
     const [isFormattedView, toggleView] = useState(true)
+    const txDetails = props
+    //console.log(txDetails?.txDetails?.tx_response.tx.body.messages)
+
+    const rawJSON = JSON.stringify(txDetails?.txDetails, null, 1)
+    const rawJSONMessages = JSON.stringify(txDetails?.txDetails?.tx_response?.tx?.body?.messages, null, 1)
+
     return (
         <>
             <Flex style={{ justifyContent: "space-between", alignItems: 'center' }} className="w-100 block-sm">
@@ -17,8 +24,8 @@ function TransactionContents() {
                         >Formatted</button>
                         <button className={`${!isFormattedView ? 'selected' : ''} formatted`}
                             onClick={() => toggleView(false)}
-                        >Raw</button></div>
-
+                        >Raw</button>
+                        </div>
                 </Flex>
                 <div className="version">beta v.0.319.293</div>
             </Flex>
@@ -31,7 +38,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>425353535345</h4>
+                                            <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.height : null}</h4>
                                             <h6 className="text-center">Height</h6>
                                         </div>
                                     </FlexCenter>
@@ -39,7 +46,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>425353535345</h4>
+                                            <h4>{txDetails?.txDetails? formatTimeDateYear(txDetails.txDetails?.tx_response?.timestamp) : null}</h4>
                                             <h6 className="text-center">Time</h6>
                                         </div>
                                     </FlexCenter>
@@ -48,8 +55,7 @@ function TransactionContents() {
                                     <FlexCenter>
                                         <div>
                                             <Flex style={{ alignItems: "center" }}>
-                                                <Circle className="bg-primary"></Circle>
-                                                <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
+                                                <h4 className={txDetails?.txDetails?.tx_response.code === 0 ? "text-success": txDetails?.txDetails?.tx_response.code === undefined? null: "text-danger"} style={{ marginLeft: "10px", marginBottom: "0px" }}>{txDetails?.txDetails?.tx_response.code === 0? "Success" : txDetails?.txDetails?.tx_response.code === undefined? null: "Failed"}</h4>
                                             </Flex>
                                             <h6 className="text-center">Status</h6>
                                         </div>
@@ -58,7 +64,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>425353535345</h4>
+                                            <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_used : null}/{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_wanted : null}</h4>
                                             <h6 className="text-center">gas</h6>
                                         </div>
                                     </FlexCenter>
@@ -66,7 +72,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>3</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount : null} {txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].denom : null}</h4>
                                             <h6 className="text-center">Fee</h6>
                                         </div>
                                     </FlexCenter>
@@ -74,7 +80,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>Transfer</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx? abbrMessage(txDetails?.txDetails?.tx_response?.tx?.body?.messages) : null}</h4>
                                             <h6 className="text-center">Activity</h6>
                                         </div>
                                     </FlexCenter>
@@ -82,7 +88,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4 className="text-center">0</h4>
+                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.memo : null}</h4>
                                             <h6 className="text-center">Memo</h6>
                                         </div>
                                     </FlexCenter>
@@ -90,7 +96,7 @@ function TransactionContents() {
                                 <Card style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <h4 className="text-center">0</h4>
+                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.timeout_height : null}</h4>
                                             <h6 className="text-center">Time out height</h6>
                                         </div>
                                     </FlexCenter>
@@ -98,7 +104,7 @@ function TransactionContents() {
                                 <Card className="last-grid-item" style={{ height: "100px" }}>
                                     <FlexCenter>
                                         <div>
-                                            <Hash>ertertetertetefwewxfewrwexreormwrowrmojxemorjwrmowjrowrjmw</Hash>
+                                            <Hash>{txDetails?.txDetails?.tx_response? txDetails?.txDetails?.tx_response.txhash : null}</Hash>
                                             <h6 className="text-center">Hash</h6>
                                         </div>
                                     </FlexCenter>
@@ -107,70 +113,37 @@ function TransactionContents() {
                         </Container>
                         <SubTitle>Messages</SubTitle>
                         <Container className="my-3">
+                        {txDetails?.txDetails?.tx_response?.tx?.body?.messages.map(message =>
                             <Accordion defaultActiveKey="0">
                                 <Accordion.Item eventKey="0" className="accordion-item">
                                     <Accordion.Header className="accordion-header">
                                         <div>
-                                            <h4 className="font-xl text-dark">Type: <strong>Withdraw Delegator Reward</strong></h4>
-                                            <h5>
-                                                <span className="text-primary">234234234232dw3dxex3iojd2dijoixn3</span>
-                                                <span> withdraw </span>
-                                                <strong>23432.3423 CORIS</strong>
-                                                <span> reward from </span>
-                                                <span className="text-primary">ade</span>
-                                            </h5>
+                                            <h4 className="font-xl text-dark">Type: <strong>{abbrMessage(message)}</strong></h4>
                                         </div>
-
                                     </Accordion.Header>
                                     <Accordion.Body>
-                                        Some raw content
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                                <Accordion.Item eventKey="1" className="accordion-item">
-                                    <Accordion.Header className="accordion-header">
-                                        <div>
-                                            <h4 className="font-xl text-dark">Type: <strong>Withdraw Delegator Reward</strong></h4>
-                                            <h5>
-                                                <span className="text-primary">234234234232dw3dxex3iojd2dijoixn3</span>
-                                                <span> withdraw </span>
-                                                <strong>23432.3423 CORIS</strong>
-                                                <span> reward from </span>
-                                                <span className="text-primary">ade</span>
-                                            </h5>
-                                        </div>
-
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        Some raw content
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                                <Accordion.Item eventKey="2" className="accordion-item">
-                                    <Accordion.Header className="accordion-header">
-                                        <div>
-                                            <h4 className="font-xl text-dark">Type: <strong>Withdraw Delegator Reward</strong></h4>
-                                            <h5>
-                                                <span className="text-primary">234234234232dw3dxex3iojd2dijoixn3</span>
-                                                <span> withdraw </span>
-                                                <strong>23432.3423 CORIS</strong>
-                                                <span> reward from </span>
-                                                <span className="text-primary">ade</span>
-                                            </h5>
-                                        </div>
-
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        Some raw content
+                                    <Pre><pre style={{color: '#3a428a'}} >{txDetails? rawJSONMessages : null}</pre></Pre> 
                                     </Accordion.Body>
                                 </Accordion.Item>
                             </Accordion>
+                              )}
                         </Container>
                     </Formatted>
                 ) : (
                     <Raw>
                         <SubTitle>Overview</SubTitle>
                         <Container>
-                            <Card>dasdas</Card>
+                        <Card><Pre><pre style={{color: '#3a428a'}}>{txDetails? rawJSON : null}</pre></Pre></Card>
                         </Container>
+                        <style jsx>{`
+                         pre {
+                            white-space: pre-wrap;       /* Since CSS 2.1 */
+                            white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+                            white-space: -pre-wrap;      /* Opera 4-6 */
+                            white-space: -o-pre-wrap;    /* Opera 7 */
+                            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+                        } 
+                     `}</style>
                     </Raw>
                 )
             }
@@ -232,6 +205,15 @@ const InLineFlex = styled.div`
 `
 
 const Grid = styled.div`
+  display: grid;
+  grid-template-columns:auto auto;
+  grid-gap: 20px;
+  @media screen and (max-width: 520px){
+    grid-gap: 10px;
+  }
+`;
+
+const Pre = styled.div`
   display: grid;
   grid-template-columns:auto auto;
   grid-gap: 20px;
