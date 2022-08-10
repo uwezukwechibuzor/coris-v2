@@ -66,11 +66,6 @@ function HomePageContent(props) {
     return getActiveChainValidators
   })
 
-  //console.log(joinedBlocksValidatorsData)
-  joinedBlocksValidatorsData.map((data, i) => {
-    //console.log(data)
-  })
-
   //function to get coin details
   const [coinData, setCoin]: any = useState([])
     let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`

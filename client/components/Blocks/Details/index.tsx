@@ -1,30 +1,25 @@
 import React from 'react'
 import styled from "styled-components";
-import { formatTime, formatTimeDateYear, getValidatorsLogoFromWebsites } from '../../../lib/Util/format';
+import { abbrMessage, formatHash, formatTime, formatTimeDateYear, getValidatorsLogoFromWebsites } from '../../../lib/Util/format';
 import {
-  UrbanistMediumAbsoluteZero172px,
   UrbanistBoldBlack26px,
-  UrbanistSemiBoldBlack172px,
   UrbanistNormalBlack24px,
-  UrbanistNormalNewCar172px,
-  UrbanistNormalBlack172px,
   UrbanistBoldBlack40px,
-  ValignTextMiddle,
 } from "../../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
-import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery } from '../../../lib/chainApi';
+import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
+import { useGetChainActiveValidatorsQuery} from '../../../lib/chainApi';
 import Link from "next/link";
-
 
 function BlockHeightContent(props: any) {
   const {
     title,
-    blockData
+    blockData,
+    txs
   } = props;
    
-  //convert single proposer address to cosmosvalcons
-  //const proposerToBech32 =  blockData?.block?.header != undefined?  toBech32("cosmosvalcons", fromHex(blockData?.block?.header?.proposer_address)) : null
+  //convert single proposer address
+  const proposerToBech32FromBlockQuery =  blockData?.block?.header != undefined?  blockData?.block?.header?.proposer_address : null
 
   //get the proposer adddress from signatures
   const getChainValidators = useGetChainActiveValidatorsQuery()
@@ -43,10 +38,21 @@ function BlockHeightContent(props: any) {
     })
     return getActiveChainValidators
   }) 
+   
+    //get the block proposer
+    //get the proposer name from the active validators existing in the total vaidators
+    let proposerName
+    validatorsSignaturesDetails?.map((details) => details?.map((data) => data?.validatorSignatureData?.validator_address === proposerToBech32FromBlockQuery? proposerName = data : null))
 
+    //get total transactions fee
+    let totalTxsFee = 0
+    let denom
+    txs?.tx_responses !== null? txs?.tx_responses?.map(tx =>{
+       totalTxsFee += Number(tx?.tx?.auth_info?.fee?.amount[0]?.amount) 
+       denom = tx?.tx?.auth_info?.fee?.amount[0]?.denom
+    }) : null
 
-  //console.log(validatorsSignaturesDetails)
-  return (
+ return ( 
     <>
       <Title>{title}</Title>
       <Container>
@@ -70,10 +76,12 @@ function BlockHeightContent(props: any) {
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
+              <Link href='/validators[address]' as={`/validators/${proposerName?.validator?.operator_address}`} ><a>
                 <Flex style={{ alignItems: "center" }}>
-                  <Circle className="bg-primary"></Circle>
-                  <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>Mannyel</h4>
+                <img className="img" width={30} src={getValidatorsLogoFromWebsites(proposerName?.validator?.description?.website)} alt="" />
+                  <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>{proposerName?.validator?.description? proposerName?.validator?.description?.moniker : null}</h4>
                 </Flex>
+                </a></Link>
                 <h6 className="text-center">Proposer</h6>
               </div>
             </FlexCenter>
@@ -81,7 +89,7 @@ function BlockHeightContent(props: any) {
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>425353535345</h4>
+                <h4>{proposerName?.validatorSignatureData ? formatTimeDateYear(proposerName?.validatorSignatureData?.timestamp) : null}</h4>
                 <h6 className="text-center">Time</h6>
               </div>
             </FlexCenter>
@@ -89,24 +97,72 @@ function BlockHeightContent(props: any) {
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>3</h4>
-                <h6 className="text-center">No of CR's</h6>
+                <h4>{blockData?.block?.data?.txs? blockData.block.data.txs.length : null}</h4>
+                <h6 className="text-center">Number of Txs</h6>
               </div>
             </FlexCenter>
           </Card>
           <Card style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>0.7434 CORIS</h4>
-                <h6 className="text-center">CR total fees</h6>
+                <h4>{totalTxsFee} {denom}</h4>
+                <h6 className="text-center">Txs Total Fee</h6>
               </div>
             </FlexCenter>
           </Card>
           <Card className="last-grid-item" style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <Hash>ertertetertetefwewxfewrwexreormwrowrmojxemorjwrmowjrowrjmw</Hash>
-                <h6 className="text-center">Hash</h6>
+               <h6 className="text-center">Hash</h6>
+                <Hash>{blockData?.block_id? blockData?.block_id?.hash : null}</Hash>
+              </div> 
+            </FlexCenter>
+          </Card>   
+          <Card className="last-grid-item" style={{ height: "100px" }}>
+            <FlexCenter>
+              <div>
+                <h6 className="text-center">App Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.app_hash: null}</Hash>
+              </div> 
+              <div>
+                <h6 className="text-center">Consensus Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.consensus_hash: null}</Hash>
+              </div>
+            </FlexCenter>
+          </Card> 
+          <Card className="last-grid-item" style={{ height: "100px" }}>
+            <FlexCenter>
+              <div>
+              <h6 className="text-center">Data_Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.data_hash: null}</Hash>
+              </div> 
+              <div>
+               <h6 className="text-center">Evidence Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.evidence_hash: null}</Hash>
+              </div>
+            </FlexCenter>
+          </Card>  
+          <Card className="last-grid-item" style={{ height: "100px" }}>
+            <FlexCenter>
+              <div>
+              <h6 className="text-center">Last Commit Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.last_commit_hash: null}</Hash>
+              </div> 
+              <div>
+              <h6 className="text-center">Last Results Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.last_results_hash: null}</Hash>
+              </div>
+            </FlexCenter>
+          </Card> 
+          <Card className="last-grid-item" style={{ height: "100px" }}>
+            <FlexCenter>
+              <div>
+              <h6 className="text-center">Next Validators Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.next_validators_hash: null}</Hash>
+              </div> 
+              <div>
+              <h6 className="text-center">Validators Hash</h6>
+                <Hash>{blockData?.block?.header? blockData?.block?.header?.validators_hash: null}</Hash>
               </div>
             </FlexCenter>
           </Card>
@@ -123,20 +179,19 @@ function BlockHeightContent(props: any) {
                 <th>Time</th>
               </tr>
             </thead>
-
             {validatorsSignaturesDetails?.map((details) => {
               return details?.map((data) => {
                 if (data !== undefined) {
-                  console.log(data)
                   return (
                     <tr>
                       <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
                         <td>
                           <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description? data?.validator?.description?.moniker : null}</p>
                         </td>
                       </a></Link>
-                      <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}</td>
+                      <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}
+                      </td>
                     </tr>
                   )
                 }
@@ -160,58 +215,23 @@ function BlockHeightContent(props: any) {
                   <th>Status</th>
                   <th>Fee</th>
                   <th>Message</th>
-                  <th>Type</th>
                   <th>Time</th>
                 </tr>
               </thead>
+              {txs?.tx_responses !== null? txs?.tx_responses?.map(tx =>
               <tbody>
                 <tr>
-                  <td>dowjdlsdjasldjasldas</td>
-                  <td>7 004 033</td>
-                  <td className="text-success">Success</td>
-                  <td>0.43243 CORIS</td>
-                  <td>2</td>
-                  <td>Withdraw Delegator Reward COSMOS</td>
-                  <td>07.07.2022, 12:09:57</td>
+                <Link href='/transaction[hash]' as={`/transaction/${tx.txhash}`} ><a>
+                  <td>{formatHash(tx?.txhash, 20, '..')}</td>
+                  </a></Link>
+                  <td>{tx?.height}</td>
+                  <td className={tx.code === 0 ?"text-success" : 'text-danger'}>{tx.code === 0 ? 'Success' : 'failed'}</td>
+                  <td>{tx?.tx?.auth_info?.fee?.amount[0]?.amount +' '+ tx?.tx?.auth_info?.fee?.amount[0]?.denom}</td>
+                  <td>{abbrMessage(tx.tx.body.messages)}</td>
+                  <td>{formatTimeDateYear(tx?.timestamp)}</td>
                 </tr>
-                <tr>
-                  <td>dowjdlsdjasldjasldas</td>
-                  <td>7 004 033</td>
-                  <td className="text-success">Success</td>
-                  <td>0.43243 CORIS</td>
-                  <td>2</td>
-                  <td>Withdraw Delegator Reward COSMOS</td>
-                  <td>07.07.2022, 12:09:57</td>
-                </tr>
-                <tr>
-                  <td>dowjdlsdjasldjasldas</td>
-                  <td>7 004 033</td>
-                  <td className="text-success">Success</td>
-                  <td>0.43243 CORIS</td>
-                  <td>2</td>
-                  <td>Withdraw Delegator Reward COSMOS</td>
-                  <td>07.07.2022, 12:09:57</td>
-                </tr>
-                <tr>
-                  <td>dowjdlsdjasldjasldas</td>
-                  <td>7 004 033</td>
-                  <td className="text-success">Success</td>
-                  <td>0.43243 CORIS</td>
-                  <td>2</td>
-                  <td>Withdraw Delegator Reward COSMOS</td>
-                  <td>07.07.2022, 12:09:57</td>
-                </tr>
-                <tr>
-                  <td>dowjdlsdjasldjasldas</td>
-                  <td>7 004 033</td>
-                  <td className="text-success">Success</td>
-                  <td>0.43243 CORIS</td>
-                  <td>2</td>
-                  <td>Withdraw Delegator Reward COSMOS</td>
-                  <td>07.07.2022, 12:09:57</td>
-                </tr>
-
               </tbody>
+            ) : null}
             </table>
           </Responsive>
         </Card>
@@ -368,8 +388,9 @@ function BlockHeightContent(props: any) {
 const Hash = styled.h4`
   text-align: center;
   padding: 0px 20px;
+  font-size: 14px;
   @media screen and (max-width: 520px){
-   font-size: 14px;
+   font-size: 10px;
   }
 `
 
@@ -502,656 +523,6 @@ const Time = styled.div`
   margin-top: 8px;
   margin-left: 1px;
   min-width: 53px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroupContainer1 = styled.div`
-  margin-top: 16px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 1336px;
-`;
-
-const OverlapGroup13 = styled.div`
-  height: 128px;
-  display: flex;
-  padding: 29px 249px;
-  align-items: flex-start;
-  min-width: 660px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const Ellipse8 = styled.div`
-  width: 32px;
-  height: 32px;
-  background-color: var(--navy-blue);
-  border-radius: 15.93px;
-`;
-
-const FlexCol3 = styled.div`
-  width: 128px;
-  margin-left: 2px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 68px;
-`;
-
-const Mannyel = styled.div`
-  min-height: 31px;
-  align-self: flex-end;
-  min-width: 114px;
-  font-family: var(--font-family-urbanist);
-  font-weight: 700;
-  color: var(--absolute-zero);
-  font-size: var(--font-size-xxxl2);
-  letter-spacing: 2.08px;
-`;
-
-const Proposer = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  margin-top: 8px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup15 = styled.div`
-  width: 660px;
-  margin-left: 16px;
-  display: flex;
-  flex-direction: column;
-  padding: 29px 263px;
-  align-items: flex-end;
-  min-height: 128px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const Address1 = styled.div`
-  ${UrbanistBoldBlack26px}
-  min-height: 31px;
-  min-width: 133px;
-  letter-spacing: 2.08px;
-`;
-
-const TimeAgo = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  align-self: center;
-  margin-top: 8px;
-  min-width: 100px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroupContainer2 = styled.div`
-  height: 128px;
-  margin-top: 16px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 1336px;
-`;
-
-const OverlapGroup12 = styled.div`
-  width: 660px;
-  display: flex;
-  flex-direction: column;
-  padding: 29px 0;
-  align-items: center;
-  min-height: 128px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const Number = styled.div`
-  ${UrbanistBoldBlack26px}
-  min-height: 31px;
-  min-width: 14px;
-  letter-spacing: 2.08px;
-`;
-
-const NoOfCRs = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  margin-top: 8px;
-  min-width: 110px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup17 = styled.div`
-  width: 660px;
-  margin-left: 16px;
-  display: flex;
-  flex-direction: column;
-  padding: 29px 245px;
-  align-items: flex-end;
-  min-height: 128px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const X0975CORIS = styled.div`
-  ${UrbanistBoldBlack26px}
-  min-height: 31px;
-  min-width: 169px;
-  letter-spacing: 2.08px;
-`;
-
-const CRTotalFee = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  margin-top: 8px;
-  margin-right: 9px;
-  min-width: 124px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup16 = styled.div`
-  height: 128px;
-  margin-top: 16px;
-  display: flex;
-  padding: 29px 226px;
-  align-items: flex-start;
-  min-width: 1336px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const FlexCol4 = styled.div`
-  width: 843px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 68px;
-`;
-
-const X34gd73874gf783ff374g = styled.div`
-  ${UrbanistBoldBlack26px}
-  min-height: 31px;
-  min-width: 843px;
-  letter-spacing: 2.08px;
-`;
-
-
-const OutlineFilesCopy = styled.img`
-  width: 24px;
-  height: 24px;
-  margin-left: 17px;
-  margin-top: 4px;
-`;
-
-const Signatures = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  margin-top: 26px;
-  letter-spacing: 0;
-`;
-
-const LatestBlocks = styled.div`
-  width: 1336px;
-  margin-top: 9px;
-  margin-left: 5px;
-  display: flex;
-  flex-direction: column;
-  padding: 18.2px 16px;
-  align-items: flex-start;
-  min-height: 797px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const Validators1 = styled.div`
-  ${ValignTextMiddle}
-  ${UrbanistSemiBoldBlack172px}
-            height: 21px;
-  margin-top: 18px;
-  margin-left: 14.64px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup10 = styled.div`
-  height: 60px;
-  margin-top: 19px;
-  display: flex;
-  padding: 13.8px 15px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Ellipse81 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--roman);
-  border-radius: 15.93px;
-`;
-
-const DgtizeStake = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 14px;
-  margin-top: 0.33px;
-  min-width: 99px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup9 = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 13.8px 15px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--white);
-`;
-
-const Ellipse82 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--navy-blue);
-  border-radius: 15.93px;
-`;
-
-const OverlapGroup8 = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 13.8px 15px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Ellipse83 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--caribbean-green);
-  border-radius: 15.93px;
-`;
-
-const Ellipse84 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--lavender-magenta);
-  border-radius: 15.93px;
-`;
-
-const Ellipse85 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--gray);
-  border-radius: 15.93px;
-`;
-
-const Ellipse86 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--mercury);
-  border-radius: 15.93px;
-`;
-
-const Ellipse87 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--brilliant-rose);
-  border-radius: 15.93px;
-`;
-
-const Ellipse88 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--eminence);
-  border-radius: 15.93px;
-`;
-
-const Ellipse89 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--cyan--aqua);
-  border-radius: 15.93px;
-`;
-
-const Ellipse810 = styled.div`
-  width: 32px;
-  height: 32px;
-  align-self: flex-end;
-  background-color: var(--chartreuse-yellow);
-  border-radius: 15.93px;
-`;
-
-const Transactions = styled.div`
-  ${UrbanistNormalBlack24px}
-  min-height: 29px;
-  margin-top: 26px;
-  margin-left: 5px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup11 = styled.div`
-  width: 1336px;
-  margin-top: 9px;
-  margin-left: 5px;
-  display: flex;
-  flex-direction: column;
-  padding: 23.1px 16px;
-  align-items: flex-start;
-  min-height: 415px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const LatestBlocksTilte = styled.div`
-  ${UrbanistSemiBoldBlack172px}
-  margin-left: 14.64px;
-  display: flex;
-  align-items: flex-end;
-  min-width: 1193px;
-`;
-
-const Height1 = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  align-self: flex-start;
-  min-width: 50px;
-  letter-spacing: 0;
-`;
-
-const Hash1 = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 98px;
-  margin-bottom: 0;
-  min-width: 39px;
-  letter-spacing: 0;
-`;
-
-const Status = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 190px;
-  margin-bottom: 0;
-  min-width: 50px;
-  letter-spacing: 0;
-`;
-
-const Fee = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 101px;
-  margin-bottom: 0;
-  min-width: 27px;
-  letter-spacing: 0;
-`;
-
-const Message = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 192px;
-  margin-bottom: 0;
-  min-width: 70px;
-  letter-spacing: 0;
-`;
-
-const Type = styled.div`
-  ${ValignTextMiddle}
-  width: 62px;
-  height: 21px;
-  margin-left: 92px;
-  margin-bottom: 0;
-  letter-spacing: 0;
-`;
-
-const Time1 = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 169px;
-  margin-bottom: 0;
-  min-width: 39px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup19 = styled.div`
-  height: 60px;
-  margin-top: 19px;
-  display: flex;
-  padding: 19.5px 14.6px;
-  align-items: flex-end;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Phone = styled.div`
-  ${UrbanistMediumAbsoluteZero172px}
-  min-height: 21px;
-  min-width: 74px;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 78px;
-  margin-bottom: 0;
-  min-width: 167px;
-  letter-spacing: 0;
-`;
-
-const Place = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 62px;
-  margin-bottom: 0;
-  min-width: 61px;
-  letter-spacing: 0;
-`;
-
-const Number1 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 90px;
-  margin-bottom: 0;
-  min-width: 47px;
-  letter-spacing: 0;
-`;
-
-const Number2 = styled.div`
-  ${UrbanistNormalBlack172px}
-  width: 32px;
-  min-height: 21px;
-  margin-left: 172px;
-  margin-bottom: 0;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h1 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 127px;
-  margin-bottom: 0;
-  min-width: 167px;
-  letter-spacing: 0;
-`;
-
-const X6sAgo = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 63px;
-  margin-bottom: 0;
-  min-width: 51px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup2 = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 19.3px 14.6px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--white);
-`;
-
-const Phone1 = styled.div`
-  ${UrbanistMediumAbsoluteZero172px}
-  min-height: 21px;
-  margin-top: 0.33px;
-  min-width: 74px;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h2 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 78px;
-  margin-top: 0.33px;
-  min-width: 167px;
-  letter-spacing: 0;
-`;
-
-const Place1 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 62px;
-  margin-top: 0.33px;
-  min-width: 61px;
-  letter-spacing: 0;
-`;
-
-const Number3 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  align-self: flex-end;
-  margin-left: 90px;
-  min-width: 47px;
-  letter-spacing: 0;
-`;
-
-const Number4 = styled.div`
-  ${UrbanistNormalBlack172px}
-  width: 32px;
-  min-height: 21px;
-  margin-left: 172px;
-  margin-top: 0.33px;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h3 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 127px;
-  margin-top: 0.33px;
-  min-width: 167px;
-  letter-spacing: 0;
-`;
-
-const X6sAgo1 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 63px;
-  margin-top: 0.33px;
-  min-width: 51px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 17.6px 14.6px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Number5 = styled.div`
-  ${UrbanistNormalBlack172px}
-  width: 32px;
-  min-height: 21px;
-  margin-left: 172px;
-  margin-top: 0.15px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup4 = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 17.4px 14.6px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--white);
-`;
-
-const Number6 = styled.div`
-  ${UrbanistNormalBlack172px}
-  width: 32px;
-  min-height: 21px;
-  margin-left: 172px;
-  margin-bottom: 0.24px;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h4 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  margin-left: 127px;
-  margin-bottom: 0.24px;
-  min-width: 167px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup3 = styled.div`
-  height: 60px;
-  margin-top: 4px;
-  display: flex;
-  padding: 19.1px 14.6px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Number7 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  align-self: flex-start;
-  margin-left: 90px;
-  min-width: 47px;
-  letter-spacing: 0;
-`;
-
-const Number8 = styled.div`
-  ${UrbanistNormalBlack172px}
-  width: 32px;
-  min-height: 21px;
-  align-self: flex-start;
-  margin-left: 172px;
-  margin-top: 0.09px;
-  letter-spacing: 0;
-`;
-
-const X34567efe34g6j7k85h5 = styled.div`
-  ${UrbanistNormalBlack172px}
-  min-height: 21px;
-  align-self: flex-start;
-  margin-left: 127px;
-  margin-top: 0.09px;
-  min-width: 167px;
   letter-spacing: 0;
 `;
 

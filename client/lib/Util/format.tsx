@@ -71,3 +71,30 @@ export const periodsInMinutes = (periodsInSeconds: any) => {
 export const numberWithSpaces = (x: any) => {
   return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
+
+//tx messages
+export function abbrMessage(msg) {
+  if (Array.isArray(msg)) {
+    const sum = msg.map(x => abbrMessage(x)).reduce((s, c) => {
+      const sh = s
+      if (sh[c]) {
+        sh[c] += 1
+      } else {
+        sh[c] = 1
+      }
+      return sh
+    }, {})
+    const output = []
+    Object.keys(sum).forEach(k => {
+      output.push(sum[k] > 1 ? `${k}×${sum[k]}` : k)
+    })
+    return output.join(', ')
+  }
+  if (msg['@type']) {
+    return msg['@type'].substring(msg['@type'].lastIndexOf('.') + 1).replace('Msg', '')
+  }
+  if (msg.typeUrl) {
+    return msg.typeUrl.substring(msg.typeUrl.lastIndexOf('.') + 1).replace('Msg', '')
+  }
+  return msg.type.substring(msg.type.lastIndexOf('/') + 1).replace('Msg', '')
+}
