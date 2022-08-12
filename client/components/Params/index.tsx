@@ -90,7 +90,7 @@ function ParamsContent() {
         distributionParameters2: "NodeInfo Parameters",
     };
     
-  console.log("params", getGovDepositParams)
+  //console.log("params", getGovDepositParams)
 
     return (
     <>

@@ -9,13 +9,13 @@ function Validators() {
   
   //get all validators data for bonded, unbonded and unbounding
   const getValidators =  useGetChainValidatorsQuery()
-  const ValidatorsData = getValidators?.data?.validators?.map((validator: any) => {
+  const ValidatorsData = getValidators.isLoading === false? getValidators?.data?.validators?.map((validator: any) => {
    return  validator
-  })
+  }): null
 
   //get total bonded tokens
   const getChainPool = useGetChainPoolQuery()
-  const bondedTokensFromPool = getChainPool?.data?.pool?.bonded_tokens
+  const bondedTokensFromPool = getChainPool.isLoading === false?  getChainPool?.data?.pool?.bonded_tokens : null
  
   const validatorsDetails = {
     validators: ValidatorsData,

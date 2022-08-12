@@ -1,25 +1,21 @@
+import React from "react";
 import Title from "./Title"
 import styled from "styled-components";
-import {
-  UrbanistBoldBlack26px,
-  UrbanistNormalBlack24px,
-  UrbanistLightBlack24px,
-  UrbanistBoldBlack40px,
-} from "../../../styledMixins";
-import DelegationsContent from "./Delegation";
-import { formatTime, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../../lib/Util/format";
+import { formatTime, formatTimeDateYear, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../../lib/Util/format";
 import Link from "next/link";
 import { useGetChainPoolQuery, useGetChainDelegationsQuery, useGetChainUnDelegationsQuery, useGetChainRedelegationsQuery } from '../../../lib/chainApi';
-import ProgressBar from 'react-bootstrap/ProgressBar'
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import UndelegationsContent from "./Undelegations";
 import RelegationsContent from "./Redelegations";
+import DelegationsContent from "./Delegation";
 import { useState } from "react";
 
+import numbro from 'numbro';
+
+
+
 function ValidatorsDetailsContent(props) {
-  const validatorsDetails = props?.data?.validator
+
+  const validatorsDetails = props.isLoading === false? props?.data?.validator: null
   const delegatorsShares = (validatorsDetails?.delegator_shares / 1000000).toFixed(2)
   //console.log(validatorsDetails)
 
@@ -36,6 +32,11 @@ function ValidatorsDetailsContent(props) {
 
   const [selectedDelegations, setDelegationPage] = useState('delegations')
 
+   console.log(numbro(validatorsDetails?.commission?.update_time/100).format('0%'))
+
+
+   
+
   return (
     <>
       <Title>Validator Detail</Title>
@@ -46,13 +47,13 @@ function ValidatorsDetailsContent(props) {
               <FlexCenter style={{ marginTop: "20px" }}>
                 <FlexColumn>
                   <FlexXCenter>
-                    <ImageContainer />
+                    <img width={25} src={getValidatorsLogoFromWebsites(validatorsDetails?.description?.website)} alt="" />
                   </FlexXCenter>
                   <FlexXCenter style={{ marginTop: '20px' }}>
-                    <h5>Chibuzor.one</h5>
+                    <h5>{validatorsDetails?.description?.moniker}</h5>
                   </FlexXCenter>
                   <FlexXCenter>
-                    <small><a>https://odogwu.com</a></small>
+                    <small><a>{validatorsDetails?.description?.website}</a></small>
                   </FlexXCenter>
                 </FlexColumn>
               </FlexCenter>
@@ -61,7 +62,7 @@ function ValidatorsDetailsContent(props) {
               <FlexCenter>
                 <FlexColumn>
                   <FlexXCenter style={{ padding: '20px' }}>
-                    <span style={{ textAlign: 'center' }}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel reprehenderit delectus eos atque in, ex animi accusamus a omnis fugiat.</span>
+                    <span style={{ textAlign: 'center' }}>{validatorsDetails?.description?.details}</span>
                   </FlexXCenter>
                 </FlexColumn>
               </FlexCenter>
@@ -71,11 +72,12 @@ function ValidatorsDetailsContent(props) {
         <GridItemTwo>
           <FlexXCenter className="h-100 w-100" style={{ alignItems: "center" }}>
             <FlexColumn style={{ width: '25%' }}>
-              <h5>Active</h5>
+              <h5>{validatorsDetails?.status === undefined ? null : validatorsDetails?.status === 'BOND_STATUS_BONDED' ?  <p className="active">Active</p> : <p className="inActive">InActive</p>}
+              </h5>
               <span>Status</span>
             </FlexColumn>
             <FlexColumn style={{ width: '25%' }}>
-              <h5>No</h5>
+              <h5>{validatorsDetails?.jailed === undefined ? null: validatorsDetails?.jailed === false ?  <p className="active">No</p> : <p className="inActive">Yes</p>}</h5>
               <span>In Jail</span>
             </FlexColumn>
             <FlexColumn >
@@ -1195,167 +1197,21 @@ function ValidatorsDetailsContent(props) {
               onClick={() => setDelegationPage('redelegations')}
               className={selectedDelegations === 'redelegations' ? "active" : ''}
             >Redelegations</TabTogglerItem>
-          </TabToggler>
+           </TabToggler>
           {
             selectedDelegations === 'delegations' ? (
-              <Delegation>
-                <Responsive>
-                  <table className="w-100">
-                    <thead>
-                      <tr>
-                        <th>
-                          <h4>Address</h4>
-                        </th>
-                        <th>
-                          <h4>From</h4>
-                        </th>
-                        <th>
-                          <h4>To</h4>
-                        </th>
-                        <th>
-                          <h4>Amount</h4>
-                        </th>
-                        <th>
-                          <h4>Date</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="striped">
-                        <td>
-                          <Flex style={{ alignItems: 'center' }}>
-                            <div>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                              </svg>
-                            </div>
-                            <div className="ml-3">jhkhkjhkjhkj</div>
-                          </Flex>
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          1000
-                        </td>
-                        <td>
-                          14 Mar
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Responsive>
-              </Delegation>
+
+            <DelegationsContent />
+
             ) : selectedDelegations === 'redelegations' ? (
-              <Redelegation>
-                <Responsive>
-                  <table className="w-100">
-                    <thead>
-                      <tr>
-                        <th>
-                          <h4>Address</h4>
-                        </th>
-                        <th>
-                          <h4>From</h4>
-                        </th>
-                        <th>
-                          <h4>To</h4>
-                        </th>
-                        <th>
-                          <h4>Amount</h4>
-                        </th>
-                        <th>
-                          <h4>Date</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="striped">
-                        <td>
-                          <Flex style={{ alignItems: 'center' }}>
-                            <div>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                              </svg>
-                            </div>
-                            <div className="ml-3">jhkhkjhkjhkj</div>
-                          </Flex>
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          1000
-                        </td>
-                        <td>
-                          14 Mar
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Responsive>
-              </Redelegation>
+
+             <RelegationsContent />
+
               ) : (
-                <Underdelegation>
-                  <Responsive>
-                    <table className="w-100">
-                      <thead>
-                        <tr>
-                          <th>
-                            <h4>Address</h4>
-                          </th>
-                          <th>
-                            <h4>From</h4>
-                          </th>
-                          <th>
-                            <h4>To</h4>
-                          </th>
-                          <th>
-                            <h4>Amount</h4>
-                          </th>
-                          <th>
-                            <h4>Date</h4>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="striped">
-                          <td>
-                            <Flex style={{ alignItems: 'center' }}>
-                              <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                                </svg>
-                              </div>
-                              <div className="ml-3">jhkhkjhkjhkj</div>
-                            </Flex>
-                          </td>
-                          <td>
-                            sdfdfdsfsdfsdffsdf
-                          </td>
-                          <td>
-                            sdfdfdsfsdfsdffsdf
-                          </td>
-                          <td>
-                            1000
-                          </td>
-                          <td>
-                            14 Mar
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Responsive>
-                </Underdelegation>
+              <UndelegationsContent />
+                          
               )
           }
-
         </div>
       </Card>
 
@@ -1480,18 +1336,6 @@ function ValidatorsDetailsContent(props) {
     </>
   )
 }
-
-const Delegation = styled.div`
-  display: block;
-`
-
-const Underdelegation = styled.div`
-  display: block;
-`
-
-const Redelegation = styled.div`
-  display: block;
-`
 
 const TabToggler = styled.div`
   background: #e9ebfe;
@@ -1699,12 +1543,4 @@ const GridItemSeven = styled.div`
   padding: 20px;
 `
 
-
-const Responsive = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  @media screen and (max-width: 700px){
-    width: calc(100vw - 50px);
-  }
-`
 export default ValidatorsDetailsContent

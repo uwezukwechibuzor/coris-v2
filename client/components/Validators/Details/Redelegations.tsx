@@ -22,123 +22,92 @@ function RedelegationsContent(props) {
          console.log(r?.redelegation)
      })
   })
- console.log(relegatorsDetails)
+ //console.log(relegatorsDetails)
 
     return (
          <>
-        <Address>Address</Address>
-        <From>From</From>
-        <To>To</To>
-        <Amount>Amount</Amount>
-        <Date>To Be Redelegated On</Date>
-          {getRedelegators?.map((data) => {
-            return data?.data?.redelegation_responses?.map((reDelegator) => 
-            <OverlapGroup10>
-            <AddressValue>{formatHash(reDelegator?.redelegation?.validator_dst_address, 10, '...')}</AddressValue>
-           <FromValue>7990999</FromValue>
-           <ToValue>7990999</ToValue>
-           <AmountValue>7990999</AmountValue>
-           <DateValue>7990999</DateValue>
-          </OverlapGroup10>
- ) })}
+    <Redelegation>
+                <Responsive>
+                  <table className="w-100">
+                    <thead>
+                      <tr>
+                        <th>
+                          <h4>Address</h4>
+                        </th>
+                        <th>
+                          <h4>From</h4>
+                        </th>
+                        <th>
+                          <h4>To</h4>
+                        </th>
+                        <th>
+                          <h4>Amount</h4>
+                        </th>
+                        <th>
+                          <h4>Date</h4>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="striped">
+                        <td>
+                          <Flex style={{ alignItems: 'center' }}>
+                            <div>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
+                              </svg>
+                            </div>
+                            <div className="ml-3">jhkhkjhkjhkj</div>
+                          </Flex>
+                        </td>
+                        <td>
+                          sdfdfdsfsdfsdffsdf
+                        </td>
+                        <td>
+                          sdfdfdsfsdfsdffsdf
+                        </td>
+                        <td>
+                          1000
+                        </td>
+                        <td>
+                          14 Mar
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </Responsive>
+              </Redelegation>
       </>
     )
 }
 
-const Address = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-top: 15px;
-  min-width: 95px;
-  letter-spacing: 0;
-`;
+const Redelegation = styled.div`
+  display: block;
+`
 
-const Amount = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 700px;
-  margin-top: -18px;
-  min-width: 69px;
-  letter-spacing: 0;
-`;
+const Tooltip = styled.div`
+  width: 80px;
+  height: 90px;
+  background: #324239;
+  display: none;
+  transform: translate(-35%, -110%);
+  border-radius: 10px;
+  color: white;
+  font-size: 12px;
+  padding: 3px;
+  text-align: center;
+`
 
-const From = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 250px;
-  margin-top: -18px;
-  min-width: 69px;
-  letter-spacing: 0;
-`;
-
-const To = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 500px;
-  margin-top: -18px;
-  min-width: 69px;
-  letter-spacing: 0;
-`;
-
-const Date = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 950px;
-  margin-top: -18px;
-  min-width: 69px;
-  letter-spacing: 0;
-`;
-
-
-const OverlapGroup10 = styled.div`
-  height: 60px;
-  margin-top: 19px;
+const Flex = styled.div`
   display: flex;
-  padding: 13.8px 14.6px;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
+`
 
-const AddressValue = styled.div`
-  ${UrbanistMediumAbsoluteZero172px}
-  min-height: 21px;
-  margin-top: 0.33px;
-  min-width: 74px;
-  letter-spacing: 0;
-`;
-
-const AmountValue = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 130px;
-  margin-top: 0.33px;
-  min-width: 99px;
-  letter-spacing: 0;
-`;
-const FromValue = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 120px;
-  margin-top: 0.33px;
-  min-width: 99px;
-  letter-spacing: 0;
-`;
-const ToValue = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 160px;
-  margin-top: 0.33px;
-  min-width: 99px;
-  letter-spacing: 0;
-`;
-const DateValue = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 230px;
-  margin-top: 0.33px;
-  min-width: 99px;
-  letter-spacing: 0;
-`;
+const Responsive = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  @media screen and (max-width: 700px){
+    width: calc(100vw - 50px);
+  }
+`
 
 export default RedelegationsContent

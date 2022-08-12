@@ -43,56 +43,44 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
   return (
     <>
     <Title>Blocks</Title>
-      <Container className="mb-3">
-        <Card>
-          <Responsive style={{ padding: "30px 20px" }}>
-            <table className="table table-responsive">
-              <thead>
-                <tr>
-                  <th>Block Height</th>
-                  <th>Hash</th>
-                  <th>Proposer</th>
-                  <th>No. of Txs</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              {joinedBlocksValidatorsData.map((details) => {
-          return details?.map((data) => {
-             if (data !== undefined){
-               //console.log(data)
-            return(
-              //<tbody>
-                <tr >
-                  <td className="text-primary">
-                  <Link href='/blocks[height]' as={`/blocks/${data.block.height }`} ><a>
-                    {data.block?.height? data.block.height : null}
-                    </a></Link>
-                  </td>
-                  <td>{data.block?.hash? formatHash(data.block.hash, 15, '....') : null}
-                  </td>
-                  <td>
-                  <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
-                    <Container>
-                      <InLineFlex>
-                        <Container className="text-primary ml-3"><img className="img" src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                  <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
-                  </Container>
-                      </InLineFlex>
-                    </Container>
-                    </a></Link>
-                  </td>
-                  <td>{data?.block?.noTxs}</td>
-                  <td>{data?.block?.time? formatTime(data?.block.time): null}
-                  </td>
-                </tr>
-              //</tbody>
-                 )}
-                })
+    <Container className="w-100">
+        <Responsive>
+          <table className="w-100 mt-3">
+            <thead>
+              <tr>
+                <th>Height</th>
+                <th>Hash</th>
+                <th>Proposer</th>
+                <th>No of Txs</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+
+            {joinedBlocksValidatorsData.map((details) => {
+              return details?.map((data) => {
+                if (data !== undefined) {
+                  //console.log(data)
+                  return (
+                    <tr>
+                      <Link href='/blocks[height]' as={`/blocks/${data.block.height}`} ><a>
+                        <td>{data.block?.height ? data.block.height : null}</td> </a></Link>
+                      <td>{data.block?.hash ? formatHash(data.block.hash, 15, '....') : null}</td>
+                      <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
+                        <td>
+                          <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
+                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                        </td>
+                      </a></Link>
+                      <td>{data?.block?.noTxs}</td>
+                      <td>{data?.block?.time ? formatTime(data?.block.time) : null}</td>
+                    </tr>
+                  )
+                }
+              })
             })
-           }
-            </table>
-          </Responsive>
-        </Card>
+            }
+          </table>
+        </Responsive>
       </Container>
 
     {/* <LatestBlocks1>

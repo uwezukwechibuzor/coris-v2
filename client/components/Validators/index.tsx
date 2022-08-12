@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../../lib/Util/format"
-import ValidatorTilte from "./ValidatorsTitle";
 import styled from "styled-components";
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
@@ -93,7 +92,7 @@ function ValidatorsContent(props) {
                           </td>
                           <td>
                             {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
-                            <div className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
+                            <div style={{color: 'red'}} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
                           </td>
                           <td>{activeValidatorsCumulativeShare.toFixed(2) + '%'}</td>
                           <td>{commission.toFixed(2) + '%'}</td>
@@ -150,7 +149,7 @@ function ValidatorsContent(props) {
                         </td>
                         <td>
                           {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
-                          <div className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
+                          <div style={{color: "red"}} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
                         </td>
                         <td>{inActiveValidatorsCumulativeShare.toFixed(2) + '%'}</td>
                         <td>{commission.toFixed(2) + '%'}</td>
@@ -176,7 +175,8 @@ const Flex = styled.div`
 
 const FlexMiddle = styled.div`
   display: flex;
-  align-items:center
+  align-items:center;
+  margin-left: 10px
 `;
 
 const ValidatorTitleData = {
