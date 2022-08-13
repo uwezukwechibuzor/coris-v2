@@ -23,8 +23,10 @@ async function getBlocksAsync() {
         hash: block.block_id.hash,
         proposer: block.block.header.proposer_address,
         noTxs: block.block.data.txs.length,
-        time: block.block.header.time
-         })
+        time: block.block.header.time,
+        signatures: block.block.last_commit.signatures.map(validatorDetails => { return {validator_address: validatorDetails.validator_address}})
+    })
+
          blockData.save((err)=>{
             try {
                 if (err){

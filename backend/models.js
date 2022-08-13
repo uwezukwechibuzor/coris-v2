@@ -25,7 +25,10 @@ const BlockSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: false
-  }
+  },
+   signatures: [
+  
+   ]
  
 });
 
