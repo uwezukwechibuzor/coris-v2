@@ -9,9 +9,11 @@ import { useGetChainAnnualProvisionsQuery, useGetChainCommunityPoolQuery, useGet
 function Home () {
 
   const [blocks, setBlocks] = useState([])
-  let getBlocksLatestAPi = process.env.NEXT_PUBLIC_GetBlocksLatest
+  //fetch the latest blocks
+  const queryTotalBlocks = 15
+  let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
   useEffect(() => {
-      axios.get(getBlocksLatestAPi).then((response) => {
+      axios.get(`${getBlocksAPi}/blocks?limit=${queryTotalBlocks}`).then((response) => {
           setBlocks(response.data)
       }).catch((error) => {
           console.log(error)

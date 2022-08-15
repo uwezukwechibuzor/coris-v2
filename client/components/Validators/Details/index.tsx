@@ -3,21 +3,80 @@ import Title from "./Title"
 import styled from "styled-components";
 import { formatTime, formatTimeDateYear, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../../lib/Util/format";
 import Link from "next/link";
-import { useGetChainPoolQuery, useGetChainDelegationsQuery, useGetChainUnDelegationsQuery, useGetChainRedelegationsQuery } from '../../../lib/chainApi';
+import { useGetChainPoolQuery, useGetChainDelegationsQuery, useGetChainUnDelegationsQuery, useGetChainRedelegationsQuery, useGetChainBlockHeightQuery, useGetChainValidatorsSlashingSigningInfosDetailsQuery } from '../../../lib/chainApi';
 import UndelegationsContent from "./Undelegations";
 import RelegationsContent from "./Redelegations";
 import DelegationsContent from "./Delegation";
 import { useState } from "react";
-
-import numbro from 'numbro';
-
+import { sha256 } from "@cosmjs/crypto";
+import { Bech32, fromBase64, fromBech32, fromHex, toBech32, toHex } from "@cosmjs/encoding";
+import Badge from 'react-bootstrap/Badge';
+import { OverlayTrigger, ProgressBar } from "react-bootstrap";
 
 
 function ValidatorsDetailsContent(props) {
 
-  const validatorsDetails = props.isLoading === false? props?.data?.validator: null
+  const {
+    getValidatorDetails,
+    getUptimeByBlocksHeights
+  }  = props
+   //console.log( getValidatorDetails)
+
+  const [selectedDelegations, setDelegationPage] = useState('delegations')
+
+  const validatorsDetails =  getValidatorDetails.isLoading === false?  getValidatorDetails?.data?.validator: null
+  
+
+
+//get operator Address, Hex Address and Account Address
+ let operatorAddress, accountAddress, hexAddress, bech32Address
+try {
+   //convert operator address to valcons address from validators query using consensus pubkey
+   //check if query is still fetching and if still fetching, set to empty string
+  const consensusPubkey = validatorsDetails?.consensus_pubkey?.key !== undefined ?  validatorsDetails?.consensus_pubkey?.key : ''
+  const ed25519PubkeyRaw = fromBase64(consensusPubkey);
+  const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+  bech32Address = Bech32.encode("cosmosvalcons", addressData);
+
+  operatorAddress = validatorsDetails?.operator_address !== undefined? validatorsDetails?.operator_address : " "
+
+  accountAddress = toBech32("cosmos", fromHex(toHex(fromBech32(operatorAddress).data)))
+  
+  hexAddress = toHex(fromBech32(bech32Address).data)
+} catch (error) {
+   //console.log(error)
+}
+
+//get missed Blocks  && validators signing info
+const getValSigningInfo = useGetChainValidatorsSlashingSigningInfosDetailsQuery(bech32Address)
+const missedBlocks = getValSigningInfo.isLoading === false? getValSigningInfo?.data?.val_signing_info?.missed_blocks_counter : null
+
+//uptimeByBlocksHeights
+const convertedSignatures = getUptimeByBlocksHeights?.map(data => {
+  const convertedSigs = data.signatures?.map(sig => {
+    return toBech32("cosmosvalcons", fromHex(sig?.validator_address))
+  })
+  return convertedSigs;
+})
+//check if validator address contained in the signatures equals bech32Address
+let totalSignedBlocks = 0
+let totalBlocks = 0
+const getUptime = convertedSignatures.map((sigs, index) => {
+   totalBlocks++
+  if (!sigs.includes(bech32Address)) {
+    return {noUpTime:getUptimeByBlocksHeights[index]}
+  }
+  totalSignedBlocks++
+  return {upTime:getUptimeByBlocksHeights[index]}
+})
+ 
+
+//get the percentage from total signed blocks and total blocks
+const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? totalSignedBlocks/totalBlocks*100 : 0
+
+  
+  //delegators shares
   const delegatorsShares = (validatorsDetails?.delegator_shares / 1000000).toFixed(2)
-  //console.log(validatorsDetails)
 
   //get total bonded tokens
   const getChainPool = useGetChainPoolQuery()
@@ -30,16 +89,10 @@ function ValidatorsDetailsContent(props) {
   //get UnDelegations and pass to delegation component
   const unDelegations = useGetChainUnDelegationsQuery(validatorsDetails?.operator_address)
 
-  const [selectedDelegations, setDelegationPage] = useState('delegations')
-
-   console.log(numbro(validatorsDetails?.commission?.update_time/100).format('0%'))
-
-
-   
 
   return (
     <>
-      <Title>Validator Detail</Title>
+      <Title>Validator Details</Title>
       <Grid>
         <GridItemOne>
           <div className="d-table w-100">
@@ -81,7 +134,7 @@ function ValidatorsDetailsContent(props) {
               <span>In Jail</span>
             </FlexColumn>
             <FlexColumn >
-              <h5>100%</h5>
+              <h5>{percentageOfValidatorUptime+'%'}</h5>
               <span>Uptime</span>
             </FlexColumn>
           </FlexXCenter>
@@ -89,12 +142,15 @@ function ValidatorsDetailsContent(props) {
         <GridItemThree>
           <Flex className="w-100 h-100">
             <FlexCenter className="w-50">
-              dasda
+            {percentageofVotingPower? percentageofVotingPower.toFixed(2)+'%' : null}
             </FlexCenter>
             <FlexCenter className="w-50">
               <FlexColumn>
                 <span>Voting Power</span>
-                <h5>356 CR</h5>
+                <h5>{validatorsDetails?.tokens? roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens) : null}</h5>
+                <OverlayTrigger  overlay={<Tooltip id="tooltip-disabled">{percentageofVotingPower.toFixed(2)+'%'}</Tooltip>}>
+                  <ProgressBar animated   now={percentageofVotingPower} />
+                </OverlayTrigger>
               </FlexColumn>
             </FlexCenter>
           </Flex>
@@ -107,19 +163,19 @@ function ValidatorsDetailsContent(props) {
             <div>
               <FlexBetween className="px-3 pt-3">
                 <div>Commission</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.rate *100+'%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Max Rate</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.max_rate*100+'%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Max Change Rate</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.max_change_rate*100+'%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Updated</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails?.commission? formatTime(validatorsDetails?.commission?.update_time): null}</strong>
               </FlexBetween>
             </div>
           </FlexColumn>
@@ -132,19 +188,15 @@ function ValidatorsDetailsContent(props) {
             <div>
               <FlexBetween className="px-3 pt-3">
                 <div>Bonded</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails? validatorsDetails?.min_self_delegation : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Delegator</div>
-                <strong>134</strong>
+                <strong>{validatorsDetails? delegatorsShares : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Bonded Height</div>
-                <strong>3045673</strong>
-              </FlexBetween>
-              <FlexBetween className="px-3 pt-3">
-                <div>Commission</div>
-                <strong>5%</strong>
+                <strong>{validatorsDetails? validatorsDetails?.unbonding_height : null}</strong>
               </FlexBetween>
             </div>
           </FlexColumn>
@@ -158,7 +210,7 @@ function ValidatorsDetailsContent(props) {
               <FlexColumn>
                 <strong>Account</strong>
                 <Flex>
-                  <span>scdnsdlwmdqldj3eop2e2e2px2e2el2enm21elj2e3</span>
+                  <span>{accountAddress}</span>
                   <div title="copy to clipboard">
                     <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
                   </div>
@@ -167,7 +219,7 @@ function ValidatorsDetailsContent(props) {
               <FlexColumn>
                 <strong>Operator</strong>
                 <Flex>
-                  <span>scdnsdlwmdqldj3eop2e2e2px2e2el2enm21elj2e3</span>
+                  <span>{operatorAddress}</span>
                   <div title="copy to clipboard">
                     <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
                   </div>
@@ -176,7 +228,7 @@ function ValidatorsDetailsContent(props) {
               <FlexColumn>
                 <strong>Consensus</strong>
                 <Flex>
-                  <span>scdnsdlwmdqldj3eop2e2e2px2e2el2enm21elj2e3</span>
+                  <span>{bech32Address}</span>
                   <div title="copy to clipboard">
                     <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
                   </div>
@@ -185,7 +237,7 @@ function ValidatorsDetailsContent(props) {
               <FlexColumn>
                 <strong>Hex</strong>
                 <Flex>
-                  <span>scdnsdlwmdqldj3eop2e2e2px2e2el2enm21elj2e3</span>
+                  <span>{hexAddress}</span>
                   <div title="copy to clipboard">
                     <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
                   </div>
@@ -197,985 +249,23 @@ function ValidatorsDetailsContent(props) {
         <GridItemSeven>
           <FlexColumn>
             <Flex className="p-3">
-              <div>Uptime by latest blocks</div>
+              <div>Uptime by 100 latest blocks</div>
+              <div style={{marginLeft: '20px'}}>Missed Blocks <Badge  bg="danger">{missedBlocks}</Badge></div>
             </Flex>
             <BlockGrid>
-              <Block className="block">
+               {getUptime.map(data =>
+              <Block className={data.upTime?.height? 'bg-success' : data.noUpTime?.height?  'bg-danger': null} >
                 <Tooltip>
                   <strong>Height:</strong>
                   <br />
-                  <strong>7 544 233</strong>
+                  <strong>{data.upTime?.height || data.noUpTime?.height }</strong>
                   <br />
                   <strong style={{ color: "#50df50" }}>Signed: </strong>
                   <br />
-                  <strong>Success</strong>
+                  <strong>{data.upTime?.height? 'Success' : data.noUpTime?.height? <p className="text-danger" >Failed</p> : null}</strong>
                 </Tooltip>
               </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
-
-              <Block className="block">
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>7 544 233</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>Success</strong>
-                </Tooltip>
-              </Block>
+           )}
             </BlockGrid>
           </FlexColumn>
         </GridItemSeven>
@@ -1214,123 +304,18 @@ function ValidatorsDetailsContent(props) {
           }
         </div>
       </Card>
-
-      {/* <FlexRow1>
-            <OverlapGroup13>
-                <IconStar src={getValidatorsLogoFromWebsites(validatorsDetails?.description?.website)} />
-              <ValidatorsName>{validatorsDetails?.description?.moniker}</ValidatorsName>
-              <ValidatorsWebsite><Link href={''}><a>{validatorsDetails?.description?.website}</a></Link></ValidatorsWebsite>
-              <ValidatorsDescription>{validatorsDetails?.description?.details}</ValidatorsDescription>
-            </OverlapGroup13>
-            
-            <OverlapGroupContainer>
-              <FlexRow2>
-                <FlexCol4>
-                  <Active>{validatorsDetails?.status !== 'BOND_STATUS_BONDED' ? <p className="inActive">Inactive</p> : <p className="active">Active</p>}</Active>
-                  <Status>Status</Status>
-                </FlexCol4>
-                <FlexCol5>
-                  <Active>{ validatorsDetails?.jailed !== false ? <p className="inActive">Yes</p> : <p className="active">No</p>}</Active>
-                  <InJail>In Jail</InJail>
-                </FlexCol5>
-                <FlexCol6>
-                  <Active>100%</Active>
-                  <Uptime>Uptime</Uptime>
-                </FlexCol6>
-              </FlexRow2>
-
-              <OverlapGroup15>
-                <OverlapGroup2>
-                    {roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens)}
-                    <OverlayTrigger  overlay={<Tooltip id="tooltip-disabled">{percentageofVotingPower.toFixed(2)+'%'}</Tooltip>}>
-                  <ProgressBar animated   now={percentageofVotingPower} />
-                </OverlayTrigger>
-                  <Percent>{percentageofVotingPower.toFixed(2)+'%'}</Percent>
-                </OverlapGroup2> 
-              </OverlapGroup15>
-            </OverlapGroupContainer>
-            
-          </FlexRow1>
-            <OverlapGroupContainer1>
-              <FlexCol8>
-                <FlexRow3>
-                  <FlexCol9>
-                    <Commission>Commission</Commission>
-                    <Commission1>Commission</Commission1>
-                    <Name>Max Rate</Name>
-                    <Name>Max Change Rate</Name>
-                  </FlexCol9>
-                  <PercentContainer>
-                    <Percent1>{validatorsDetails?.commission?.commission_rates?.rate *100+'%'}</Percent1>
-                    <Percent2>{validatorsDetails?.commission?.commission_rates?.max_rate*100+'%'}</Percent2>
-                    <Percent3>{validatorsDetails?.commission?.commission_rates?.max_change_rate*100+'%'}</Percent3>
-                  </PercentContainer>
-                </FlexRow3>
-                <FlexRow4>
-                  <Updated>Updated</Updated>
-                  <Text1>{formatTime(validatorsDetails?.commission?.update_time)}</Text1>
-                </FlexRow4>
-              </FlexCol8>
-
-              <FlexRow5>
-                <FlexCol10>
-                  <Bonded>Bonded</Bonded>
-                  <Commission1>Self Bonded</Commission1>
-                  <Name>Delegators Shares</Name>
-                  <Name>UnBonded Height</Name>
-                </FlexCol10>
-                <FlexCol11>
-                  <Percent1>{validatorsDetails?.min_self_delegation}</Percent1>
-                  <Number>{delegatorsShares}</Number>
-                  <Phone>{validatorsDetails?.unbonding_height}</Phone>
-                </FlexCol11>
-              </FlexRow5>
-
-              <OverlapGroup9>
-                <Addresses>Addresses</Addresses>
-                <Accoubt>Account</Accoubt>
-                <Account>
-                  <Value>
-                    oooo
-                  </Value>
-                </Account>
-                <Operator>Operator</Operator>
-                <Value>
-                   iiojkkj
-                  </Value>
-                <Operator>Consensus</Operator>
-                <Value>
-                  iooo
-                  </Value>
-                <Operator>Hex</Operator>
-                <Value>
-                  9999
-                  </Value>
-              </OverlapGroup9>
-            </OverlapGroupContainer1>
-            <Rectangle46></Rectangle46>
-
-            <TitleDelegation>Delegations</TitleDelegation>
-           <Transactions>
-           <Tabs defaultActiveKey="delegations" id="uncontrolled-tab-example" className="" variant="tabs">
-           <Tab eventKey="delegations" title="Delegations">
-            <DelegationsContent {...validatorsDelegations} />
-            </Tab>
-            <Tab eventKey="undelegations" title="Undelegations">
-            <UndelegationsContent {...unDelegations} />
-           </Tab>
-           <Tab eventKey="redelegations" title="Redelegations">
-           <RelegationsContent {...validatorsDelegations} />
-            </Tab>
-         </Tabs>
-      </Transactions> */}
-
       <style jsx>{`
            .inActive {
            color: red;
            }
            .active {
            color: green;
+           }
+           .uptime {
+            background: green
+           }
+           .noUptime {
+            background: red
            }
          `}</style>
     </>

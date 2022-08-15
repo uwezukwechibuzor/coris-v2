@@ -13,7 +13,7 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails'],
+  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails'],
   endpoints: (builder) => ({
      getChainBlockHeight: builder.query<any, any>({
       query: (height) => `/blocks/${height}`,
@@ -98,6 +98,10 @@ export const chainApi = createApi({
     getChainTxDetails: builder.query<any, any>({
       query: (hash) => `/cosmos/tx/v1beta1/txs/${hash}`,
       providesTags:  ['TransactionDetails'],
+    }), 
+    getChainValidatorsSlashingSigningInfosDetails: builder.query<any, any>({
+      query: (cons_address) => `/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
+      providesTags:  ['SlashingSigningInfosDetails'],
     }),
   }),
 });
@@ -125,6 +129,7 @@ export const {
   useGetChainCommunityPoolQuery,
   useGetChainTxsQuery,
   useGetChainTxDetailsQuery,
+  useGetChainValidatorsSlashingSigningInfosDetailsQuery,
   util: { getRunningOperationPromises },
 } = chainApi;
 
