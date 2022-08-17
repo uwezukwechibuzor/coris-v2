@@ -99,7 +99,7 @@ function SideNavBar(props) {
         </Clicker>
         <br />
         <br className='hidden-sm' />
-        <Clicker onClick={() => navigate("/consensus")} title="Consensus">
+        <Clicker onClick={() => navigate("/validators/consensus_state")} title="Consensus">
           <a className="m-24">
             <FlexRow>
               <FlexCell><IconUser src={iconUser1}  /></FlexCell>

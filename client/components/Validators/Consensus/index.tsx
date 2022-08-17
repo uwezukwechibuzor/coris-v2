@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../../lib/Util/format"
+import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../../../lib/Util/format"
 import styled from "styled-components";
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
@@ -8,24 +8,42 @@ import {
   UrbanistNormalBlack172px,
   UrbanistMediumAbsoluteZero172px,
   UrbanistBoldBlack40px
-} from "../../styledMixins";
-import SearchButton from "./SearchButton";
+} from "../../../styledMixins";
+import SearchButton from "../SearchButton";
 import Link from "next/link";
 import { Router, useRouter } from "next/router";
 
-function ValidatorsContent(props) {
+function ConsensusDetails(props) {
   const [query, setQuery] = useState("")
 
   const {
     validators,
-    totalBondedTokens
+    totalBondedTokens,
+    consensusState
   } = props;
 
+  let activeVal = []
   var activeValidatorsData = validators?.map((data) => {
-    if (data.status === 'BOND_STATUS_BONDED') {
-      return data
+    if (data.status === 'BOND_STATUS_BONDED' && data !== undefined) {
+       activeVal.push(data)
+    }else{
+
     }
   })
+  
+  const consensus = consensusState?.result?.round_state?.height_vote_set.map((data) => {
+            
+        let preVotes = []
+        data?.prevotes.map((details, i) => preVotes.push(details))
+
+        const preCommit = data?.precommits?.map((details, i ) => {
+       return [activeVal[i], preVotes[i], details]
+       })
+return preCommit
+  })
+
+  //console.log(consensus)
+
 
   var inActiveValidatorsData = validators?.map((data) => {
     if (data.status === 'BOND_STATUS_UNBONDED' || data.status === 'BOND_STATUS_UNBONDING') {
@@ -40,6 +58,8 @@ function ValidatorsContent(props) {
   //declare cumulative shares for both active and inactive validators
   let activeValidatorsCumulativeShare: number = 0
   let inActiveValidatorsCumulativeShare: number = 0
+   
+
 
   const router = useRouter()
 
@@ -47,7 +67,6 @@ function ValidatorsContent(props) {
     <>
       <Title>Validators</Title>
       <div>
-        <SearchButton setQuery={setQuery} />
         <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
           <Tab eventKey="active" title="Active" className="w-100">
             <Responsive>
@@ -58,50 +77,45 @@ function ValidatorsContent(props) {
                     <th>Validator</th>
                     <th>Voting Power</th>
                     <th>Cummulative Share</th>
-                    <th>Commission</th>
-                    <th></th>
+                    <th>Pre-Vote</th>
+                    <th>Pre-Commit</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeValidatorsData?.filter(data => {
-                    //if Query does not exist
-                    if (query === ' ') {
-                      return data;
-                    } else if (data?.description?.moniker.toLowerCase().includes(query.toLocaleLowerCase())) {
-                      return data
-                    }
-                  })
-                    .map((data, index) => {
-                      var percentageOfVotingPower: number = getPercentageOfValidatorsBondedTokens(data?.tokens, totalBondedTokens)
+                {consensus?.map((details, index) => {
+                        return details?.map((data, i) => {
+                        if (data[index] !== undefined && data[index]?.description?.moniker !== undefined) {
+                            console.log(data)
+                      var percentageOfVotingPower: number = getPercentageOfValidatorsBondedTokens(data[index]?.tokens, totalBondedTokens)
 
                       activeValidatorsCumulativeShare += percentageOfVotingPower
-
-                      const commission = data?.commission?.commission_rates?.rate * 100
+                      
                       return (
-                        <tr className="validator-item-row" onClick={() => router.push(`/validators/${data.operator_address}`)} >
-                          <td>{index + 1}</td>
+                        <tr className="validator-item-row" onClick={() => router.push(`/validators/${data[index].operator_address}`)} >
+                          <td>{i + 1}</td>
                           <td>
                             <Flex>
                               <FlexMiddle>
-                                <img className="img" src={getValidatorsLogoFromWebsites(data?.description?.website)} alt="" />
+                                <img className="img" src={data? getValidatorsLogoFromWebsites(data[index]?.description?.website): null} alt="" />
                               </FlexMiddle>
                               <FlexMiddle>
-                                {data?.description?.moniker}
+                                {data[index]?.description?.moniker}
                               </FlexMiddle>
                             </Flex>
                           </td>
                           <td>
-                            {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
-                            <div style={{color: 'red'}} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
+                            {data[index]?.tokens? roundValidatorsVotingPowerToWholeNumber(data[index]?.tokens): 0}
+                            <div style={{color: 'red'}} className="sub">{data[index]?.tokens? percentageOfVotingPower.toFixed(2) + '%': 0}</div>
                           </td>
-                          <td>{activeValidatorsCumulativeShare.toFixed(2) + '%'}</td>
-                          <td>{commission.toFixed(2) + '%'}</td>
-                          <td>Delegate</td>
+                          <td>{data[index]?.tokens? activeValidatorsCumulativeShare.toFixed(2) + '%' : 0}</td>
+                          <td>{data[1] === 'nil-Vote'? <img src="https://img.icons8.com/color/20/000000/cancel--v1.png"/> : <img src="https://img.icons8.com/fluency/20/000000/ok.png"/> }</td>
+                          <td>{data[2] === 'nil-Vote'? <img src="https://img.icons8.com/color/20/000000/cancel--v1.png"/> : <img src="https://img.icons8.com/fluency/20/000000/ok.png"/> }</td>
                         </tr>
-                      )
+                     )
                     }
-                    )
-                  }
+                  })
+                })
+                }
                 </tbody>
               </table>
             </Responsive>
@@ -115,8 +129,8 @@ function ValidatorsContent(props) {
                   <th>Validator</th>
                   <th>Voting Power</th>
                   <th>Cummulative Share</th>
-                  <th>Commission</th>
-                  <th></th>
+                  <th>Pre-Vote</th>
+                  <th>Pre-Commit</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,8 +166,8 @@ function ValidatorsContent(props) {
                           <div style={{color: "red"}} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
                         </td>
                         <td>{inActiveValidatorsCumulativeShare.toFixed(2) + '%'}</td>
-                        <td>{commission.toFixed(2) + '%'}</td>
-                        <td>Delegate</td>
+                        <td className="text-danger"><img src="https://img.icons8.com/color/20/000000/cancel--v1.png"/></td>
+                        <td className="text-danger"><img src="https://img.icons8.com/color/20/000000/cancel--v1.png"/></td>
                       </tr>
                     )
                   })}
@@ -282,4 +296,4 @@ const Responsive = styled.div`
 `;
 
 
-export default ValidatorsContent;
+export default ConsensusDetails

@@ -63,7 +63,7 @@ let totalSignedBlocks = 0
 let totalBlocks = 0
 const getUptime = convertedSignatures.map((sigs, index) => {
    totalBlocks++
-  if (!sigs.includes(bech32Address)) {
+  if (!sigs?.includes(bech32Address)) {
     return {noUpTime:getUptimeByBlocksHeights[index]}
   }
   totalSignedBlocks++

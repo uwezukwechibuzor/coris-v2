@@ -13,7 +13,7 @@ function Home () {
   const queryTotalBlocks = 15
   let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
   useEffect(() => {
-      axios.get(`${getBlocksAPi}/blocks?limit=${queryTotalBlocks}`).then((response) => {
+      axios.get(`${getBlocksAPi}/blocks/latest?limit=${queryTotalBlocks}`).then((response) => {
           setBlocks(response.data)
       }).catch((error) => {
           console.log(error)
