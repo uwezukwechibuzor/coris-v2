@@ -13,7 +13,7 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails'],
+  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails', 'ProposalsVotingOptions', 'ProposalsDeposits'],
   endpoints: (builder) => ({
      getChainBlockHeight: builder.query<any, any>({
       query: (height) => `/blocks/${height}`,
@@ -36,7 +36,7 @@ export const chainApi = createApi({
       providesTags:  ['Pool'],
     }), 
     getChainDelegations: builder.query<any, any>({
-      query: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=600&pagination.reverse=true`,
+      query: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
       providesTags:  ['Delegations'],
     }),
     getChainUnDelegations: builder.query<any, any>({
@@ -102,6 +102,14 @@ export const chainApi = createApi({
     getChainValidatorsSlashingSigningInfosDetails: builder.query<any, any>({
       query: (cons_address) => `/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
       providesTags:  ['SlashingSigningInfosDetails'],
+    }), 
+    getChainProposalsVotingOptions: builder.query<any, any>({
+      query: (id) => `/cosmos/gov/v1beta1/proposals/${id}/votes`,
+      providesTags:  ['ProposalsVotingOptions'],
+    }),
+    getChainProposalsDeposits: builder.query<any, any>({
+      query: (id) => `/cosmos/gov/v1beta1/proposals/${id}/deposits`,
+      providesTags:  ['ProposalsDeposits'],
     }),
   }),
 });
@@ -130,6 +138,8 @@ export const {
   useGetChainTxsQuery,
   useGetChainTxDetailsQuery,
   useGetChainValidatorsSlashingSigningInfosDetailsQuery,
+  useGetChainProposalsVotingOptionsQuery,
+  useGetChainProposalsDepositsQuery,
   util: { getRunningOperationPromises },
 } = chainApi;
 

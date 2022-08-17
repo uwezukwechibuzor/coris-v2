@@ -24,14 +24,17 @@ function SideNavBar(props) {
   const {
     solidGeneralChartPie,
     iconUser,
+    iconUser1,
     icon1,
     icon2,
     icon3,
     overview,
     validators,
+    consensus,
     blocks,
     proposals,
     parameters,
+    assetIcon,
     assets } = props;
 
   const navigate = (selectedPage) => {
@@ -96,10 +99,20 @@ function SideNavBar(props) {
         </Clicker>
         <br />
         <br className='hidden-sm' />
+        <Clicker onClick={() => navigate("/consensus")} title="Consensus">
+          <a className="m-24">
+            <FlexRow>
+              <FlexCell><IconUser src={iconUser1}  /></FlexCell>
+              <FlexCell><Consensus style={{ color: selectedPage === "/consensus" && 'white' }}>{consensus}</Consensus></FlexCell>
+            </FlexRow>
+          </a>
+        </Clicker>
+        <br />
+        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/assets")} title="Assets">
           <a className="m-24">
             <FlexRow>
-              <FlexCell><Icon1 src={icon3} /></FlexCell>
+              <FlexCell><Icon1 src={assetIcon} /></FlexCell>
               <FlexCell><Assets style={{ color: selectedPage === "/assets" && 'white' }}>{assets}</Assets></FlexCell>
             </FlexRow>
           </a>
@@ -218,6 +231,12 @@ const FlexRow = styled.div`
     background: #ebedff0d;
     border-radius: 20px;
   }
+  @media screen and (min-width: 800px){
+    margin-top: -20px;
+  }
+  @media screen and (max-width: 800px){
+    margin-top: -22px;
+  }
 `;
 
 const FlexCol = styled.div`
@@ -277,6 +296,19 @@ const Overview = styled.div`
 `;
 
 const Validators = styled.div`
+  ${ValignTextMiddle}
+  ${UrbanistSemiBoldBlueBell24px}
+  height: 29px;
+  letter-spacing: 0;
+  @media screen and (max-width: 1334px){
+    display:none
+  }
+  @media screen and (max-width: 1074px){
+    display: flex;
+  }
+`;
+
+const Consensus = styled.div`
   ${ValignTextMiddle}
   ${UrbanistSemiBoldBlueBell24px}
   height: 29px;

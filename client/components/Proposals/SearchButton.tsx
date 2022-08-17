@@ -17,7 +17,6 @@ function SearchButton (props) {
         />
         </Form>
         </Search>
-       
     )
 }
 

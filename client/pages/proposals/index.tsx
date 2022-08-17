@@ -7,7 +7,7 @@ import { useGetChainProposalsQuery } from '../../lib/chainApi';
 function Proposals() {
      
     const getProposals = useGetChainProposalsQuery()
-
+  
     const proposalsData = {
         id: "#ID",
         title2: "Title",

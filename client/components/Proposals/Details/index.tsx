@@ -9,54 +9,74 @@ import {
   UrbanistBoldBlack40px,
   ValignTextMiddle,
 } from "../../../styledMixins";
-import { formatTimeDateYear } from '../../../lib/Util/format';
+import { formatHash, formatTimeDateYear } from '../../../lib/Util/format';
+import YesVoteOptions from './Votes/yes';
+import NoVoteOptions from './Votes/No';
+import VoteVoteOptions from './Votes/Veto';
+import AbstainVoteOptions from './Votes/Abstain';
+import Link from 'next/link';
+import VetoVoteOptions from './Votes/Veto';
 
 function ProposalDetailsContents(props) {
   const {
-    title,
     type,
     total,
-    proposalDetails
+    proposalDetails,
+    proposalsVotingOptions,
+    deposits
   } = props;
 
-  //check if still loading and if loading, display the loading page
-  if (proposalDetails.isLoading !== false) {
-  }
+  const [selectedVoteView, setVoteView] = useState('yes')
 
-  const finalTallyResultSum = Number(proposalDetails?.data?.proposal?.final_tally_result?.yes) + Number(proposalDetails?.data?.proposal?.final_tally_result?.no) + Number(proposalDetails?.data?.proposal?.final_tally_result?.no_with_veto) + Number(proposalDetails?.data?.proposal?.final_tally_result?.abstain)
+ const proposal = proposalDetails.isLoading === false? proposalDetails?.data : null
+
+
+  const finalTallyResultSum = Number(proposal?.proposal?.final_tally_result?.yes) + Number(proposal?.proposal?.final_tally_result?.no) + Number(proposal?.proposal?.final_tally_result?.no_with_veto) + Number(proposal?.proposal?.final_tally_result?.abstain)
   //console.log(finalTallyResultSum)
   const tallyPercentage = (tallyResult: number) => ((tallyResult / finalTallyResultSum) * 100)
 
-  const proposalDescription = proposalDetails?.data?.proposal?.content?.description.split('\\n\\n').map(str => <p>{str}</p>)
-
-  const [selectedVoteView, setVoteView] = useState('yes')
+  const proposalDescription = proposal?.proposal?.content?.description.split('\\n\\n').map(str => <p>{str}</p>)
   
+ //get depositors dedtails
+ const depositDetails = deposits.isLoading === false? deposits?.data?.deposits : null
+
+  //proposals voting options
+  const getVotingOptions = proposalsVotingOptions.isLoading === false? proposalsVotingOptions?.data : null
+
+  let voteOptionYes = []
+  let voteOptionNo = []
+  let voteOptionVeto = []
+  let voteOptionAbstain = []
+  getVotingOptions?.votes?.map(data => data.option === 'VOTE_OPTION_YES' ? voteOptionYes.push(data): data.option === 'VOTE_OPTION_NO' ? voteOptionNo.push(data) : data.option === 'VOTE_OPTION_NO_WITH_VETO' ? voteOptionVeto.push(data) : voteOptionAbstain.push(data)
+  ) 
+ 
+
   return (
     <>
       <Title>Proposer Details</Title>
       <Box>
-        <span>{proposalDetails?.data?.proposal?.content?.title ? proposalDetails.data.proposal.content.title : null}</span>
+        <span>{proposal?.proposal?.content?.title ? proposal?.proposal.content.title : null}</span>
         <Container>
-          <Badge className={proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_PASSED' ? 'success' : proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_REJECTED' ? 'danger' : proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? 'info' : 'warning'}>
-            {proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_PASSED' ? "PASSED" : proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_REJECTED' ? "REJECTED" : proposalDetails?.data?.proposal?.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? "VOTING PERIOD" : "FAILED"}
+          <Badge className={proposal?.proposal?.status === 'PROPOSAL_STATUS_PASSED' ? 'success' : proposal?.proposal?.status === 'PROPOSAL_STATUS_REJECTED' ? 'danger' : proposal?.proposal?.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? 'info' : 'warning'}>
+            {proposal?.proposal?.status === 'PROPOSAL_STATUS_PASSED' ? "PASSED" : proposal?.proposal?.status === 'PROPOSAL_STATUS_REJECTED' ? "REJECTED" : proposal?.proposal?.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? "VOTING PERIOD" : "FAILED"}
           </Badge>
         </Container>
         <Container>
           <Flex style={{ marginTop: '10px' }}>
             <span>{type}</span>
             <Container style={{ marginLeft: '40px' }}><strong>
-              {proposalDetails?.data?.proposal.content['@type']}
+              {proposal?.proposal.content['@type']}
             </strong></Container>
           </Flex>
           <Flex style={{ marginTop: '10px' }}>
             <span>{total}</span>
-            <Container style={{ marginLeft: '40px' }}><strong>{finalTallyResultSum} {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null}</strong></Container>
+            <Container style={{ marginLeft: '40px' }}><strong>{finalTallyResultSum? finalTallyResultSum : ''} {proposal?.proposal?.total_deposit ? proposal?.proposal?.total_deposit[0].denom : ''}</strong></Container>
           </Flex>
           <ProgressBar style={{ height: "30px" }}>
-            <ProgressBar striped variant="success" now={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.yes)} key={1} label={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.yes).toFixed(2) + '%'} />
-            <ProgressBar variant="danger" now={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no)} key={2} label={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no).toFixed(2) + '%'} />
-            <ProgressBar striped variant="warning" now={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no_with_veto)} key={3} label={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%'} />
-            <ProgressBar striped variant="info" now={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.abstain)} key={4} label={tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.abstain).toFixed(2) + '%'} />
+            <ProgressBar striped variant="success" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes) : 0} key={1} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} />
+            <ProgressBar variant="danger" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no): 0} key={2} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no).toFixed(2) + '%': 0} />
+            <ProgressBar striped variant="warning" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto): 0} key={3} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} />
+            <ProgressBar striped variant="info" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain): 0} key={4} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} />
           </ProgressBar>
         </Container>
         <Container style={{ marginTop: "20px" }}>
@@ -66,28 +86,28 @@ function ProposalDetailsContents(props) {
                 <Color className="first" />
                 <strong style={{ marginLeft: "10px" }}>Yes</strong>
               </Flex>
-              <div>{tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.yes).toFixed(2) + '%'} ({proposalDetails?.data?.proposal?.final_tally_result?.yes ? proposalDetails.data.proposal.final_tally_result.yes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null}  {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.yes ? proposal?.proposal.final_tally_result.yes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0}  {proposal?.proposal?.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="second" />
                 <strong style={{ marginLeft: "10px" }}>No</strong>
               </Flex>
-              <div>{tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no).toFixed(2) + '%'} ({proposalDetails?.data?.proposal?.final_tally_result?.no ? proposalDetails.data.proposal.final_tally_result.no.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null} {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.no ? proposal?.proposal.final_tally_result.no.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="third" />
                 <strong style={{ marginLeft: "10px" }}>Veto</strong>
               </Flex>
-              <div>{tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%'} ({proposalDetails?.data?.proposal?.final_tally_result?.no_with_veto ? proposalDetails.data.proposal.final_tally_result.no_with_veto.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null} {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.no_with_veto ? proposal?.proposal.final_tally_result.no_with_veto.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal?.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="fourth" />
                 <strong style={{ marginLeft: "10px" }}>Abstain</strong>
               </Flex>
-              <div>{tallyPercentage(proposalDetails?.data?.proposal?.final_tally_result?.abstain).toFixed(2) + '%'} ({proposalDetails?.data?.proposal?.final_tally_result?.abstain ? proposalDetails.data.proposal.final_tally_result.abstain.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : null} {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.abstain ? proposal?.proposal.final_tally_result.abstain.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
             </Container>
           </Grid>
         </Container>
@@ -96,30 +116,51 @@ function ProposalDetailsContents(props) {
       <Box style={{ marginTop: "20px", padding: "20px" }}>
         <FlexBetween>
           <Container>Propser:</Container>
-          <Container><strong className="text-info">{proposalDetails?.data?.proposal?.content?.recipient ? proposalDetails.data.proposal.content.recipient : 'No Recipient'}</strong></Container>
+          <Container><strong className="text-info">
+            <Link href='/account[address]' as={`/account/${proposal?.proposal?.content?.recipient}`} ><a>
+            {proposal?.proposal?.content?.recipient ? proposal.proposal.content.recipient  : 'No Recipient'}
+             </a></Link>
+            </strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Total Deposit:</Container>
-          <Container><strong>{proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].amount.toLocaleString() : null} {proposalDetails?.data?.proposal.total_deposit ? proposalDetails.data.proposal.total_deposit[0].denom : null}</strong></Container>
+          <Container><strong>{proposal?.proposal.total_deposit ? proposal.proposal.total_deposit[0].amount.toLocaleString() : null} {proposal?.proposal.total_deposit ? proposal.proposal.total_deposit[0].denom : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Voting Start</Container>
-          <Container><strong>{proposalDetails?.data?.proposal?.voting_start_time ? formatTimeDateYear(proposalDetails.data.proposal.voting_start_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.voting_start_time ? formatTimeDateYear(proposal.proposal.voting_start_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Voting End</Container>
-          <Container><strong>{proposalDetails?.data?.proposal?.voting_end_time ? formatTimeDateYear(proposalDetails.data.proposal.voting_end_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.voting_end_time ? formatTimeDateYear(proposal.proposal.voting_end_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Submit Time</Container>
-          <Container><strong>{proposalDetails?.data?.proposal?.submit_time ? formatTimeDateYear(proposalDetails.data.proposal.submit_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.submit_time ? formatTimeDateYear(proposal?.proposal.submit_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Deposit End Time</Container>
-          <Container><strong>{proposalDetails?.data?.proposal?.deposit_end_time ? formatTimeDateYear(proposalDetails.data.proposal.deposit_end_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.deposit_end_time ? formatTimeDateYear(proposal?.proposal.deposit_end_time) : null}</strong></Container>
         </FlexBetween>
       </Box>
 
+      <Box style={{ marginTop: "20px", padding: "20px" }}>
+        <FlexBetween>
+          <Container>Depositor</Container>
+          <Container><strong className="text-info">Amount </strong></Container>
+        </FlexBetween>
+        {depositDetails?.map(data =>
+        <FlexBetween>
+          <Container>
+          <Link href='/account[address]' as={`/account/${data.depositor}`} ><a>
+            {data? data.depositor : null}
+            </a></Link>
+            </Container>
+          <Container><strong>{data? data.amount[0].amount : null} {data? data.amount[0].denom : null}</strong></Container>
+        </FlexBetween>
+        )}
+      </Box>
+    
       <div className="my-3">
         <h4>Description</h4>
         <Box style ={{width: "100%", wordBreak: 'break-all'}}>
@@ -152,212 +193,13 @@ function ProposalDetailsContents(props) {
           </TabToggler>
           {
             selectedVoteView === 'yes' ? (
-              <div>
-                <Responsive>
-                  <table className="w-100">
-                    <thead>
-                      <tr>
-                        <th>
-                          <h4>Address</h4>
-                        </th>
-                        <th>
-                          <h4>From</h4>
-                        </th>
-                        <th>
-                          <h4>To</h4>
-                        </th>
-                        <th>
-                          <h4>Amount</h4>
-                        </th>
-                        <th>
-                          <h4>Date</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="striped">
-                        <td>
-                          <Flex style={{ alignItems: 'center' }}>
-                            <div>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                              </svg>
-                            </div>
-                            <div className="ml-3">jhkhkjhkjhkj</div>
-                          </Flex>
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          1000
-                        </td>
-                        <td>
-                          14 Mar
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Responsive>
-              </div>
+             <YesVoteOptions {...voteOptionYes } />
             ) : selectedVoteView === 'no' ? (
-              <div>
-                <Responsive>
-                  <table className="w-100">
-                    <thead>
-                      <tr>
-                        <th>
-                          <h4>Address</h4>
-                        </th>
-                        <th>
-                          <h4>From</h4>
-                        </th>
-                        <th>
-                          <h4>To</h4>
-                        </th>
-                        <th>
-                          <h4>Amount</h4>
-                        </th>
-                        <th>
-                          <h4>Date</h4>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="striped">
-                        <td>
-                          <Flex style={{ alignItems: 'center' }}>
-                            <div>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                              </svg>
-                            </div>
-                            <div className="ml-3">jhkhkjhkjhkj</div>
-                          </Flex>
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          sdfdfdsfsdfsdffsdf
-                        </td>
-                        <td>
-                          1000
-                        </td>
-                        <td>
-                          14 Mar
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </Responsive>
-              </div>
+             <NoVoteOptions {...voteOptionNo } />
               ) : selectedVoteView === 'veto' ? (
-                <div>
-                  <Responsive>
-                    <table className="w-100">
-                      <thead>
-                        <tr>
-                          <th>
-                            <h4>Address</h4>
-                          </th>
-                          <th>
-                            <h4>From</h4>
-                          </th>
-                          <th>
-                            <h4>To</h4>
-                          </th>
-                          <th>
-                            <h4>Amount</h4>
-                          </th>
-                          <th>
-                            <h4>Date</h4>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="striped">
-                          <td>
-                            <Flex style={{ alignItems: 'center' }}>
-                              <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                                </svg>
-                              </div>
-                              <div className="ml-3">jhkhkjhkjhkj</div>
-                            </Flex>
-                          </td>
-                          <td>
-                            sdfdfdsfsdfsdffsdf
-                          </td>
-                          <td>
-                            sdfdfdsfsdfsdffsdf
-                          </td>
-                          <td>
-                            1000
-                          </td>
-                          <td>
-                            14 Mar
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Responsive>
-                </div>
-                ) : (<div>
-                    <Responsive>
-                      <table className="w-100">
-                        <thead>
-                          <tr>
-                            <th>
-                              <h4>Address</h4>
-                            </th>
-                            <th>
-                              <h4>From</h4>
-                            </th>
-                            <th>
-                              <h4>To</h4>
-                            </th>
-                            <th>
-                              <h4>Amount</h4>
-                            </th>
-                            <th>
-                              <h4>Date</h4>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="striped">
-                            <td>
-                              <Flex style={{ alignItems: 'center' }}>
-                                <div>
-                                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                                  </svg>
-                                </div>
-                                <div className="ml-3">jhkhkjhkjhkj</div>
-                              </Flex>
-                            </td>
-                            <td>
-                              sdfdfdsfsdfsdffsdf
-                            </td>
-                            <td>
-                              sdfdfdsfsdfsdffsdf
-                            </td>
-                            <td>
-                              1000
-                            </td>
-                            <td>
-                              14 Mar
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </Responsive>
-                  </div>
+               <VetoVoteOptions {...voteOptionVeto} />
+              ) : (
+               <AbstainVoteOptions {...voteOptionAbstain} /> 
                 ) 
           }
 

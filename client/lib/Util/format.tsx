@@ -1,3 +1,4 @@
+
 export const formatTime = (t: Date) => {
   if (t == null){
     return null
@@ -98,3 +99,5 @@ export function abbrMessage(msg) {
   }
   return msg.type.substring(msg.type.lastIndexOf('/') + 1).replace('Msg', '')
 }
+
+  

@@ -2,16 +2,26 @@ import React from 'react'
 import ProposalDetailsContents from '../../components/Proposals/Details'
 import Layout from "../../components/layout/Layout";
 import { useRouter } from 'next/router'
-import { useGetChainProposalDetailsQuery } from '../../lib/chainApi';
+import { useGetChainProposalDetailsQuery, useGetChainProposalsDepositsQuery, useGetChainProposalsVotingOptionsQuery } from '../../lib/chainApi';
 
 function ProposalDetails(props) {
     const {query} = useRouter()
+
+    //get proposals details
     const getProposalDetails =  useGetChainProposalDetailsQuery(query.id)
+
+    //get proposals voting options data
+    const getProposalsVotingOptions = useGetChainProposalsVotingOptionsQuery(query.id)
+    
+    //get all deposits on each proposals
+    const getDeposits = useGetChainProposalsDepositsQuery(query.id)
 
     const proposalsDetailsData = {
         type: "Type:",
         total: "Total:",
-        proposalDetails: getProposalDetails
+        proposalDetails: getProposalDetails,
+        proposalsVotingOptions: getProposalsVotingOptions,
+        deposits: getDeposits
     };
 
     return (

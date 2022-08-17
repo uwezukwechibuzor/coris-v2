@@ -73,7 +73,6 @@ const getUptime = convertedSignatures.map((sigs, index) => {
 
 //get the percentage from total signed blocks and total blocks
 const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? totalSignedBlocks/totalBlocks*100 : 0
-
   
   //delegators shares
   const delegatorsShares = (validatorsDetails?.delegator_shares / 1000000).toFixed(2)
@@ -84,12 +83,15 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
   const percentageofVotingPower: number = getPercentageOfValidatorsBondedTokens(validatorsDetails?.tokens, bondedTokens)
 
   //get validatorsDelegations and pass to delegation component and relegation to get fetch the delegators address
-  const validatorsDelegations = useGetChainDelegationsQuery(validatorsDetails?.operator_address)
+  let validatorsDelegations, unDelegations
+  try {
+    validatorsDelegations = useGetChainDelegationsQuery(validatorsDetails?.operator_address)
+    //get UnDelegations and pass to delegation component
+    unDelegations = useGetChainUnDelegationsQuery(validatorsDetails?.operator_address)
+  } catch(error) {
 
-  //get UnDelegations and pass to delegation component
-  const unDelegations = useGetChainUnDelegationsQuery(validatorsDetails?.operator_address)
-
-
+  }
+  
   return (
     <>
       <Title>Validator Details</Title>
@@ -191,7 +193,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
                 <strong>{validatorsDetails? validatorsDetails?.min_self_delegation : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
-                <div>Delegator</div>
+                <div>Delegator Shares</div>
                 <strong>{validatorsDetails? delegatorsShares : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
@@ -254,6 +256,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </Flex>
             <BlockGrid>
                {getUptime.map(data =>
+               <Link href='/blocks[height]' as={`/blocks/${data.upTime?.height || data.noUpTime?.height}`} ><a>
               <Block className={data.upTime?.height? 'bg-success' : data.noUpTime?.height?  'bg-danger': null} >
                 <Tooltip>
                   <strong>Height:</strong>
@@ -265,6 +268,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
                   <strong>{data.upTime?.height? 'Success' : data.noUpTime?.height? <p className="text-danger" >Failed</p> : null}</strong>
                 </Tooltip>
               </Block>
+              </a></Link>
            )}
             </BlockGrid>
           </FlexColumn>
@@ -291,14 +295,14 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
           {
             selectedDelegations === 'delegations' ? (
 
-            <DelegationsContent />
+            <DelegationsContent {...validatorsDelegations} />
 
             ) : selectedDelegations === 'redelegations' ? (
 
-             <RelegationsContent />
+             <RelegationsContent {...validatorsDelegations}/>
 
               ) : (
-              <UndelegationsContent />
+              <UndelegationsContent {...unDelegations} />
                           
               )
           }

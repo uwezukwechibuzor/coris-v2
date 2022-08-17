@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import Badge from 'react-bootstrap/Badge'
-import Link from "next/link";
 import {
   UrbanistSemiBoldBlack172px,
   UrbanistNormalNewCar172px,
@@ -17,18 +16,14 @@ import { formatTimeDateYear } from '../../lib/Util/format';
 import { useRouter } from 'next/router';
 
 function ProposalsContent(props) {
+
   const [query, setQuery] = useState("")
+
   const {
-    title1,
-    id,
-    title2,
-    status,
-    votingStart,
-    votingEnd,
-    totalDeposit,
     proposalsData
   } = props;
   //console.log(proposalsData)
+
   const activeProposals = proposalsData?.data?.proposals?.map(proposal => {
     if (proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD' || proposal.status === 'PROPOSAL_STATUS_PASSED' || proposal.status === 'PROPOSAL_STATUS_REJECTED' || proposal.status === 'PROPOSAL_STATUS_FAILED') {
       return proposal
@@ -126,48 +121,6 @@ function ProposalsContent(props) {
     </>
   )
 }
-
-const Flex = styled.div`
-  display: flex;
-`
-
-const TabToggler = styled.div`
-  background: #e9ebfe;
-  border-radius: 10px;
-  width: 400px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  margin-bottom:40px;
-  cursor: pointer;
-  @media screen and (max-width: 506px){
-    flex-direction: column;
-    width: 100%;
-  }
-`
-
-const TabTogglerItem = styled.div`
-  diplay: flex; 
-  align-items:center;
-  justify-content: center;
-  &.active{
-    background: white;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0px 7px 8px 0px #9f9f9f;
-  }
-  @media screen and (max-width: 506px){
-    padding: 10px 0px;
-  }
-
-`
-
-const Card = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  margin-bottom:40px;
-`
 
 const Responsive = styled.div`
   width: 100%;
