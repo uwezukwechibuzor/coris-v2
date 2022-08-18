@@ -8,7 +8,7 @@ require("dotenv").config();
 
 const fetchURL = process.env.COSMOS_REST
 
-cron.schedule('*/5 * * * * *', function(){
+cron.schedule('*/3 * * * * *', function(){
     //cron to run at every 5sec to get latest blocks
         getBlocksAsync()
 });
@@ -49,7 +49,7 @@ app.use(cors({
 }));
 
 //return blocks by specifying the limit
-app.get('/blocks', async function(req, res) {
+app.get('/blocks/latest', async function(req, res) {
     try{  
        const limit = req.query.limit
       const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).limit(limit)
@@ -61,5 +61,20 @@ catch(error){
 }
 
 });
+
+
+app.get('/blocks', async function(req, res) {
+    try{  
+
+      const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).select('height hash proposer noTxs time').limit(1500)
+       res.json(blocks) 
+      //console.log(blocks)
+}
+catch(error){
+    res.status(500).json({message: error.message})
+}
+
+});
+
 
 module.exports = app;
