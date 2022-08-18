@@ -13,7 +13,7 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails', 'ProposalsVotingOptions', 'ProposalsDeposits', 'ConsensusState'],
+  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails', 'ProposalsVotingOptions', 'ProposalsDeposits', 'ConsensusState', 'AuthAccountAddress', 'AccountBalance', 'DelegatorRewards', 'AccountDelegations', 'AccountReledelgations', 'AccountUnbondingDelegations'],
   endpoints: (builder) => ({
      getChainBlockHeight: builder.query<any, any>({
       query: (height) => `${chainURL.cosmosChainREST}/blocks/${height}`,
@@ -115,6 +115,30 @@ export const chainApi = createApi({
       query: () => `${chainURL.cosmosChainRPC}/consensus_state?`,
       providesTags:  ['ConsensusState'],
     }),
+    getChainAuthAccountAddress: builder.query<any, any>({
+      query: (address) => `${chainURL.cosmosChainREST}/cosmos/auth/v1beta1/accounts/${address}`,
+      providesTags:  ['AuthAccountAddress'],
+    }),
+    getChainAccountBalance: builder.query<any, any>({
+      query: (address) => `${chainURL.cosmosChainREST}/cosmos/bank/v1beta1/balances/${address}`,
+      providesTags:  ['AccountBalance'],
+    }),
+    getChainDelegatorRewards: builder.query<any, any>({
+      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/delegators/${delegator_address}/rewards`,
+      providesTags:  ['DelegatorRewards'],
+    }), 
+    getChainAccountDelegations: builder.query<any, any>({
+      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegations/${delegator_address}`,
+      providesTags:  ['AccountDelegations'],
+    }), 
+    getChainAccountReledelgations: builder.query<any, any>({
+      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/redelegations`,
+      providesTags:  ['AccountReledelgations'],
+    }),
+    getChainAccountUnbondingDelegations: builder.query<any, any>({
+      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/unbonding_delegations`,
+      providesTags:  ['AccountUnbondingDelegations'],
+    }),
   }),
 });
 
@@ -145,6 +169,12 @@ export const {
   useGetChainProposalsVotingOptionsQuery,
   useGetChainProposalsDepositsQuery,
   useGetChainValidatorsConsensusStateQuery,
+  useGetChainAuthAccountAddressQuery,
+  useGetChainAccountBalanceQuery,
+  useGetChainDelegatorRewardsQuery,
+  useGetChainAccountDelegationsQuery,
+  useGetChainAccountReledelgationsQuery,
+  useGetChainAccountUnbondingDelegationsQuery,
   util: { getRunningOperationPromises },
 } = chainApi;
 
