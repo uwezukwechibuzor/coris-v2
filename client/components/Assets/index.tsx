@@ -63,10 +63,10 @@ function AssetsContent(props) {
                     </Flex>
                   </td>
                   <td>
-                    {coin?.current_price ? coin.current_price.toFixed(2) : null}
+                    ${coin?.current_price ? coin.current_price.toFixed(2) : null}
                   </td>
                   <td>
-                    {coin?.market_cap ? coin.market_cap.toLocaleString() : null}
+                    ${coin?.market_cap ? coin.market_cap.toLocaleString() : null}
                   </td>
                   <td>
                     {coin?.total_volume ? coin.total_volume.toLocaleString() : null}
