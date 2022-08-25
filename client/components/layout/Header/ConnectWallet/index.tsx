@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { toggleSidebar } from "../../../../lib/features/generalSlice";
+import { useAppSelector } from "../../../../lib/hooks";
 
 function ConnectWallet(props) {
-  const { asset62, asset72, outlineMediaShuffle, className } = props;
+  const { asset62, asset72, asset63, asset73, outlineMediaShuffle, outlineMediaShuffleWhite, className } = props;
   const [open, setOpen] = useState(false)
+  const darkMode = useAppSelector(state => state.general.darkMode)
 
   return (
-    <ConnectWallet1 onClick={() => props.toggle(true)} className={`connect-wallet ${className || ""}`}>
+    <ConnectWallet1 onClick={() => props.toggle(true)} className={`connect-wallet ${className || ""} ${darkMode ? 'dark-mode' : ''}`}>
       <Flex>
-        <Asset62 className="asset-6-2" src={asset62} />
-        <Asset72 className="asset-7-2" src={asset72} />
+        {
+          darkMode && className !== 'mobile' ? (
+            <><Asset62 className="asset-6-2" src={asset63} /><Asset72 className="asset-7-2" src={asset73} /></>
+          ) : (
+            <><Asset62 className="asset-6-2" src={asset62} /><Asset72 className="asset-7-2" src={asset72} /></>
+          )
+        }
       </Flex>
-      <OutlineMediaShuffle className="outline-media-shuffle" src={outlineMediaShuffle} />
+      <OutlineMediaShuffle className="outline-media-shuffle" src={darkMode ? outlineMediaShuffleWhite : outlineMediaShuffle} />
     </ConnectWallet1>
   );
 }
@@ -45,6 +52,14 @@ const ConnectWallet1 = styled.div`
      @media screen and (max-width: 775px){
       display: none;
     }
+  }
+  &.dark-mode{
+    background-color: #19172D !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
+  &.dark-mode.mobile{
+    background-color: #0b0a15 !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 

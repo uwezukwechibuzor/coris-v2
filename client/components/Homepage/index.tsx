@@ -18,6 +18,7 @@ import dynamic from 'next/dynamic'
 import axios from "axios";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
+import { useAppSelector } from "../../lib/hooks";
 
 //importing dynamically
 const PriceChart = dynamic(() => import('./Details/priceChart'), {
@@ -32,6 +33,7 @@ let coinID = 'cosmos'
 const denom = 1000000;
 
 function HomePageContent(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     title,
     apr,
@@ -125,13 +127,13 @@ function HomePageContent(props) {
   };
 
   return (
-    <>
-      <Title>{title}</Title>
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Grid>
-        <GridItem className="first-item">
+        <GridItem className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <PriceChart coinData={coinData} />
         </GridItem>
-        <GridItem className="second-item p-3">
+        <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
           <FlexCol className="h-100">
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCap</MarketCapDef>
@@ -147,43 +149,43 @@ function HomePageContent(props) {
             </Flex>
           </FlexCol>
         </GridItem>
-        <GridItem className="third-item">
+        <GridItem className={darkMode ? 'dark-mode third-item' : 'third-item'}>
           <Flex className="h-100">
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <LatestBlock>latest Block</LatestBlock>
-              <Phone00>{getBlocks? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
+              <LatestBlock className={darkMode ? 'dark-mode' : ''}>latest Block</LatestBlock>
+              <Phone00 className={darkMode ? 'dark-mode' : ''}>{getBlocks? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <BlockTime>Block Time</BlockTime>
-              <X602s>{getBlocks? formatTime(getBlocks[0]?.time) : null}</X602s>
+              <BlockTime className={darkMode ? 'dark-mode' : ''}>Block Time</BlockTime>
+              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks? formatTime(getBlocks[0]?.time) : null}</X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <Chain>chain</Chain>
-              <Corichain1>{coinData? coinData?.id : null}</Corichain1>
+              <Chain className={darkMode ? 'dark-mode' : ''}>chain</Chain>
+              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData? coinData?.id : null}</Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
       </Grid>
       <Grid1>
-        <GridItem1 className="first-item">
+        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
             <div>
-              <APR1>{apr}</APR1>
-              <Text1>{aprValue}</Text1>
+              <APR1 className={darkMode ? 'dark-mode' : ''}>{apr}</APR1>
+              <Text1 className={darkMode ? 'dark-mode' : ''}>{aprValue}</Text1>
             </div>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="second-item">
+        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
           <FlexCenter className="h-100">
             <OverlapGroup13>
-              <Place>{place1}</Place>
-              <Address>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
+              <Place className={darkMode ? 'dark-mode' : ''}>{place1}</Place>
+              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="third-item">
+        <GridItem1 className={darkMode ? 'dark-mode third-item' : 'third-item'}>
           <OnlineVotingPower>
             <Details
               onlineVotingPower={detailsData.onlineVotingPower}
@@ -198,7 +200,7 @@ function HomePageContent(props) {
             </OverlapGroup2>
           </OnlineVotingPower>
         </GridItem1>
-        <GridItem1 className="fourth-item">
+        <GridItem1 className={darkMode ? 'dark-mode fourth-item' : 'fourth-item'}>
           <ActiveValidators>
             <Details2
               activeValidators={details2Data.activeValidators}
@@ -215,36 +217,36 @@ function HomePageContent(props) {
         </GridItem1>
       </Grid1>
       <Grid1>
-        <GridItem1 className="first-item">
+        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
             <Inflation>
-              <APR1>{inflation}</APR1>
-              <Text1>{inflationValue}</Text1>
+              <APR1 className={darkMode ? 'dark-mode' : ''}>{inflation}</APR1>
+              <Text1 className={darkMode ? 'dark-mode' : ''}>{inflationValue}</Text1>
             </Inflation>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="second-item">
+        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
           <FlexCenter className="h-100">
             <OverlapGroup14>
-              <Place>{communityPool}</Place>
-              <Address>{communityPoolValue}</Address>
+              <Place className={darkMode ? 'dark-mode' : ''}>{communityPool}</Place>
+              <Address className={darkMode ? 'dark-mode' : ''}>{communityPoolValue}</Address>
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="third-item span-last-ends">
+        <GridItem1 className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
           <Flex className="h-100 w-100 align-items-center" style={{ padding: "20px" }}>
             <FlexCol className="w-100">
-              <APR1>Pool</APR1>
+              <APR1 className={darkMode ? 'dark-mode' : ''}>Pool</APR1>
               <Flex>
                 <FlexCol><Bullet /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Place1>Bonded</Place1>
-                  <Phone>{numberWithSpaces(bondedTokens)}</Phone>
+                  <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
+                  <Phone className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(bondedTokens)}</Phone>
                 </FlexCol>
                 <FlexCol><Bullet className="light" /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Bonded>Not Bonded</Bonded>
-                  <Phone1>{numberWithSpaces(notBondedTokens)}</Phone1>
+                  <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
+                  <Phone1 className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(notBondedTokens)}</Phone1>
                 </FlexCol>
               </Flex>
             </FlexCol>
@@ -258,12 +260,12 @@ function HomePageContent(props) {
       </Grid1>
 
       <Flex className="align-items-center justify-content-between">
-        <LatestBlocks>{latestBlocks}</LatestBlocks>
-        <Link href='/blocks' ><a><ViewAll>{viewAll}</ViewAll></a></Link>
+        <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
+        <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
       </Flex>
-      <Container className="w-100">
+      <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
         <Responsive>
-          <table className="w-100 mt-3">
+          <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
             <thead>
               <tr>
                 <th>Height</th>
@@ -300,7 +302,7 @@ function HomePageContent(props) {
           </table>
         </Responsive>
       </Container>
-    </>
+    </div>
   )
 }
 
@@ -363,6 +365,10 @@ const GridItem = styled.div`
   &.h-200px{
     height: 200px;
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const Grid1 = styled.div`
@@ -420,6 +426,10 @@ const GridItem1 = styled.div`
       grid-column: 1 / span 11;
     }
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const Container = styled.div`
@@ -428,6 +438,10 @@ const Container = styled.div`
   border-radius: 20px;
   padding: 20px;
   margin: 20px 0px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const FlexCol = styled.div`

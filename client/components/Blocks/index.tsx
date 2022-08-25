@@ -11,9 +11,11 @@ import {
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, toHex, fromHex, toBech32  } from "@cosmjs/encoding";
 import { useGetChainActiveValidatorsQuery } from "../../lib/chainApi";
+import { useAppSelector } from "../../lib/hooks";
 
 
 function BlocksContent(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     getBlocks
   } = props;
@@ -41,11 +43,11 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
 //console.log(joinedBlocksValidatorsData)
 
   return (
-    <>
-    <Title>Blocks</Title>
+    <div className={darkMode ? 'dark-mode' : ''}>
+    <Title className={darkMode ? 'dark-mode' : ''}>Blocks</Title>
     <Container className="w-100">
         <Responsive>
-          <table className="w-100 mt-3">
+          <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
             <thead>
               <tr>
                 <th>Height</th>
@@ -120,7 +122,7 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
             text-decoration: inherit;
            }
          `}</style>
-    </>
+    </div>
   );
 }
 

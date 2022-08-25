@@ -1,13 +1,15 @@
 import Button from 'react-bootstrap/Button'
 import styled from "styled-components";
+import { useAppSelector } from '../../../../lib/hooks';
 
 
-function WalletButton ({className}) {
-    return (
-        <Wallet className={`${className} connect-wallet`}>
-         Connect Wallet
-        </Wallet>
-    )
+function WalletButton({ className }) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
+  return (
+    <Wallet className={`${className} ${darkMode ? 'dark-mode' : ''} connect-wallet`}>
+      Connect Wallet
+    </Wallet>
+  )
 }
 
 
@@ -26,6 +28,11 @@ const Wallet = styled.button`
   background: none;
   &:hover{
     background: #37458d;
+    color: white;
+  }
+  &.dark-mode{
+    border-color: #fff !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
     color: white;
   }
 `;

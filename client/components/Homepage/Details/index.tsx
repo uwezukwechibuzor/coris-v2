@@ -1,19 +1,21 @@
 import React from "react";
 import styled from "styled-components";
+import { useAppSelector } from "../../../lib/hooks";
 import { UrbanistBoldBlack16px, UrbanistNormalBlack24px, UrbanistNormalBlack16px } from "../../../styledMixins";
 
 
 function Details(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const { onlineVotingPower, x36516M1, place, x36516M2 } = props;
 
   return (
     <Details1>
       <OnlineVotingPower>{onlineVotingPower}</OnlineVotingPower>
       <Group7328>
-        <X36516m>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
+        <X36516m className={darkMode ? 'dark-mode' : ''}>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
         })}</X36516m>
         <Place>{place}</Place>
-        <X36516m1>{x36516M2.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
+        <X36516m1 className={darkMode ? 'dark-mode' : ''}>{x36516M2.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
         })}</X36516m1>
       </Group7328>
     </Details1>

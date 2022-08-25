@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useAppSelector } from "../../../lib/hooks";
 import {
   UrbanistBoldBlack20px,
   UrbanistLightBlack15px,
@@ -8,6 +9,7 @@ import {
 import Logo2 from "./Logo2";
 
 function Footer(props) {
+  const darkMode = useAppSelector((state) => state.general.darkMode)
   const { company,
     about1,
     security1,
@@ -39,10 +41,16 @@ function Footer(props) {
     stakingPortal2,
     nodeMonitoring2 } = props;
   return (
-    <FlexFull>
+    <FlexFull className={darkMode ? 'dark-mode' : ''}>
       <Wrapper>
         <LogoContainer>
-          <Logo2 asset62={logo2Data.asset62} asset72={logo2Data.asset72} asset81={logo2Data.asset81} />
+          {
+            darkMode ? (
+              <img src="asset-6-2-2@2x.png" alt="" />
+            ) : (
+              <Logo2 asset62={logo2Data.asset62} asset72={logo2Data.asset72} asset81={logo2Data.asset81} />
+            )
+          }
         </LogoContainer>
         <Grid>
           <GridItem>
@@ -81,12 +89,12 @@ function Footer(props) {
         </Grid>
         <FlexCol8>
           <FlexRow7>
-            <IconPaperPlane src={iconPaper_Plane} />
-            <IconLinkedin src={iconLinkedin} />
-            <IconLinkedin src={iconInstagram} />
-            <IconLinkedin src={iconTwitter} />
-            <IconLinkedin src={solidBrandsYoutube} />
-            <IconLinkedin src={solidBrandsChrome} />
+            <IconPaperPlane src={darkMode ? '/img/telegram-icon.png' : iconPaper_Plane} />
+            <IconLinkedin src={darkMode ? '/img/linkedin-icon.png' : iconLinkedin} />
+            <IconLinkedin src={darkMode ? '/img/instagram-icon.png' : iconInstagram} />
+            <IconLinkedin src={darkMode ? '/img/twitter-icon.png' : iconTwitter} />
+            <IconLinkedin src={darkMode ? '/img/youtube-icon.png' : solidBrandsYoutube} />
+            <IconLinkedin src={darkMode ? '/img/chrome-icon.png' : solidBrandsChrome} />
           </FlexRow7>
           <Eosadolor382gmailcom>{eosadolor382GmailCom}</Eosadolor382gmailcom>
         </FlexCol8>
@@ -134,6 +142,10 @@ const FlexFull = styled.div`
   border-radius: 20px;
   box-shadow: 0px 7px 30px #0015da29;
   justify-content: center;
+  &.dark-mode{
+    background-color: #19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -149,12 +161,12 @@ const LogoContainer = styled.div`
   padding: 40px;
 `;
 
-const Header= styled.div`
+const Header = styled.div`
   font-size: 14px;
   font-weight: bold
 `;
 
-const Item= styled.div`
+const Item = styled.div`
   font-size: 14px;
 `;
 
