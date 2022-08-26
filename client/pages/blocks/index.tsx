@@ -7,10 +7,11 @@ function Blocks () {
   
   //get blocks
   const [getBlocks, setBlocks] = useState([])
-  const queryTotalBlocks = 1500
+  const queryTotalBlocks = 20
   let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
   useEffect(() => {
-      axios.get(`${getBlocksAPi}/blocks`).then((response) => {
+    axios.get(`${getBlocksAPi}/blocks/latest?limit=${queryTotalBlocks}`).
+      then((response) => {
           setBlocks(response.data)
       }).catch((error) => {
           console.log(error)

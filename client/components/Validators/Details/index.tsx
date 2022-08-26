@@ -251,7 +251,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
         <GridItemSeven>
           <FlexColumn>
             <Flex className="p-3">
-              <div>Uptime by 100 latest blocks</div>
+              <div>Uptime by 50 latest blocks</div>
               <div style={{marginLeft: '20px'}}>Missed Blocks <Badge  bg="danger">{missedBlocks}</Badge></div>
             </Flex>
             <BlockGrid>
