@@ -63,7 +63,7 @@ catch(error){
 });
 
 
-app.get('/blocks', async function(req, res) {
+/*app.get('/blocks', async function(req, res) {
     try{  
 
       const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).select('height hash proposer noTxs time').limit(1500)
@@ -75,6 +75,6 @@ catch(error){
 }
 
 });
-
+*/
 
 module.exports = app;
