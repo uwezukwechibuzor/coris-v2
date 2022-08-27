@@ -14,7 +14,7 @@ function ValidatorsDetails(props) {
     //get uptime by blocks
     //get blocks
   const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([])
-  const queryTotalBlocks = 50
+  const queryTotalBlocks = 100
   let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
   useEffect(() => {
       axios.get(`${getBlocksAPi}/blocks/latest?limit=${queryTotalBlocks}`).then((response) => {
