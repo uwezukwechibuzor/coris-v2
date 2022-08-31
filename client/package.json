@@ -24,6 +24,7 @@
     "date-fns": "^2.11.1",
     "express": "^4.18.1",
     "gray-matter": "^4.0.2",
+    "highcharts-react-official": "^3.1.0",
     "ioredis": "^5.0.4",
     "json-colorizer": "^2.2.2",
     "next": "^12.1.5",

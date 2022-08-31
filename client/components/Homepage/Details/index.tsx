@@ -10,7 +10,7 @@ function Details(props) {
 
   return (
     <Details1>
-      <OnlineVotingPower>{onlineVotingPower}</OnlineVotingPower>
+      <OnlineVotingPower className={darkMode ? 'dark-mode' : ''}>{onlineVotingPower}</OnlineVotingPower>
       <Group7328>
         <X36516m className={darkMode ? 'dark-mode' : ''}>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
         })}</X36516m>
@@ -34,6 +34,9 @@ const OnlineVotingPower = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   letter-spacing: 0;
+  &.darkMode{
+    color: white;
+  }
 `;
 
 const Group7328 = styled.div`
@@ -49,6 +52,9 @@ const X36516m = styled.div`
   min-height: 19px;
   min-width: 66px;
   letter-spacing: 1.28px;
+  &.darkMode{
+    color: white;
+  }
 `;
 
 const Place = styled.div`

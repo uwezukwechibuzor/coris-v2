@@ -24,7 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="d-table-row w-100">
             <div className="d-table w-100">
               <div className="d-table-row w-100">
-                <div style={{ minHeight: "400px", paddingTop: "50px" }}>
+                <div style={{ minHeight: "400px"}}>
                   {children}
                 </div>
               </div>
@@ -106,7 +106,7 @@ const FlexCol2 = styled.div`
   width: 100%;
   height: 100%;
   padding: 10px;
-  padding-left: 320px;
+  padding-left: 246px;
   @media screen and (max-width: 1334px){
     padding-left: 120px;
   };

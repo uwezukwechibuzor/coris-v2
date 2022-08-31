@@ -31,13 +31,14 @@ const Flex = styled.div`
 
 const ConnectWallet1 = styled.div`
   height: 50px;
+  cursor: pointer;
   display: flex;
   padding: 5px 19px;
   justify-content: space-between;
   background-color: var(--white);
   align-items: center;
   border-radius: 59px;
-  box-shadow: 0px 7px 30px #0015da29;
+  box-shadow: 0px 0px 7px 5px #d0d0d036;
   width: 200px;
     @media screen and (max-width: 775px){
     display: none;

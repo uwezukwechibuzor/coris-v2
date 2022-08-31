@@ -12,10 +12,11 @@ import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromBech32, fromHex, toBech32, toHex } from "@cosmjs/encoding";
 import Badge from 'react-bootstrap/Badge';
 import { OverlayTrigger, ProgressBar } from "react-bootstrap";
+import { useAppSelector } from "../../../lib/hooks";
 
 
 function ValidatorsDetailsContent(props) {
-
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     getValidatorDetails,
     getUptimeByBlocksHeights
@@ -93,10 +94,10 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
   }
   
   return (
-    <>
-      <Title>Validator Details</Title>
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>Validator Details</Title>
       <Grid>
-        <GridItemOne>
+        <GridItemOne className={darkMode ? 'dark-mode' : ''}>
           <div className="d-table w-100">
             <div className="d-row w-100">
               <FlexCenter style={{ marginTop: "20px" }}>
@@ -124,7 +125,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </div>
         </GridItemOne>
-        <GridItemTwo>
+        <GridItemTwo className={darkMode ? 'dark-mode' : ''}>
           <FlexXCenter className="h-100 w-100" style={{ alignItems: "center" }}>
             <FlexColumn style={{ width: '25%' }}>
               <h5>{validatorsDetails?.status === undefined ? null : validatorsDetails?.status === 'BOND_STATUS_BONDED' ?  <p className="active">Active</p> : <p className="inActive">InActive</p>}
@@ -141,7 +142,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </FlexColumn>
           </FlexXCenter>
         </GridItemTwo>
-        <GridItemThree>
+        <GridItemThree className={darkMode ? 'dark-mode' : ''}>
           <Flex className="w-100 h-100">
             <FlexCenter className="w-50">
             {percentageofVotingPower? percentageofVotingPower.toFixed(2)+'%' : null}
@@ -157,7 +158,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </FlexCenter>
           </Flex>
         </GridItemThree>
-        <GridItemFour>
+        <GridItemFour className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Commission</div>
@@ -182,7 +183,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </FlexColumn>
         </GridItemFour>
-        <GridItemFive>
+        <GridItemFive className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Bonded</div>
@@ -203,7 +204,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </FlexColumn>
         </GridItemFive>
-        <GridItemSix>
+        <GridItemSix className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Addresses</div>
@@ -248,7 +249,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </FlexColumn>
           </FlexColumn>
         </GridItemSix>
-        <GridItemSeven>
+        <GridItemSeven className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <Flex className="p-3">
               <div>Uptime by 100 latest blocks</div>
@@ -276,20 +277,20 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
       </Grid>
       <br />
       <h5>Delegations</h5>
-      <Card>
+      <Card className={darkMode ? 'dark-mode' : ''}>
         <div className="w-100 p-3">
-          <TabToggler>
+          <TabToggler className={darkMode ? 'dark-mode' : ''}>
             <TabTogglerItem
-              className={selectedDelegations === 'delegations' ? "active" : ''}
+              className={`${selectedDelegations === 'delegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
               onClick={() => setDelegationPage('delegations')}
             >Delegations</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setDelegationPage('underdelegations')}
-              className={selectedDelegations === 'underdelegations' ? "active" : ''}
+              className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
             >Undelegations</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setDelegationPage('redelegations')}
-              className={selectedDelegations === 'redelegations' ? "active" : ''}
+              className={`${selectedDelegations === 'redelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
             >Redelegations</TabTogglerItem>
            </TabToggler>
           {
@@ -322,7 +323,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             background: red
            }
          `}</style>
-    </>
+    </div>
   )
 }
 
@@ -340,6 +341,9 @@ const TabToggler = styled.div`
     flex-direction: column;
     width: 100%;
   }
+  &.dark-mode{
+    background: #0b0a15 !important;
+  }
 `
 
 const TabTogglerItem = styled.div`
@@ -355,6 +359,9 @@ const TabTogglerItem = styled.div`
   @media screen and (max-width: 506px){
     padding: 10px 0px;
   }
+  &.dark-mode.active{
+    background: #19172d !important;
+  }
 
 `
 
@@ -362,6 +369,10 @@ const Card = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
   margin-bottom:40px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 const BlockGrid = styled.div`
   display: flex !important;
@@ -442,6 +453,10 @@ const GridItemOne = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemTwo = styled.div`
@@ -455,6 +470,10 @@ const GridItemTwo = styled.div`
   }
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -470,6 +489,10 @@ const GridItemThree = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
     grid-row: 4 / span 1;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -488,6 +511,10 @@ const GridItemFour = styled.div`
       grid-row: 5 / span 1;
     }
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemFive = styled.div`
@@ -504,6 +531,10 @@ const GridItemFive = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
     grid-row: 6 / span 1;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -523,6 +554,10 @@ const GridItemSix = styled.div`
     grid-column: 1 / span 4;
     grid-row: 7 / span 1;
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemSeven = styled.div`
@@ -530,6 +565,10 @@ const GridItemSeven = styled.div`
   border-radius: 20px;
   grid-column: 1 / span 4;
   padding: 20px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 export default ValidatorsDetailsContent

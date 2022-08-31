@@ -750,7 +750,7 @@ th{
   z-index: 1;
   padding: 10px;
   padding-left: 112px;
-  box-shadow: 0px 0px 20px 0px #e1e1e1;
+  box-shadow: 0px 0px 20px 0px #ededed;
 }
 
 .main-header.dark-mode{
@@ -779,6 +779,34 @@ table.dark-mode{
 }
 
 input.dark-mode{
-  background-color:#19172d !important;
+  background-color:#19172d;
   box-shadow: 0px -1px 20px 0px #23232329 !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f100;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.highcharts-grid-line{
+  opacity: 0;
+}
+
+.highcharts-credits{
+  display: none;
 }

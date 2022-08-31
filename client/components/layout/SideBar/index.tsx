@@ -199,7 +199,7 @@ const FlexCell = styled.div`
 const SideNavigation = styled.div`
   z-index: 2;
   height: 100%;
-  width: 300px;
+  width: 240px;
   margin: 0;
   @media screen and (max-width: 1334px){
     width: 100px

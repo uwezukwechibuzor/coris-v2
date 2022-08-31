@@ -2,6 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { useAppSelector } from "../../../../lib/hooks";
 
 export function ModalContent({ toggle }) {
+    const darkMode = useAppSelector(state => state.general.darkMode)
     const isToggled = useAppSelector(state => state.general.connectWalletModalToggled)
     const checkNToggle = (e) => {
         if (e.target !== document.querySelector("#modal-parent")) return
@@ -15,7 +16,7 @@ export function ModalContent({ toggle }) {
 
     if (isToggled) return (
         <Modal id="modal-parent" onClick={checkNToggle}>
-            <ModalDialogue>
+            <ModalDialogue className={darkMode ? 'dark-mode' : ''}>
                 <div className="d-table w-100 h-100">
                     <div className="t-table-row" style={{ height: "50px" }}>
                         <div className="p-3">
@@ -24,28 +25,28 @@ export function ModalContent({ toggle }) {
                                 <Asset72 className="asset-7-2" src={connectWallet1Data.asset72} />
                             </Flex>
                         </div>
-                        <Close onClick={() => toggle(false)}>&times;</Close>
+                        <Close className={darkMode ? 'dark-mode' : ''} onClick={() => toggle(false)}>&times;</Close>
                     </div>
                     <ShowBox className="w-100 h-100">
                         <Show>
                             <Container>
                                 <h4 className="text-center">Mainnets</h4>
                                 <Grid>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
                                 </Grid>
                             </Container>
                             <Container className="mt-3">
                                 <h4 className="text-center">Testnets</h4>
                                 <Grid>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
-                                    <GridItem>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
+                                    <GridItem className={darkMode ? 'dark-mode' : ''}>sddfdf</GridItem>
                                 </Grid>
                             </Container>
                         </Show>
@@ -93,6 +94,9 @@ const GridItem = styled.div`
     border-radius: 10px;
     background: #f5f5f5;
     padding: 10px;
+    &.dark-mode{
+        background: #100f1e;
+    }
 `
 
 const appear = keyframes`
@@ -153,7 +157,11 @@ const ModalDialogue = styled.div`
     position: relative;
     animation-name: ${drawUp};
     animation-duration: .6s;
-    overflowY:auto
+    overflowY:auto;
+    &.dark-mode{
+        background: #07060e;
+        border: 2px solid #100f1e;
+    }
 `
 
 const Close = styled.div`
@@ -169,6 +177,10 @@ const Close = styled.div`
     justify-content:center;
     &:hover{
         background: #ededed;
+        cursor:pointer;
+    }
+    &:hover.dark-mode{
+        background:#100f1e6b;
         cursor:pointer;
     }
 `

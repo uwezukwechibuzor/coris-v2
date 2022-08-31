@@ -93,7 +93,7 @@ const NightmodeButton = styled.div`
   min-width: 50px;
   background-color: var(--white);
   border-radius: 32px;
-  box-shadow: 0px 7px 30px #0015da29;
+  box-shadow: 0px 0px 7px 5px #d0d0d036;
   @media screen and (max-width: 775px){
     display: none;
   }
@@ -101,6 +101,7 @@ const NightmodeButton = styled.div`
     background-color: #19172D !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
+  cursor: pointer;
 `;
 
 const OutlineGeneralMoon = styled.img`

@@ -96,7 +96,7 @@ function Footer(props) {
             <IconLinkedin src={darkMode ? '/img/youtube-icon.png' : solidBrandsYoutube} />
             <IconLinkedin src={darkMode ? '/img/chrome-icon.png' : solidBrandsChrome} />
           </FlexRow7>
-          <Eosadolor382gmailcom>{eosadolor382GmailCom}</Eosadolor382gmailcom>
+          <Eosadolor382gmailcom className={darkMode ? 'dark-mode':''}>{eosadolor382GmailCom}</Eosadolor382gmailcom>
         </FlexCol8>
       </Wrapper>
 

@@ -20,6 +20,7 @@ import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 import { useAppSelector } from "../../lib/hooks";
 
+
 //importing dynamically
 const PriceChart = dynamic(() => import('./Details/priceChart'), {
   ssr: false
@@ -70,55 +71,55 @@ function HomePageContent(props) {
 
   //function to get coin details
   const [coinData, setCoin]: any = useState([])
-    let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
-    useEffect(() => {
-        axios.get(API_Call).then((response) => {
-            setCoin(response.data)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }, [])
-   //console.log(coinData)
+  let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
+  useEffect(() => {
+    axios.get(API_Call).then((response) => {
+      setCoin(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  //console.log(coinData)
 
-   //get Bonded Token and Not bonded Token
-   const getPool = useGetChainPoolQuery()
-   const bondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.bonded_tokens/denom).toFixed(2) : null
-   const notBondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.not_bonded_tokens/1000000).toFixed(2) : null
+  //get Bonded Token and Not bonded Token
+  const getPool = useGetChainPoolQuery()
+  const bondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.bonded_tokens / denom).toFixed(2) : null
+  const notBondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.not_bonded_tokens / 1000000).toFixed(2) : null
 
   //get voting power and the active validators
   const getAllValidators = useGetChainValidatorsQuery()
   const getAllActiveValidators = useGetChainActiveValidatorsQuery()
-  const totalValidators = getAllValidators.isLoading == false? getAllValidators?.data?.validators?.length : null
-  const totalActiveValidators = getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators?.length : null
-  
-   //percentage of active Validators
-   const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined? Math.round(Number(totalActiveValidators/totalValidators)*100) : null
-  
+  const totalValidators = getAllValidators.isLoading == false ? getAllValidators?.data?.validators?.length : null
+  const totalActiveValidators = getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators?.length : null
+
+  //percentage of active Validators
+  const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined ? Math.round(Number(totalActiveValidators / totalValidators) * 100) : null
+
   //get the validators total voting power
   let totalVotingPower = 0
-  getAllValidators.isLoading == false? getAllValidators?.data?.validators.map(validatorsDetails =>{
-   totalVotingPower += Number(validatorsDetails.tokens/denom)
-   return totalVotingPower
+  getAllValidators.isLoading == false ? getAllValidators?.data?.validators.map(validatorsDetails => {
+    totalVotingPower += Number(validatorsDetails.tokens / denom)
+    return totalVotingPower
   }) : null
-  
+
   //get the validators total active voting power
   let totalActiveVotingPower = 0
-  getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators.map(validatorsDetails =>{
-   totalActiveVotingPower += Number(validatorsDetails.tokens/denom)
+  getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators.map(validatorsDetails => {
+    totalActiveVotingPower += Number(validatorsDetails.tokens / denom)
     return totalActiveVotingPower
   }) : null
-  
+
   //percentage of online Voting Power
-  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false? Math.round(Number(totalActiveVotingPower/totalVotingPower)*100) : null
+  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false ? Math.round(Number(totalActiveVotingPower / totalVotingPower) * 100) : null
   console.log(percentageOfVotingPower)
 
-   const detailsData = {
+  const detailsData = {
     onlineVotingPower: "Online Voting power",
     x36516M1: totalActiveVotingPower,
     place: "from",
     x36516M2: totalVotingPower,
   };
-  
+
   const details2Data = {
     activeValidators: "Active Validators",
     number1: totalActiveValidators,
@@ -127,25 +128,52 @@ function HomePageContent(props) {
   };
 
   return (
-    <div className={darkMode ? 'dark-mode' : ''}>
+    <Wrapper className={darkMode ? 'dark-mode' : ''}>
       <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Grid>
         <GridItem className={darkMode ? 'dark-mode first-item' : 'first-item'}>
-          <PriceChart coinData={coinData} />
+          <Icon>
+            {
+              darkMode ? (
+                <><img className="asset-6-2" src="/img/asset-6-3@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-2@2x.png" height="20" /></>
+              ) : (
+                <><img className="asset-6-2" src="/img/asset-6-2@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-1@2x.png" height="20" /></>
+              )
+            }
+          </Icon>
+          <Stat>
+            <Amount>$0.10</Amount>
+            <Flex>
+              <FlexCol>
+                {/* <Increase>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 10L7 0L14 10H0Z" fill="#59B17D" />
+                  </svg>
+                </Increase> */}
+                <Decrease>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 10L7 0L14 10H0Z" fill="red" />
+                  </svg>
+                </Decrease>
+              </FlexCol>
+              5.67% (24h)
+            </Flex>
+          </Stat>
+          <PriceChart />
         </GridItem>
         <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
           <FlexCol className="h-100">
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCap</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
-            </Flex> 
+              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap ? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
+            </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCapRank</MarketCapDef>
-              <MarketCapVal className="w-50">{coinData?.market_cap_rank? coinData.market_cap_rank : null}</MarketCapVal>
+              <MarketCapVal className="w-50">{coinData?.market_cap_rank ? coinData.market_cap_rank : null}</MarketCapVal>
             </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">24h Vol</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
+              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume ? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
             </Flex>
           </FlexCol>
         </GridItem>
@@ -153,22 +181,22 @@ function HomePageContent(props) {
           <Flex className="h-100">
             <FlexCol className="w-50 align-items-center justify-content-center">
               <LatestBlock className={darkMode ? 'dark-mode' : ''}>latest Block</LatestBlock>
-              <Phone00 className={darkMode ? 'dark-mode' : ''}>{getBlocks? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
+              <Phone00 className={darkMode ? 'dark-mode' : ''}>{getBlocks ? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <BlockTime className={darkMode ? 'dark-mode' : ''}>Block Time</BlockTime>
-              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks? formatTime(getBlocks[0]?.time) : null}</X602s>
+              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks ? formatTime(getBlocks[0]?.time) : null}</X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <Chain className={darkMode ? 'dark-mode' : ''}>chain</Chain>
-              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData? coinData?.id : null}</Corichain1>
+              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData ? coinData?.id : null}</Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
       </Grid>
-      <Grid1>
+      {/* <Grid1>
         <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
             <div>
@@ -257,7 +285,7 @@ function HomePageContent(props) {
             </Flex>
           </Flex>
         </GridItem1>
-      </Grid1>
+      </Grid1> */}
 
       <Flex className="align-items-center justify-content-between">
         <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
@@ -288,7 +316,7 @@ function HomePageContent(props) {
                       <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
                         <td>
                           <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                          <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
                         </td>
                       </a></Link>
                       <td>{data?.block?.noTxs}</td>
@@ -302,9 +330,50 @@ function HomePageContent(props) {
           </table>
         </Responsive>
       </Container>
-    </div>
+    </Wrapper>
   )
 }
+
+const Increase = styled.div`
+  margin-top: -3px;
+`
+
+const Decrease = styled.div`
+  transform: rotate(180deg);
+  margin-top: 3px;
+`
+
+const Amount = styled.div`
+  color: #2ec169;
+  font-size:24px;
+  font-weight: bolder;
+  text-align:right;
+  margin-bottom: 10px;
+`;
+
+const Icon = styled.div`
+  position: absolute;
+  left: 20px;
+  top: 10px;
+`;
+
+const Stat = styled.div`
+  position: absolute;
+  right: 20px;
+  top: 10px;
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 50px;
+  @media screen and (max-width: 1075px){
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+`;
 
 const Responsive = styled.div`
   width: 100%;
@@ -326,6 +395,7 @@ const Grid = styled.div`
 `;
 
 const GridItem = styled.div`
+  position: relative;
   display: block;
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
@@ -460,7 +530,7 @@ const MarketCapDef = styled.div`
 
 const MarketCapVal = styled.div`
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
 `;
 
 const Divider = styled.div`

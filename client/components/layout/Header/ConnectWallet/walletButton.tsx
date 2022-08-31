@@ -14,9 +14,10 @@ function WalletButton({ className }) {
 
 
 const Wallet = styled.button`
-  width: 200px;
+  width: 150px;
   height: 40px;
   border: 1px solid #37458d;
+  border-radius: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,6 +26,7 @@ const Wallet = styled.button`
   cursor: pointer;
   outline: none;
   margin-left: 20px;
+  font-weight: bold;
   background: none;
   &:hover{
     background: #37458d;

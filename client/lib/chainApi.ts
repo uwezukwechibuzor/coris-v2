@@ -5,7 +5,7 @@ import { chainURL } from "./interfaces/chainsURL";
 
 export const chainApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "http:",
+    baseUrl: "https:",
      mode: 'cors',  
   }),
   extractRehydrationInfo(action, { reducerPath }) {

@@ -95,7 +95,7 @@ function ParamsContent() {
 
   return (
     <>
-      <Title>{parametersData.title}</Title>
+      <Title className={darkMode ? 'dark-mode' : ''}>{parametersData.title}</Title>
       <Grid>
         <GridItem>
           <FlexColumn>
