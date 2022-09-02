@@ -14,7 +14,13 @@ function Details(props) {
       <Group7328>
         <X36516m className={darkMode ? 'dark-mode' : ''}>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
         })}</X36516m>
-        <Place>{place}</Place>
+        <div>
+          <Place
+            style={{
+              color: darkMode ? 'white' : 'black'
+            }}
+          >{place}</Place>
+        </div>
         <X36516m1 className={darkMode ? 'dark-mode' : ''}>{x36516M2.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
         })}</X36516m1>
       </Group7328>
@@ -23,7 +29,6 @@ function Details(props) {
 }
 
 const Details1 = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -34,6 +39,7 @@ const OnlineVotingPower = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   letter-spacing: 0;
+  width: 100px;
   &.darkMode{
     color: white;
   }
@@ -50,8 +56,12 @@ const Group7328 = styled.div`
 const X36516m = styled.div`
   ${UrbanistBoldBlack16px}
   min-height: 19px;
-  min-width: 66px;
+  font-size: 14px;
+  width: 100px;
   letter-spacing: 1.28px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &.darkMode{
     color: white;
   }
@@ -63,13 +73,23 @@ const Place = styled.div`
   margin-left: 10px;
   min-width: 34px;
   letter-spacing: 0;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 5px;
 `;
 
 const X36516m1 = styled.div`
-  ${UrbanistBoldBlack16px}
+  font-weight: bold;
   min-height: 19px;
-  margin-left: 10px;
+  font-size: 14px;
+  width: 100px;
   letter-spacing: 1.28px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &.darkMode{
+    color: white;
+  }
 `;
 
 export default Details;

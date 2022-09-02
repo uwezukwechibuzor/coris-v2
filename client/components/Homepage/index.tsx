@@ -19,6 +19,7 @@ import axios from "axios";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 import { useAppSelector } from "../../lib/hooks";
+import ReactPaginate from "react-paginate";
 
 
 //importing dynamically
@@ -196,12 +197,15 @@ function HomePageContent(props) {
           </Flex>
         </GridItem>
       </Grid>
-      {/* <Grid1>
+      <Grid1>
         <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
-            <div>
-              <APR1 className={darkMode ? 'dark-mode' : ''}>{apr}</APR1>
-              <Text1 className={darkMode ? 'dark-mode' : ''}>{aprValue}</Text1>
+            <div className="p-3">
+              <APR1 className={darkMode ? 'dark-mode' : ''}>
+                APR
+                {/* {apr} */}
+              </APR1>
+              <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{aprValue}</Text1>
             </div>
           </FlexCenter>
         </GridItem1>
@@ -221,8 +225,8 @@ function HomePageContent(props) {
               place={detailsData.place}
               x36516M2={detailsData.x36516M2}
             />
-            <OverlapGroup2>
-              <Percent>
+            <OverlapGroup2 style={{ position: 'relative' }}>
+              <Percent style={{ position: 'absolute', right: '10px;' }}>
                 <OnlineVotingPowerChart percentageOfVotingPower={percentageOfVotingPower} />
               </Percent>
             </OverlapGroup2>
@@ -236,8 +240,8 @@ function HomePageContent(props) {
               outOf={details2Data.outOf}
               number2={details2Data.number2}
             />
-            <OverlapGroup3>
-              <Percent1>
+            <OverlapGroup3 style={{ position: 'relative'}}>
+              <Percent1 style={{position: 'absolute', right: '10px;'}}>
                  <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
               </Percent1>
             </OverlapGroup3>
@@ -261,7 +265,7 @@ function HomePageContent(props) {
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
+        <GridItem1 style={{height: 'fit-content'}} className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
           <Flex className="h-100 w-100 align-items-center" style={{ padding: "20px" }}>
             <FlexCol className="w-100">
               <APR1 className={darkMode ? 'dark-mode' : ''}>Pool</APR1>
@@ -285,7 +289,7 @@ function HomePageContent(props) {
             </Flex>
           </Flex>
         </GridItem1>
-      </Grid1> */}
+      </Grid1>
 
       <Flex className="align-items-center justify-content-between">
         <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
@@ -329,6 +333,16 @@ function HomePageContent(props) {
             }
           </table>
         </Responsive>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >>"
+          onPageChange={() => { }}
+          pageRangeDisplayed={5}
+          pageCount={20}
+          previousLabel="<< previous"
+          renderOnZeroPageCount={null}
+          className="pagination"
+        />
       </Container>
     </Wrapper>
   )
@@ -366,13 +380,8 @@ const Stat = styled.div`
 const Wrapper = styled.div`
   width: 100%;
   overflow-x: auto;
-  padding-left: 100px;
-  padding-right: 100px;
   padding-top: 50px;
-  @media screen and (max-width: 1075px){
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+  padding: 10px;
 `;
 
 const Responsive = styled.div`
@@ -598,6 +607,12 @@ const APR1 = styled.div`
 const Text1 = styled.div`
   ${UrbanistBoldBlack26px}
   letter-spacing: 2.08px;
+  width: 120px;
+  overflow: hidden;
+  font-size: 24px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const OverlapGroup13 = styled.div`
@@ -619,14 +634,19 @@ const Address = styled.div`
   ${UrbanistBoldBlack26px}
   letter-spacing: 2.08px;
   font-size: 16px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 `;
 
 const OnlineVotingPower = styled.div`
   height: 90%;
   display: flex;
   padding: 39px 16px;
-  width: 100%;
+  width: 100px;
   padding-right: 30px;
+  justify-content: space-between;
 `;
 
 const OverlapGroup2 = styled.div`
@@ -661,6 +681,7 @@ const ActiveValidators = styled.div`
   display: flex;
   padding: 39px 16px;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const OverlapGroup3 = styled.div`
@@ -668,7 +689,6 @@ const OverlapGroup3 = styled.div`
   height: 95px;
   position: relative;
   align-self: flex-end;
-  margin-left: 43px;
   border-radius: 47.5px;
   border: 10px solid var(--fog);
 `;

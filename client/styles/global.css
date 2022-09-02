@@ -810,3 +810,12 @@ input.dark-mode{
 .highcharts-credits{
   display: none;
 }
+
+.pagination{
+  display: flex;
+}
+
+.pagination li{
+  padding: 10px;
+  border: 1px solid #19172d;
+}

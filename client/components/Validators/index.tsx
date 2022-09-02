@@ -13,6 +13,7 @@ import SearchButton from "./SearchButton";
 import Link from "next/link";
 import { Router, useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
+import ReactPaginate from 'react-paginate';
 
 function ValidatorsContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
@@ -161,11 +162,20 @@ function ValidatorsContent(props) {
                   })}
               </tbody>
             </table>
-            </Responsive>
-            
+            </Responsive>            
           </Tab>
         </Tabs>
       </div>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >>"
+        onPageChange={() => { }}
+        pageRangeDisplayed={5}
+        pageCount={20}
+        previousLabel="<< previous"
+        renderOnZeroPageCount={null}
+        className="pagination"
+      />
     </div>
   );
 }

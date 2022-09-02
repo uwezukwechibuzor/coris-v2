@@ -1,5 +1,6 @@
 import Link from "next/link";
 import  React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { useGetChainRedelegationsQuery, useGetChainValidatorsQuery } from "../../../lib/chainApi";
 import { formatHash, formatTimeDateYear } from "../../../lib/Util/format";
@@ -92,7 +93,17 @@ function RedelegationsContent(props) {
                   )}
                   </table>
                 </Responsive>
-              </Redelegation>
+        </Redelegation>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >>"
+          onPageChange={() => { }}
+          pageRangeDisplayed={5}
+          pageCount={20}
+          previousLabel="<< previous"
+          renderOnZeroPageCount={null}
+          className="pagination"
+        />
       </>
     )
 }

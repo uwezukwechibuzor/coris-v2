@@ -12,6 +12,7 @@ import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, toHex, fromHex, toBech32  } from "@cosmjs/encoding";
 import { useGetChainActiveValidatorsQuery } from "../../lib/chainApi";
 import { useAppSelector } from "../../lib/hooks";
+import ReactPaginate from "react-paginate";
 
 
 function BlocksContent(props) {
@@ -83,6 +84,16 @@ const joinedBlocksValidatorsData = getBlocks.map((block)=> {
             }
           </table>
         </Responsive>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >>"
+          onPageChange={() => { }}
+          pageRangeDisplayed={5}
+          pageCount={20}
+          previousLabel="<< previous"
+          renderOnZeroPageCount={null}
+          className="pagination"
+        />
       </Container>
 
     {/* <LatestBlocks1>
