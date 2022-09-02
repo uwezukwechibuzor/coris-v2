@@ -5,73 +5,75 @@ import QRCode from "react-qr-code";
 import AccountDelegationsContent from './Details/Delegations';
 import AccountRedelegationsContent from './Details/Redelegations';
 import AccountUndelegationsContent from './Details/Undelegations';
+import { useAppSelector } from '../../lib/hooks';
 
 function AccountContents(props) {
+    const darkMode = useAppSelector(state => state.general.darkMode)
     const [selectedDelegations, setDelegationPage] = useState('delegations')
-    
+
     const {
-      authAccount,
-      accountBalance,
-      delegationRewards,
-      accountDelegations,
-      accountReledelgations,
-      accountUnboundingDelegations
+        authAccount,
+        accountBalance,
+        delegationRewards,
+        accountDelegations,
+        accountReledelgations,
+        accountUnboundingDelegations
     } = props
 
     const balance = Number(accountBalance?.balances[0]?.amount)
     const denom = 'autom'
-     
+
     let totalRewards = 0
     delegationRewards?.rewards?.map(data => {
-       const totalAmount = Number(data?.reward[0]?.amount)
-       totalRewards += totalAmount
+        const totalAmount = Number(data?.reward[0]?.amount)
+        totalRewards += totalAmount
     })
-    
+
     let totalDelegationsAmount = 0
     accountDelegations?.delegation_responses.map(data => {
-         totalDelegationsAmount += Number(data?.balance?.amount)
+        totalDelegationsAmount += Number(data?.balance?.amount)
     })
-    
+
     let totalReledegationsAmount = 0
-     accountReledelgations?.redelegation_responses?.map(data => {
-        totalReledegationsAmount +=  Number(data?.entries[0]?.balance)
-     })
-    
-     let totalUnboundingDelegationsAmount = 0
-      accountUnboundingDelegations?.unbonding_responses?.map(data => {
-         totalUnboundingDelegationsAmount += Number(data.entries[0].balance)
-      })
+    accountReledelgations?.redelegation_responses?.map(data => {
+        totalReledegationsAmount += Number(data?.entries[0]?.balance)
+    })
+
+    let totalUnboundingDelegationsAmount = 0
+    accountUnboundingDelegations?.unbonding_responses?.map(data => {
+        totalUnboundingDelegationsAmount += Number(data.entries[0].balance)
+    })
 
 
 
     return (
         <>
-            <Title>Account Details</Title>
+            <Title className={darkMode ? 'dark-mode' : ''}>Account Details</Title>
             <Container className="mb-3">
-                <Card style={{ padding: "40px" }}>
+                <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "40px" }}>
                     <QRContainer>
                         <QRCode value="hey" size={150} />
                     </QRContainer>
                     <FlexMiddle className="mt-3">Address</FlexMiddle>
                     <FlexMiddle>
-                        <h4>{authAccount?.account?.address? authAccount.account.address : null}</h4>
+                        <h4>{authAccount?.account?.address ? authAccount.account.address : null}</h4>
                     </FlexMiddle>
                     <FlexMiddle>
                         <div>
                             <div><span>Account No</span></div>
-                            <strong>{authAccount?.account?.account_number? authAccount.account.account_number : null}</strong>
+                            <strong>{authAccount?.account?.account_number ? authAccount.account.account_number : null}</strong>
                             <div><span>Sequence</span></div>
-                            <strong>{authAccount?.account?.sequence? authAccount.account.sequence : 0}</strong>
+                            <strong>{authAccount?.account?.sequence ? authAccount.account.sequence : 0}</strong>
                         </div>
 
                     </FlexMiddle>
                     <FlexMiddle className="mt-3">Type</FlexMiddle>
                     <FlexMiddle>
-                        <h4>{authAccount?.account['@type']? authAccount.account['@type'] : null }</h4>
+                        <h4>{authAccount?.account['@type'] ? authAccount.account['@type'] : null}</h4>
                     </FlexMiddle>
                     <FlexMiddle>
                         <div>
-                            <div><span style={{marginLeft: '70px'}} ><FlexMiddle className="mt-3">PubKey</FlexMiddle></span></div>
+                            <div><span style={{ marginLeft: '70px' }} ><FlexMiddle className="mt-3">PubKey</FlexMiddle></span></div>
                             <strong>
                                 {authAccount?.account?.pub_key['@type']}
                                 <br />
@@ -83,7 +85,7 @@ function AccountContents(props) {
                 </Card>
             </Container>
             <Container className='w-100'>
-                <Card style={{ height: '400px' }} className="w-100">
+                <Card className={darkMode ? 'dark-mode w-100' : 'w-100'} style={{ height: '400px' }}>
                     <Flex className='block-sm'>
                         <Flex className='w-40 w-100-sm'>
                         </Flex>
@@ -98,7 +100,7 @@ function AccountContents(props) {
                                         <h5 className="ml-3">Balance</h5>
                                     </Flex>
                                     <Flex>
-                                        <h5><strong>{accountBalance?.balances[0]? balance : 0} {denom }</strong></h5>
+                                        <h5><strong>{accountBalance?.balances[0] ? balance : 0} {denom}</strong></h5>
                                     </Flex>
                                 </Flex>
                                 <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
@@ -107,7 +109,7 @@ function AccountContents(props) {
                                         <h5 className="ml-3">Reward</h5>
                                     </Flex>
                                     <Flex>
-                                        <h5><strong>{delegationRewards?.rewards !== NaN? 0: totalRewards.toFixed(2) } {denom}</strong></h5>
+                                        <h5><strong>{delegationRewards?.rewards !== NaN ? 0 : totalRewards.toFixed(2)} {denom}</strong></h5>
                                     </Flex>
                                 </Flex>
                                 <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
@@ -116,7 +118,7 @@ function AccountContents(props) {
                                         <h5 className="ml-3">Delegation</h5>
                                     </Flex>
                                     <Flex>
-                                        <h5><strong>{accountDelegations?.delegation_responses? totalDelegationsAmount : 0} {denom}</strong></h5>
+                                        <h5><strong>{accountDelegations?.delegation_responses ? totalDelegationsAmount : 0} {denom}</strong></h5>
                                     </Flex>
                                 </Flex>
                                 <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
@@ -125,7 +127,7 @@ function AccountContents(props) {
                                         <h5 className="ml-3">Redelegation</h5>
                                     </Flex>
                                     <Flex>
-                                        <h5><strong>{accountReledelgations?.redelegation_responses? totalReledegationsAmount: 0} {denom}</strong></h5>
+                                        <h5><strong>{accountReledelgations?.redelegation_responses ? totalReledegationsAmount : 0} {denom}</strong></h5>
                                     </Flex>
                                 </Flex>
                                 <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
@@ -134,7 +136,7 @@ function AccountContents(props) {
                                         <h5 className="ml-3">Undelegation</h5>
                                     </Flex>
                                     <Flex>
-                                        <h5><strong>{accountUnboundingDelegations?.unbonding_responses? totalUnboundingDelegationsAmount: null} {denom}</strong></h5>
+                                        <h5><strong>{accountUnboundingDelegations?.unbonding_responses ? totalUnboundingDelegationsAmount : null} {denom}</strong></h5>
                                     </Flex>
                                 </Flex>
                             </div>
@@ -145,7 +147,7 @@ function AccountContents(props) {
 
             <Container className="my-3">
                 <h5>Tokens</h5>
-                <Card style={{ padding: "10px" }}>
+                <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "10px" }}>
                     <Responsive>
                         <table className="w-100">
                             <thead>
@@ -177,7 +179,7 @@ function AccountContents(props) {
                                         1000
                                     </td>
                                     <td>
-                                    300000
+                                        300000
                                     </td>
                                 </tr>
                             </tbody>
@@ -189,29 +191,29 @@ function AccountContents(props) {
 
             <Container className="my-3">
                 <h5>Delegations</h5>
-                <Card style={{ padding: "10px" }}>
+                <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "10px" }}>
                     <div className="w-100 p-3">
-                        <TabToggler>
+                        <TabToggler className={darkMode ? 'dark-mode' : ''}>
                             <TabTogglerItem
-                                className={selectedDelegations === 'delegations' ? "active" : ''}
+                                className={`${selectedDelegations === 'delegations' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
                                 onClick={() => setDelegationPage('delegations')}
                             >Delegations</TabTogglerItem>
                             <TabTogglerItem
                                 onClick={() => setDelegationPage('underdelegations')}
-                                className={selectedDelegations === 'underdelegations' ? "active" : ''}
+                                className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
                             >Undelegations</TabTogglerItem>
                             <TabTogglerItem
                                 onClick={() => setDelegationPage('redelegations')}
-                                className={selectedDelegations === 'redelegations' ? "active" : ''}
+                                className={`${selectedDelegations === 'redelegations' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
                             >Redelegations</TabTogglerItem>
                         </TabToggler>
                         {
                             selectedDelegations === 'delegations' ? (
-                               <AccountDelegationsContent {...accountDelegations} />
+                                <AccountDelegationsContent {...accountDelegations} />
                             ) : selectedDelegations === 'redelegations' ? (
                                 <AccountRedelegationsContent {...accountReledelgations} />
                             ) : (
-                              <AccountUndelegationsContent {...accountUnboundingDelegations} />
+                                <AccountUndelegationsContent {...accountUnboundingDelegations} />
                             )
                         }
 
@@ -223,7 +225,7 @@ function AccountContents(props) {
             <Container>
                 <h5>Total Vesting</h5>
                 <Grid style={{ marginBottom: "30px" }}>
-                    <Card className="p-3">
+                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
                         <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
                             <h5>Continuous Vesting</h5>
                         </Flex>
@@ -233,7 +235,7 @@ function AccountContents(props) {
                             </span>
                         </Flex>
                     </Card>
-                    <Card className="p-3">
+                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
                         <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
                             <h5>Continuous Vesting</h5>
                         </Flex>
@@ -243,7 +245,7 @@ function AccountContents(props) {
                             </span>
                         </Flex>
                     </Card>
-                    <Card className="p-3">
+                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
                         <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
                             <h5>Continuous Vesting</h5>
                         </Flex>
@@ -256,9 +258,9 @@ function AccountContents(props) {
                 </Grid>
             </Container>
             <Container className="my-3">
-                <Card style={{ padding: "10px", minHeight: "400px" }}>
+                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px", minHeight: "400px" }}>
                     <Responsive>
-                        <table className="w-100">
+                        <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
                             <thead>
                                 <tr>
                                     <th>
@@ -292,9 +294,9 @@ function AccountContents(props) {
             </Container>
             <Container className="my-3">
                 <h4>Transactions</h4>
-                <Card style={{ padding: "10px", minHeight: "400px" }}>
+                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px", minHeight: "400px" }}>
                     <Responsive>
-                        <table className="w-100">
+                        <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
                             <thead>
                                 <tr>
                                     <th>
@@ -352,6 +354,9 @@ const TabToggler = styled.div`
     flex-direction: column;
     width: 100%;
   }
+  &.dark-mode{
+    background: #0b0a15 !important;
+  }
 `
 
 const TabTogglerItem = styled.div`
@@ -367,6 +372,9 @@ const TabTogglerItem = styled.div`
   }
   @media screen and (max-width: 506px){
     padding: 10px 0px;
+  }
+  &.dark-mode.active{
+    background: #19172d !important;
   }
 `
 
@@ -386,6 +394,10 @@ const Card = styled.div`
   border-radius: 20px;
   box-shadow: 0px 7px 30px #0015da29;
   word-break: break-all;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const Flex = styled.div`

@@ -12,8 +12,11 @@ import {
 import SearchButton from "./SearchButton";
 import Link from "next/link";
 import { Router, useRouter } from "next/router";
+import { useAppSelector } from "../../lib/hooks";
+import ReactPaginate from 'react-paginate';
 
 function ValidatorsContent(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const [query, setQuery] = useState("")
 
   const {
@@ -44,14 +47,14 @@ function ValidatorsContent(props) {
   const router = useRouter()
 
   return (
-    <>
-      <Title>Validators</Title>
+    <div className={darkMode ? 'dark-mode': ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>Validators</Title>
       <div>
         <SearchButton setQuery={setQuery} />
         <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
           <Tab eventKey="active" title="Active" className="w-100">
             <Responsive>
-              <table className="w-100 mt-3 table table-responsive">
+              <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
                 <thead>
                   <tr style={{ fontWeight: "bold" }}>
                     <th>Rank</th>
@@ -159,12 +162,21 @@ function ValidatorsContent(props) {
                   })}
               </tbody>
             </table>
-            </Responsive>
-            
+            </Responsive>            
           </Tab>
         </Tabs>
       </div>
-    </>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >>"
+        onPageChange={() => { }}
+        pageRangeDisplayed={5}
+        pageCount={20}
+        previousLabel="<< previous"
+        renderOnZeroPageCount={null}
+        className="pagination"
+      />
+    </div>
   );
 }
 

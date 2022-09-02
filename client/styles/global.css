@@ -606,6 +606,19 @@ tr:nth-child(even){
  background-color: var(--titan-white);;
 }
 
+.dark-mode tr:nth-child(even){
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(25,23,51,1) 0%, rgba(91,86,154,1) 100%);
+}
+
+tr:nth-child(even){
+ background-color: var(--titan-white);;
+}
+
+.dark-mode tr{
+  border: none;
+}
+
 tr.validator-item-row > td{
   padding: 10px 10px;
 }
@@ -737,7 +750,12 @@ th{
   z-index: 1;
   padding: 10px;
   padding-left: 112px;
-  box-shadow: 0px 0px 20px 0px #e1e1e1;
+  box-shadow: 0px 0px 20px 0px #ededed;
+}
+
+.main-header.dark-mode{
+  background-color: #0b0a15 !important;
+  box-shadow: unset;
 }
 
 @media screen and (max-width: 1074px){
@@ -750,4 +768,54 @@ th{
   .main-header{
     padding-left: 310px;
   }
+}
+
+.dark-mode{
+  color: white!important;
+}
+
+table.dark-mode{
+  background-color: #19172d !important;
+}
+
+input.dark-mode{
+  background-color:#19172d;
+  box-shadow: 0px -1px 20px 0px #23232329 !important;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f100;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.highcharts-grid-line{
+  opacity: 0;
+}
+
+.highcharts-credits{
+  display: none;
+}
+
+.pagination{
+  display: flex;
+}
+
+.pagination li{
+  padding: 10px;
+  border: 1px solid #19172d;
 }

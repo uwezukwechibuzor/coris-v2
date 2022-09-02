@@ -12,8 +12,10 @@ import {
 import SearchButton from "../SearchButton";
 import Link from "next/link";
 import { Router, useRouter } from "next/router";
+import { useAppSelector } from "../../../lib/hooks";
 
 function ConsensusDetails(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const [query, setQuery] = useState("")
 
   const {
@@ -64,13 +66,13 @@ return preCommit
   const router = useRouter()
 
   return (
-    <>
+    <div className={darkMode ? 'dark-mode' : ''}>
       <Title>Validators</Title>
       <div>
         <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
           <Tab eventKey="active" title="Active" className="w-100">
             <Responsive>
-              <table className="w-100 mt-3 table table-responsive">
+              <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
                 <thead>
                   <tr style={{ fontWeight: "bold" }}>
                     <th>Rank</th>
@@ -178,7 +180,7 @@ return preCommit
           </Tab>
         </Tabs>
       </div>
-    </>
+    </div>
   );
 }
 

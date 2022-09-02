@@ -12,10 +12,12 @@ import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromBech32, fromHex, toBech32, toHex } from "@cosmjs/encoding";
 import Badge from 'react-bootstrap/Badge';
 import { OverlayTrigger, ProgressBar } from "react-bootstrap";
+import { useAppSelector } from "../../../lib/hooks";
+import CopyClip from "./CopyClip";
 
 
 function ValidatorsDetailsContent(props) {
-
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     getValidatorDetails,
     getUptimeByBlocksHeights
@@ -93,10 +95,10 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
   }
   
   return (
-    <>
-      <Title>Validator Details</Title>
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>Validator Details</Title>
       <Grid>
-        <GridItemOne>
+        <GridItemOne className={darkMode ? 'dark-mode' : ''}>
           <div className="d-table w-100">
             <div className="d-row w-100">
               <FlexCenter style={{ marginTop: "20px" }}>
@@ -124,7 +126,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </div>
         </GridItemOne>
-        <GridItemTwo>
+        <GridItemTwo className={darkMode ? 'dark-mode' : ''}>
           <FlexXCenter className="h-100 w-100" style={{ alignItems: "center" }}>
             <FlexColumn style={{ width: '25%' }}>
               <h5>{validatorsDetails?.status === undefined ? null : validatorsDetails?.status === 'BOND_STATUS_BONDED' ?  <p className="active">Active</p> : <p className="inActive">InActive</p>}
@@ -141,7 +143,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </FlexColumn>
           </FlexXCenter>
         </GridItemTwo>
-        <GridItemThree>
+        <GridItemThree className={darkMode ? 'dark-mode' : ''}>
           <Flex className="w-100 h-100">
             <FlexCenter className="w-50">
             {percentageofVotingPower? percentageofVotingPower.toFixed(2)+'%' : null}
@@ -157,7 +159,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </FlexCenter>
           </Flex>
         </GridItemThree>
-        <GridItemFour>
+        <GridItemFour className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Commission</div>
@@ -182,7 +184,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </FlexColumn>
         </GridItemFour>
-        <GridItemFive>
+        <GridItemFive className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Bonded</div>
@@ -203,7 +205,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             </div>
           </FlexColumn>
         </GridItemFive>
-        <GridItemSix>
+        <GridItemSix className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <FlexCenter className="p-3">
               <div>Addresses</div>
@@ -213,42 +215,34 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
                 <strong>Account</strong>
                 <Flex>
                   <span>{accountAddress}</span>
-                  <div title="copy to clipboard">
-                    <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
-                  </div>
+                  <CopyClip value={accountAddress} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Operator</strong>
                 <Flex>
                   <span>{operatorAddress}</span>
-                  <div title="copy to clipboard">
-                    <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
-                  </div>
+                  <CopyClip value={operatorAddress} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Consensus</strong>
                 <Flex>
                   <span>{bech32Address}</span>
-                  <div title="copy to clipboard">
-                    <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
-                  </div>
+                  <CopyClip value={bech32Address} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Hex</strong>
                 <Flex>
                   <span>{hexAddress}</span>
-                  <div title="copy to clipboard">
-                    <svg className="copy" xmlns="http://www.w3.org/2000/svg" height="24" width="24"><path fill="grey" d="M5 22q-.825 0-1.413-.587Q3 20.825 3 20V6h2v14h11v2Zm4-4q-.825 0-1.412-.587Q7 16.825 7 16V4q0-.825.588-1.413Q8.175 2 9 2h9q.825 0 1.413.587Q20 3.175 20 4v12q0 .825-.587 1.413Q18.825 18 18 18Zm0-2h9V4H9v12Zm0 0V4v12Z" /></svg>
-                  </div>
+                  <CopyClip value={hexAddress} />
                 </Flex>
               </FlexColumn>
             </FlexColumn>
           </FlexColumn>
         </GridItemSix>
-        <GridItemSeven>
+        <GridItemSeven className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
             <Flex className="p-3">
               <div>Uptime by 100 latest blocks</div>
@@ -276,20 +270,20 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
       </Grid>
       <br />
       <h5>Delegations</h5>
-      <Card>
+      <Card className={darkMode ? 'dark-mode' : ''}>
         <div className="w-100 p-3">
-          <TabToggler>
+          <TabToggler className={darkMode ? 'dark-mode' : ''}>
             <TabTogglerItem
-              className={selectedDelegations === 'delegations' ? "active" : ''}
+              className={`${selectedDelegations === 'delegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
               onClick={() => setDelegationPage('delegations')}
             >Delegations</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setDelegationPage('underdelegations')}
-              className={selectedDelegations === 'underdelegations' ? "active" : ''}
+              className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
             >Undelegations</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setDelegationPage('redelegations')}
-              className={selectedDelegations === 'redelegations' ? "active" : ''}
+              className={`${selectedDelegations === 'redelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
             >Redelegations</TabTogglerItem>
            </TabToggler>
           {
@@ -322,7 +316,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             background: red
            }
          `}</style>
-    </>
+    </div>
   )
 }
 
@@ -340,6 +334,9 @@ const TabToggler = styled.div`
     flex-direction: column;
     width: 100%;
   }
+  &.dark-mode{
+    background: #0b0a15 !important;
+  }
 `
 
 const TabTogglerItem = styled.div`
@@ -355,6 +352,9 @@ const TabTogglerItem = styled.div`
   @media screen and (max-width: 506px){
     padding: 10px 0px;
   }
+  &.dark-mode.active{
+    background: #19172d !important;
+  }
 
 `
 
@@ -362,6 +362,10 @@ const Card = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
   margin-bottom:40px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 const BlockGrid = styled.div`
   display: flex !important;
@@ -442,6 +446,10 @@ const GridItemOne = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemTwo = styled.div`
@@ -455,6 +463,10 @@ const GridItemTwo = styled.div`
   }
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -470,6 +482,10 @@ const GridItemThree = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
     grid-row: 4 / span 1;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -488,6 +504,10 @@ const GridItemFour = styled.div`
       grid-row: 5 / span 1;
     }
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemFive = styled.div`
@@ -504,6 +524,10 @@ const GridItemFive = styled.div`
   @media screen and (max-width: 625px){
     grid-column: 1 / span 4;
     grid-row: 6 / span 1;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `
 
@@ -523,6 +547,10 @@ const GridItemSix = styled.div`
     grid-column: 1 / span 4;
     grid-row: 7 / span 1;
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const GridItemSeven = styled.div`
@@ -530,6 +558,10 @@ const GridItemSeven = styled.div`
   border-radius: 20px;
   grid-column: 1 / span 4;
   padding: 20px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 export default ValidatorsDetailsContent

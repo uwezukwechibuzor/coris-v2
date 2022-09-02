@@ -2,10 +2,12 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState: {
   sidebarToggled: boolean;
-  connectWalletModalToggled: boolean
+  connectWalletModalToggled: boolean;
+  darkMode: boolean;
 } = {
   sidebarToggled: false,
   connectWalletModalToggled: false,
+  darkMode: true,
 };
 
 /**
@@ -21,10 +23,13 @@ export const generalSlice = createSlice({
         },
         toggleConnectWalletModal(state, action) {
             state.connectWalletModalToggled = action.payload
+      },
+        toggleDarkMode(state){
+          state.darkMode = !state.darkMode
         }
     },
 })
 
 // eslint-disable-next-line
-export const { toggleSidebar, toggleConnectWalletModal } = generalSlice.actions;
+export const { toggleSidebar, toggleConnectWalletModal, toggleDarkMode} = generalSlice.actions;
 export default generalSlice.reducer

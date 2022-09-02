@@ -14,9 +14,11 @@ import {
 import SearchButton from './SearchButton';
 import { formatTimeDateYear } from '../../lib/Util/format';
 import { useRouter } from 'next/router';
+import { useAppSelector } from '../../lib/hooks';
+import ReactPaginate from 'react-paginate';
 
 function ProposalsContent(props) {
-
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const [query, setQuery] = useState("")
 
   const {
@@ -38,13 +40,13 @@ function ProposalsContent(props) {
 
   const router = useRouter()
   return (
-    <>
-      <Title>Proposals</Title>
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>Proposals</Title>
       <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
-        <Tab eventKey="active" title="Active">
+        <Tab eventKey="active" title="Active"> 
           <SearchButton setQuery={setQuery} />
           <Responsive>
-            <table className="w-100">
+            <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
               <thead>
                 <tr>
                   <th>#ID</th>
@@ -77,6 +79,16 @@ function ProposalsContent(props) {
               </tbody>
             </table>
           </Responsive>
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="next >>"
+            onPageChange={() => { }}
+            pageRangeDisplayed={5}
+            pageCount={20}
+            previousLabel="<< previous"
+            renderOnZeroPageCount={null}
+            className="pagination"
+          />
         </Tab>
         <Tab eventKey="pending" title="Pending">
           <OverlapGroup13>
@@ -115,10 +127,20 @@ function ProposalsContent(props) {
                 </tbody>
               </table>
             </Responsive>
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="next >>"
+              onPageChange={() => { }}
+              pageRangeDisplayed={5}
+              pageCount={20}
+              previousLabel="<< previous"
+              renderOnZeroPageCount={null}
+              className="pagination"
+            />
           </OverlapGroup13>
         </Tab>
       </Tabs>
-    </>
+    </div>
   )
 }
 

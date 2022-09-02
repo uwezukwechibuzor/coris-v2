@@ -8,8 +8,10 @@ import {
   UrbanistBoldBlack40px
 } from "../../styledMixins";
 import SearchButton from "./SearchButton";
+import { useAppSelector } from "../../lib/hooks";
 
 function AssetsContent(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const coinsData = props
   //console.log(coinsData)
 
@@ -18,12 +20,12 @@ function AssetsContent(props) {
   return (
     <>
       <FlexBetween>
-        <Title>Assets</Title>
+        <Title className={darkMode ? 'dark-mode' : ''}>Assets</Title>
         <SearchButton setQuery={setQuery} />
       </FlexBetween>
 
       <Responsive>
-        <table className="w-100 mt-3">
+        <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
           <thead>
             <tr style={{ fontWeight: "bold" }}>
               <th>Rank</th>

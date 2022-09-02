@@ -16,8 +16,10 @@ import VoteVoteOptions from './Votes/Veto';
 import AbstainVoteOptions from './Votes/Abstain';
 import Link from 'next/link';
 import VetoVoteOptions from './Votes/Veto';
+import { useAppSelector } from '../../../lib/hooks';
 
 function ProposalDetailsContents(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     type,
     total,
@@ -52,9 +54,9 @@ function ProposalDetailsContents(props) {
  
 
   return (
-    <>
-      <Title>Proposer Details</Title>
-      <Box>
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>Proposer Details</Title>
+      <Box className={darkMode ? 'dark-mode' : ''}>
         <span>{proposal?.proposal?.content?.title ? proposal?.proposal.content.title : null}</span>
         <Container>
           <Badge className={proposal?.proposal?.status === 'PROPOSAL_STATUS_PASSED' ? 'success' : proposal?.proposal?.status === 'PROPOSAL_STATUS_REJECTED' ? 'danger' : proposal?.proposal?.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? 'info' : 'warning'}>
@@ -113,7 +115,7 @@ function ProposalDetailsContents(props) {
         </Container>
       </Box>
 
-      <Box style={{ marginTop: "20px", padding: "20px" }}>
+      <Box className={darkMode ? 'dark-mode' : ''} style={{ marginTop: "20px", padding: "20px" }}>
         <FlexBetween>
           <Container>Propser:</Container>
           <Container><strong className="text-info">
@@ -144,7 +146,7 @@ function ProposalDetailsContents(props) {
         </FlexBetween>
       </Box>
 
-      <Box style={{ marginTop: "20px", padding: "20px" }}>
+      <Box className={darkMode ? 'dark-mode' : ''} style={{ marginTop: "20px", padding: "20px" }}>
         <FlexBetween>
           <Container>Depositor</Container>
           <Container><strong className="text-info">Amount </strong></Container>
@@ -163,7 +165,7 @@ function ProposalDetailsContents(props) {
     
       <div className="my-3">
         <h4>Description</h4>
-        <Box style ={{width: "100%", wordBreak: 'break-all'}}>
+        <Box className={darkMode ? 'dark-mode' : ''}  style ={{width: "100%", wordBreak: 'break-all'}}>
           {proposalDescription ? proposalDescription : null}
         </Box>
       </div>
@@ -171,24 +173,24 @@ function ProposalDetailsContents(props) {
         continue work here to display Votes
       </DownBoard> */}
 
-      <Card>
+      <Card className={darkMode ? 'dark-mode' : ''}>
         <div className="w-100 p-3">
-          <TabToggler>
+          <TabToggler className={darkMode ? 'dark-mode' : ''}>
             <TabTogglerItem
-              className={selectedVoteView === 'yes' ? "active" : ''}
+              className={`${selectedVoteView === 'yes' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
               onClick={() => setVoteView('yes')}
             >Yes</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setVoteView('no')}
-              className={selectedVoteView === 'no' ? "active" : ''}
+              className={`${selectedVoteView === 'no' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
             >No</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setVoteView('veto')}
-              className={selectedVoteView === 'veto' ? "active" : ''}
+              className={`${selectedVoteView === 'veto' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
             >Veto</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setVoteView('abstain')}
-              className={selectedVoteView === 'abstain' ? "active" : ''}
+              className={`${selectedVoteView === 'abstain' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
             >Abstain</TabTogglerItem>
           </TabToggler>
           {
@@ -206,7 +208,7 @@ function ProposalDetailsContents(props) {
         </div>
       </Card>
 
-    </>
+    </div>
   )
 }
 
@@ -225,6 +227,9 @@ const TabToggler = styled.div`
     flex-direction: column;
     width: 100%;
   }
+  &.dark-mode{
+    background: #0b0a15 !important;
+  }
 `
 
 const TabTogglerItem = styled.div`
@@ -240,13 +245,20 @@ const TabTogglerItem = styled.div`
   @media screen and (max-width: 506px){
     padding: 10px 0px;
   }
-
+  &.dark-mode.active{
+    background: #19172d !important;
+  }
+  
 `
 
 const Card = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
   margin-bottom:40px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const Responsive = styled.div`
@@ -304,6 +316,10 @@ const Box = styled.div`
   width: 100%;
   padding: 20px 20px;
   word-break: break-all;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `
 
 const Container = styled.div`
