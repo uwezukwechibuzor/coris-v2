@@ -133,7 +133,7 @@ function HomePageContent(props) {
     <Wrapper className={darkMode ? 'dark-mode' : ''}>
       <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Grid>
-        <GridItem className={darkMode ? 'dark-mode first-item' : 'first-item'}>
+        <GridItem className={darkMode ? 'dark-mode first-item chart' : 'first-item chart'}>
           <Icon>
             {
               darkMode ? (
@@ -409,7 +409,11 @@ const GridItem = styled.div`
   display: block;
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
-  height: 150px;
+  height: 300px !important;
+  &.chart{
+    height:auto !important;
+    min-height: 250px !important;
+  }
   &.first-item{
     grid-column: 1 / 4;
     grid-row: 1 / span 2;

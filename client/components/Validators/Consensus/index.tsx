@@ -67,7 +67,7 @@ return preCommit
 
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
-      <Title>Validators</Title>
+      <Title className={darkMode ? 'dark-mode' : ''}>Validators</Title>
       <div>
         <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
           <Tab eventKey="active" title="Active" className="w-100">

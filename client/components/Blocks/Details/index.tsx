@@ -10,8 +10,11 @@ import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
 import { useGetChainActiveValidatorsQuery} from '../../../lib/chainApi';
 import Link from "next/link";
+import { useAppSelector } from '../../../lib/hooks';
+import ReactPaginate from 'react-paginate';
 
 function BlockHeightContent(props: any) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     title,
     blockData,
@@ -53,11 +56,11 @@ function BlockHeightContent(props: any) {
     }) : null
 
  return ( 
-    <>
-      <Title>{title}</Title>
+   <div className={darkMode ? 'dark-mode' : ''}>
+     <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Container>
         <Grid>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h4>{blockData?.block?.header? blockData?.block?.header.height : null}</h4>
@@ -65,7 +68,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h4>{blockData?.block?.header? formatTime(blockData?.block?.header?.time): null}</h4>
@@ -73,7 +76,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
               <Link href='/validators[address]' as={`/validators/${proposerName?.validator?.operator_address}`} ><a>
@@ -86,7 +89,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h4>{proposerName?.validatorSignatureData ? formatTimeDateYear(proposerName?.validatorSignatureData?.timestamp) : null}</h4>
@@ -94,7 +97,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h4>{blockData?.block?.data?.txs? blockData.block.data.txs.length : null}</h4>
@@ -102,7 +105,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h4>{totalTxsFee} {denom}</h4>
@@ -110,7 +113,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>
-          <Card className="last-grid-item" style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                <h6 className="text-center">Hash</h6>
@@ -118,7 +121,7 @@ function BlockHeightContent(props: any) {
               </div> 
             </FlexCenter>
           </Card>   
-          <Card className="last-grid-item" style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h6 className="text-center">App Hash</h6>
@@ -130,7 +133,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card> 
-          <Card className="last-grid-item" style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
               <h6 className="text-center">Data_Hash</h6>
@@ -142,7 +145,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card>  
-          <Card className="last-grid-item" style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
               <h6 className="text-center">Last Commit Hash</h6>
@@ -154,7 +157,7 @@ function BlockHeightContent(props: any) {
               </div>
             </FlexCenter>
           </Card> 
-          <Card className="last-grid-item" style={{ height: "100px" }}>
+          <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
               <h6 className="text-center">Next Validators Hash</h6>
@@ -170,7 +173,7 @@ function BlockHeightContent(props: any) {
       </Container>
       <Container className='my-3'>
         <h5>Signatures</h5>
-        <Card className='p-3'>
+       <Card className={darkMode ? 'dark-mode p-3' : ' p-3'}>
         <Responsive>
         <table className="w-100 mt-3">
             <thead>
@@ -205,9 +208,9 @@ function BlockHeightContent(props: any) {
 
       <Container className='w-100'>
         <h5>Transactions</h5>
-        <Card className='w-100'>
+       <Card className={darkMode ? 'dark-mode w-100' : 'w-100'}>
           <Responsive className="p-3">
-            <table className="w-100 mt-3 table table-responsive">
+           <table className={darkMode ? "dark-mode w-100 mt-3 table table-responsive" : 'w-100 mt-3 table table-responsive'}>
               <thead>
                 <tr style={{ fontWeight: "bold" }}>
                   <th>Tx hash</th>
@@ -234,6 +237,16 @@ function BlockHeightContent(props: any) {
             ) : null}
             </table>
           </Responsive>
+         <ReactPaginate
+           breakLabel="..."
+           nextLabel="next >>"
+           onPageChange={() => { }}
+           pageRangeDisplayed={5}
+           pageCount={20}
+           previousLabel="<< previous"
+           renderOnZeroPageCount={null}
+           className="pagination"
+         />
         </Card>
       </Container>
       {/* <OverlapGroupContainer>
@@ -381,7 +394,7 @@ function BlockHeightContent(props: any) {
               <X6sAgo1>{x6SAgo5}</X6sAgo1>
             </OverlapGroup3>
           </OverlapGroup11> */}
-    </>
+    </div>
   )
 }
 
@@ -403,6 +416,10 @@ const Card = styled.div`
   }
   @media screen and (max-width: 520px){
    grid-column: 1 / span 2;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 
