@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from "styled-components";
-import { toggleConnectWalletModal, toggleSidebar } from '../../../lib/features/generalSlice';
+import { toggleConnectWalletModal, toggleDarkMode, toggleSidebar } from '../../../lib/features/generalSlice';
 import { useAppDispatch, useAppSelector } from '../../../lib/hooks';
 import {
   UrbanistSemiBoldSoap24px,
@@ -16,7 +16,7 @@ import SearchBar from '../Header/SearchBar';
 import Logo from "./Logo";
 
 function SideNavBar(props) {
-  const { sidebarToggled } = useAppSelector(state => state.general)
+  const { sidebarToggled, darkMode } = useAppSelector(state => state.general)
   const [selectedPage, setSelectedPage] = useState("/")
   const dispatch = useAppDispatch()
   const [isToggled, toggle] = useState(false)
@@ -44,7 +44,7 @@ function SideNavBar(props) {
   }
 
   return (
-    <SideNavigation className={sidebarToggled && 'show'}>
+    <SideNavigation className={`${sidebarToggled && 'show'} ${darkMode && 'dark-mode'}`}>
       <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
       <Clicker onClick={() => navigate("/")}><Logo /></Clicker>
       <SearchBar src={searchBarData.src} className="mobile" />
@@ -102,7 +102,7 @@ function SideNavBar(props) {
         <Clicker onClick={() => navigate("/validators/consensus_state")} title="Consensus">
           <a className="m-24">
             <FlexRow>
-              <FlexCell><IconUser src={iconUser1}  /></FlexCell>
+              <FlexCell><IconUser src={iconUser1} /></FlexCell>
               <FlexCell><Consensus style={{ color: selectedPage === "/consensus" && 'white' }}>{consensus}</Consensus></FlexCell>
             </FlexRow>
           </a>
@@ -125,9 +125,9 @@ function SideNavBar(props) {
         asset72={connectWallet1Data.asset72}
         outlineMediaShuffle={connectWallet1Data.outlineMediaShuffle}
       />
-      <div className="d-flex align-items-end justify-content-center" style={{marginTop: "50px"}}>
-        <NightmodeButton className='mobile'>
-          <OutlineGeneralMoon src="/img/outline-general-moon@2x.svg" />
+      <div className="d-flex align-items-end justify-content-center" style={{ marginTop: "50px" }}>
+        <NightmodeButton onClick={() => dispatch(toggleDarkMode())} className={darkMode ? 'dark-mode mobile' : 'mobile'}>
+          <OutlineGeneralMoon src={!darkMode ? '/img/outline-general-moon@2x.svg' : '/img/outline-general-moon-white@2x.png'} />
         </NightmodeButton>
       </div>
 
@@ -156,6 +156,10 @@ const NightmodeButton = styled.div`
      @media screen and (min-width: 775px){
       display: none;
     }
+  }
+  &.dark-mode{
+    background-color: #0b0a15 !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 
@@ -195,7 +199,7 @@ const FlexCell = styled.div`
 const SideNavigation = styled.div`
   z-index: 2;
   height: 100%;
-  width: 300px;
+  width: 240px;
   margin: 0;
   @media screen and (max-width: 1334px){
     width: 100px
@@ -223,6 +227,10 @@ const SideNavigation = styled.div`
   @media screen and (max-width: 1074px){
       position: fixed
     }
+  &.dark-mode{
+    background-color: #19172D !important;
+    box-shadow: 0px 0px 7px 3px #16151e !important;
+  }
 `;
 
 const FlexRow = styled.div`

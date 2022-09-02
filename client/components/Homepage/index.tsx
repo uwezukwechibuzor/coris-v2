@@ -18,6 +18,9 @@ import dynamic from 'next/dynamic'
 import axios from "axios";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
+import { useAppSelector } from "../../lib/hooks";
+import ReactPaginate from "react-paginate";
+
 
 
 //importing dynamically
@@ -33,6 +36,7 @@ let coinID = 'cosmos'
 const denom = 1000000;
 
 function HomePageContent(props) {
+  const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     title,
     apr,
@@ -69,55 +73,55 @@ function HomePageContent(props) {
 
   //function to get coin details
   const [coinData, setCoin]: any = useState([])
-    let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
-    useEffect(() => {
-        axios.get(API_Call).then((response) => {
-            setCoin(response.data)
-        }).catch((error) => {
-            console.log(error)
-        })
-    }, [])
-   //console.log(coinData)
+  let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
+  useEffect(() => {
+    axios.get(API_Call).then((response) => {
+      setCoin(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  //console.log(coinData)
 
-   //get Bonded Token and Not bonded Token
-   const getPool = useGetChainPoolQuery()
-   const bondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.bonded_tokens/denom).toFixed(2) : null
-   const notBondedTokens = getPool.isLoading == false? (getPool?.data?.pool?.not_bonded_tokens/1000000).toFixed(2) : null
+  //get Bonded Token and Not bonded Token
+  const getPool = useGetChainPoolQuery()
+  const bondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.bonded_tokens / denom).toFixed(2) : null
+  const notBondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.not_bonded_tokens / 1000000).toFixed(2) : null
 
   //get voting power and the active validators
   const getAllValidators = useGetChainValidatorsQuery()
   const getAllActiveValidators = useGetChainActiveValidatorsQuery()
-  const totalValidators = getAllValidators.isLoading == false? getAllValidators?.data?.validators?.length : null
-  const totalActiveValidators = getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators?.length : null
-  
-   //percentage of active Validators
-   const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined? Math.round(Number(totalActiveValidators/totalValidators)*100) : null
-  
+  const totalValidators = getAllValidators.isLoading == false ? getAllValidators?.data?.validators?.length : null
+  const totalActiveValidators = getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators?.length : null
+
+  //percentage of active Validators
+  const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined ? Math.round(Number(totalActiveValidators / totalValidators) * 100) : null
+
   //get the validators total voting power
   let totalVotingPower = 0
-  getAllValidators.isLoading == false? getAllValidators?.data?.validators.map(validatorsDetails =>{
-   totalVotingPower += Number(validatorsDetails.tokens/denom)
-   return totalVotingPower
+  getAllValidators.isLoading == false ? getAllValidators?.data?.validators.map(validatorsDetails => {
+    totalVotingPower += Number(validatorsDetails.tokens / denom)
+    return totalVotingPower
   }) : null
-  
+
   //get the validators total active voting power
   let totalActiveVotingPower = 0
-  getAllActiveValidators.isLoading == false? getAllActiveValidators?.data?.validators.map(validatorsDetails =>{
-   totalActiveVotingPower += Number(validatorsDetails.tokens/denom)
+  getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators.map(validatorsDetails => {
+    totalActiveVotingPower += Number(validatorsDetails.tokens / denom)
     return totalActiveVotingPower
   }) : null
-  
+
   //percentage of online Voting Power
-  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false? Math.round(Number(totalActiveVotingPower/totalVotingPower)*100) : null
+  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false ? Math.round(Number(totalActiveVotingPower / totalVotingPower) * 100) : null
   console.log(percentageOfVotingPower)
 
-   const detailsData = {
+  const detailsData = {
     onlineVotingPower: "Online Voting power",
     x36516M1: totalActiveVotingPower,
     place: "from",
     x36516M2: totalVotingPower,
   };
-  
+
   const details2Data = {
     activeValidators: "Active Validators",
     number1: totalActiveValidators,
@@ -126,65 +130,95 @@ function HomePageContent(props) {
   };
 
   return (
-    <>
-      <Title>{title}</Title>
+    <Wrapper className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Grid>
-        <GridItem className="first-item">
-          <PriceChart coinData={coinData} />
+        <GridItem className={darkMode ? 'dark-mode first-item' : 'first-item'}>
+          <Icon>
+            {
+              darkMode ? (
+                <><img className="asset-6-2" src="/img/asset-6-3@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-2@2x.png" height="20" /></>
+              ) : (
+                <><img className="asset-6-2" src="/img/asset-6-2@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-1@2x.png" height="20" /></>
+              )
+            }
+          </Icon>
+          <Stat>
+            <Amount>$0.10</Amount>
+            <Flex>
+              <FlexCol>
+                {/* <Increase>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 10L7 0L14 10H0Z" fill="#59B17D" />
+                  </svg>
+                </Increase> */}
+                <Decrease>
+                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 10L7 0L14 10H0Z" fill="red" />
+                  </svg>
+                </Decrease>
+              </FlexCol>
+              5.67% (24h)
+            </Flex>
+          </Stat>
+          <PriceChart />
         </GridItem>
-        <GridItem className="second-item p-3">
+        <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
           <FlexCol className="h-100">
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCap</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
-            </Flex> 
+              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap ? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
+            </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCapRank</MarketCapDef>
-              <MarketCapVal className="w-50">{coinData?.market_cap_rank? coinData.market_cap_rank : null}</MarketCapVal>
+              <MarketCapVal className="w-50">{coinData?.market_cap_rank ? coinData.market_cap_rank : null}</MarketCapVal>
             </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">24h Vol</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
+              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume ? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
             </Flex>
           </FlexCol>
         </GridItem>
-        <GridItem className="third-item">
+        <GridItem className={darkMode ? 'dark-mode third-item' : 'third-item'}>
           <Flex className="h-100">
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <LatestBlock>latest Block</LatestBlock>
-              <Phone00>{getBlocks? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
+              <LatestBlock className={darkMode ? 'dark-mode' : ''}>latest Block</LatestBlock>
+              <Phone00 className={darkMode ? 'dark-mode' : ''}>{getBlocks ? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <BlockTime>Block Time</BlockTime>
-              <X602s>{getBlocks? formatTime(getBlocks[0]?.time) : null}</X602s>
+              <BlockTime className={darkMode ? 'dark-mode' : ''}>Block Time</BlockTime>
+              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks ? formatTime(getBlocks[0]?.time) : null}</X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <Chain>chain</Chain>
-              <Corichain1>{coinData? coinData?.id : null}</Corichain1>
+              <Chain className={darkMode ? 'dark-mode' : ''}>chain</Chain>
+              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData ? coinData?.id : null}</Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
       </Grid>
       <Grid1>
-        <GridItem1 className="first-item">
+        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
-            <div>
-              <APR1>{apr}</APR1>
-              <Text1>{aprValue}</Text1>
+            <div className="p-3">
+              <APR1 className={darkMode ? 'dark-mode' : ''}>
+                APR
+                {/* {apr} */}
+              </APR1>
+              <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{aprValue}</Text1>
             </div>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="second-item">
+        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
           <FlexCenter className="h-100">
             <OverlapGroup13>
-              <Place>{place1}</Place>
-              <Address>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
+              <Place className={darkMode ? 'dark-mode' : ''}>{place1}</Place>
+              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="third-item">
+        <GridItem1 className={darkMode ? 'dark-mode third-item' : 'third-item'}>
           <OnlineVotingPower>
             <Details
               onlineVotingPower={detailsData.onlineVotingPower}
@@ -192,14 +226,14 @@ function HomePageContent(props) {
               place={detailsData.place}
               x36516M2={detailsData.x36516M2}
             />
-            <OverlapGroup2>
-              <Percent>
+            <OverlapGroup2 style={{ position: 'relative' }}>
+              <Percent style={{ position: 'absolute', right: '10px;' }}>
                 <OnlineVotingPowerChart percentageOfVotingPower={percentageOfVotingPower} />
               </Percent>
             </OverlapGroup2>
           </OnlineVotingPower>
         </GridItem1>
-        <GridItem1 className="fourth-item">
+        <GridItem1 className={darkMode ? 'dark-mode fourth-item' : 'fourth-item'}>
           <ActiveValidators>
             <Details2
               activeValidators={details2Data.activeValidators}
@@ -207,8 +241,8 @@ function HomePageContent(props) {
               outOf={details2Data.outOf}
               number2={details2Data.number2}
             />
-            <OverlapGroup3>
-              <Percent1>
+            <OverlapGroup3 style={{ position: 'relative'}}>
+              <Percent1 style={{position: 'absolute', right: '10px;'}}>
                  <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
               </Percent1>
             </OverlapGroup3>
@@ -216,36 +250,36 @@ function HomePageContent(props) {
         </GridItem1>
       </Grid1>
       <Grid1>
-        <GridItem1 className="first-item">
+        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
           <FlexCenter className="h-100">
             <Inflation>
-              <APR1>{inflation}</APR1>
-              <Text1>{inflationValue}</Text1>
+              <APR1 className={darkMode ? 'dark-mode' : ''}>{inflation}</APR1>
+              <Text1 className={darkMode ? 'dark-mode' : ''}>{inflationValue}</Text1>
             </Inflation>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="second-item">
+        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
           <FlexCenter className="h-100">
             <OverlapGroup14>
-              <Place>{communityPool}</Place>
-              <Address>{communityPoolValue}</Address>
+              <Place className={darkMode ? 'dark-mode' : ''}>{communityPool}</Place>
+              <Address className={darkMode ? 'dark-mode' : ''}>{communityPoolValue}</Address>
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className="third-item span-last-ends">
+        <GridItem1 style={{height: 'fit-content'}} className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
           <Flex className="h-100 w-100 align-items-center" style={{ padding: "20px" }}>
             <FlexCol className="w-100">
-              <APR1>Pool</APR1>
+              <APR1 className={darkMode ? 'dark-mode' : ''}>Pool</APR1>
               <Flex>
                 <FlexCol><Bullet /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Place1>Bonded</Place1>
-                  <Phone>{numberWithSpaces(bondedTokens)}</Phone>
+                  <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
+                  <Phone className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(bondedTokens)}</Phone>
                 </FlexCol>
                 <FlexCol><Bullet className="light" /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
-                  <Bonded>Not Bonded</Bonded>
-                  <Phone1>{numberWithSpaces(notBondedTokens)}</Phone1>
+                  <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
+                  <Phone1 className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(notBondedTokens)}</Phone1>
                 </FlexCol>
               </Flex>
             </FlexCol>
@@ -259,12 +293,12 @@ function HomePageContent(props) {
       </Grid1>
 
       <Flex className="align-items-center justify-content-between">
-        <LatestBlocks>{latestBlocks}</LatestBlocks>
-        <Link href='/blocks' ><a><ViewAll>{viewAll}</ViewAll></a></Link>
+        <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
+        <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
       </Flex>
-      <Container className="w-100">
+      <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
         <Responsive>
-          <table className="w-100 mt-3">
+          <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
             <thead>
               <tr>
                 <th>Height</th>
@@ -287,7 +321,7 @@ function HomePageContent(props) {
                       <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
                         <td>
                           <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description?.moniker}</p>
+                          <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
                         </td>
                       </a></Link>
                       <td>{data?.block?.noTxs}</td>
@@ -300,10 +334,56 @@ function HomePageContent(props) {
             }
           </table>
         </Responsive>
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="next >>"
+          onPageChange={() => { }}
+          pageRangeDisplayed={5}
+          pageCount={20}
+          previousLabel="<< previous"
+          renderOnZeroPageCount={null}
+          className="pagination"
+        />
       </Container>
-    </>
+    </Wrapper>
   )
 }
+
+const Increase = styled.div`
+  margin-top: -3px;
+`
+
+const Decrease = styled.div`
+  transform: rotate(180deg);
+  margin-top: 3px;
+`
+
+const Amount = styled.div`
+  color: #2ec169;
+  font-size:24px;
+  font-weight: bolder;
+  text-align:right;
+  margin-bottom: 10px;
+`;
+
+const Icon = styled.div`
+  position: absolute;
+  left: 20px;
+  top: 10px;
+`;
+
+const Stat = styled.div`
+  position: absolute;
+  right: 20px;
+  top: 10px;
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+  padding-top: 50px;
+  padding: 10px;
+`;
 
 const Responsive = styled.div`
   width: 100%;
@@ -325,6 +405,7 @@ const Grid = styled.div`
 `;
 
 const GridItem = styled.div`
+  position: relative;
   display: block;
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
@@ -363,6 +444,10 @@ const GridItem = styled.div`
   }
   &.h-200px{
     height: 200px;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 
@@ -421,6 +506,10 @@ const GridItem1 = styled.div`
       grid-column: 1 / span 11;
     }
   }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const Container = styled.div`
@@ -429,6 +518,10 @@ const Container = styled.div`
   border-radius: 20px;
   padding: 20px;
   margin: 20px 0px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
 `;
 
 const FlexCol = styled.div`
@@ -447,7 +540,7 @@ const MarketCapDef = styled.div`
 
 const MarketCapVal = styled.div`
   font-weight: bold;
-  font-size: 24px;
+  font-size: 20px;
 `;
 
 const Divider = styled.div`
@@ -515,6 +608,12 @@ const APR1 = styled.div`
 const Text1 = styled.div`
   ${UrbanistBoldBlack26px}
   letter-spacing: 2.08px;
+  width: 120px;
+  overflow: hidden;
+  font-size: 24px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const OverlapGroup13 = styled.div`
@@ -536,14 +635,19 @@ const Address = styled.div`
   ${UrbanistBoldBlack26px}
   letter-spacing: 2.08px;
   font-size: 16px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 `;
 
 const OnlineVotingPower = styled.div`
   height: 90%;
   display: flex;
   padding: 39px 16px;
-  width: 100%;
+  width: 100px;
   padding-right: 30px;
+  justify-content: space-between;
 `;
 
 const OverlapGroup2 = styled.div`
@@ -578,6 +682,7 @@ const ActiveValidators = styled.div`
   display: flex;
   padding: 39px 16px;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const OverlapGroup3 = styled.div`
@@ -585,7 +690,6 @@ const OverlapGroup3 = styled.div`
   height: 95px;
   position: relative;
   align-self: flex-end;
-  margin-left: 43px;
   border-radius: 47.5px;
   border: 10px solid var(--fog);
 `;

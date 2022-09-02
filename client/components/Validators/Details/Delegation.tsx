@@ -1,5 +1,6 @@
 import Link from "next/link";
 import  React, { useState } from "react";
+import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { formatHash, sortDelegatorsByAmount } from "../../../lib/Util/format";
 
@@ -48,7 +49,17 @@ function DelegationsContent(props) {
                     )}
                   </table>
                 </Responsive>
-              </Delegation>
+      </Delegation>
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >>"
+        onPageChange={() => { }}
+        pageRangeDisplayed={5}
+        pageCount={20}
+        previousLabel="<< previous"
+        renderOnZeroPageCount={null}
+        className="pagination"
+      />
     </>
   );
 }
