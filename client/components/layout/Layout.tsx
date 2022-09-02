@@ -17,19 +17,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </Head>
       <SideNavBar {...sideNavBarData} />
       <FlexCol2>
-        <div className="d-table w-100">
+        <div className="d-table w-100" style={{height: "100vh"}}>
           <div className={`${darkMode && 'dark-mode'} d-table-row w-100 main-header`}>
             <Header />
           </div>
-          <div className="d-table-row w-100">
-            <div className="d-table w-100">
+          <div className="d-table-row w-100 h-100">
+            <div className="d-table w-100 h-100">
               <div className="d-table-row w-100">
-                <Wrapper>
+                <Wrapper className={darkMode && 'dark-mode'}>
                   {children}
                 </Wrapper>
               </div>
               <div className="d-table-row w-100">
-                <Footer {...footerData} />
+                <div className="w-100 h-100" style={{
+                  display: "flex",
+                  alignItems: "flex-end"
+                }}><Footer {...footerData} /></div> 
               </div>
             </div>
           </div>
@@ -59,6 +62,10 @@ const sideNavBarData = {
 
 const Wrapper = styled.div`
   min-height: 400px;
+  padding-top: 40px;
+  &.dark-mode{
+    background-color:#0b0a15 !important;
+  }
 `
 const Parent = styled.div`
   width: 100%;
@@ -108,6 +115,7 @@ const footerData = {
 const FlexCol2 = styled.div`
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   @media screen and (min-width: 1074px){
     padding-left: 120px;
     padding-right: 20px;

@@ -3,8 +3,10 @@ import { Accordion } from 'react-bootstrap';
 import styled from 'styled-components';
 import { abbrMessage, formatTimeDateYear } from '../../lib/Util/format';
 import { UrbanistBoldBlack40px } from '../../styledMixins';
+import { useAppSelector } from '../../lib/hooks';
 
 function TransactionContents(props) {
+    const darkMode = useAppSelector(state => state.general.darkMode)
     const [isFormattedView, toggleView] = useState(true)
     const txDetails = props
     //console.log(txDetails?.txDetails?.tx_response.tx.body.messages)
@@ -13,10 +15,12 @@ function TransactionContents(props) {
     const rawJSONMessages = JSON.stringify(txDetails?.txDetails?.tx_response?.tx?.body?.messages, null, 1)
 
     return (
-        <>
+        <div className={darkMode ? 'dark-mode' : ''} style={{
+            paddingTop: '40px'
+        }}>
             <Flex style={{ justifyContent: "space-between", alignItems: 'center' }} className="w-100 block-sm">
                 <Flex style={{ alignItems: "center", marginTop: "20px" }}>
-                    <Title style={{ marginTop: '0' }}>Transaction Details</Title>
+                    <Title style={{ marginTop: '0' }} className={darkMode ? 'dark-mode' : ''}>Transaction Details</Title>
                     <div className='ml-3'>
                         <button
                             className={`${isFormattedView ? 'selected' : ''} formatted`}
@@ -35,7 +39,7 @@ function TransactionContents(props) {
                         <SubTitle>Overview</SubTitle>
                         <Container>
                             <Grid>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.height : null}</h4>
@@ -43,7 +47,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4>{txDetails?.txDetails? formatTimeDateYear(txDetails.txDetails?.tx_response?.timestamp) : null}</h4>
@@ -51,7 +55,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <Flex style={{ alignItems: "center" }}>
@@ -61,7 +65,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_used : null}/{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_wanted : null}</h4>
@@ -69,7 +73,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount : null} {txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].denom : null}</h4>
@@ -77,7 +81,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4>{txDetails?.txDetails?.tx_response.tx? abbrMessage(txDetails?.txDetails?.tx_response?.tx?.body?.messages) : null}</h4>
@@ -85,7 +89,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.memo : null}</h4>
@@ -93,7 +97,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
                                             <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.timeout_height : null}</h4>
@@ -101,7 +105,7 @@ function TransactionContents(props) {
                                         </div>
                                     </FlexCenter>
                                 </Card>
-                                <Card className="last-grid-item" style={{ height: "100px" }}>
+                                <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'}>
                                     <FlexCenter>
                                         <div>
                                             <Hash>{txDetails?.txDetails?.tx_response? txDetails?.txDetails?.tx_response.txhash : null}</Hash>
@@ -133,7 +137,7 @@ function TransactionContents(props) {
                     <Raw>
                         <SubTitle>Overview</SubTitle>
                         <Container>
-                        <Card><Pre><pre style={{color: '#3a428a'}}>{txDetails? rawJSON : null}</pre></Pre></Card>
+                        <Card className={darkMode ? 'dark-mode': ''}><Pre><pre style={{color: '#3a428a'}}>{txDetails? rawJSON : null}</pre></Pre></Card>
                         </Container>
                         <style jsx>{`
                          pre {
@@ -147,7 +151,7 @@ function TransactionContents(props) {
                     </Raw>
                 )
             }
-        </>
+        </div>
     )
 }
 
@@ -181,6 +185,10 @@ const Card = styled.div`
   }
   @media screen and (max-width: 520px){
    grid-column: 1 / span 2;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 
