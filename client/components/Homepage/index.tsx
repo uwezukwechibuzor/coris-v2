@@ -19,6 +19,7 @@ import axios from "axios";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 
+
 //importing dynamically
 const PriceChart = dynamic(() => import('./Details/priceChart'), {
   ssr: false
