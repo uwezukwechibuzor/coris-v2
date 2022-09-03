@@ -338,7 +338,7 @@ function HomePageContent(props) {
           breakLabel="..."
           nextLabel="next >>"
           onPageChange={() => { }}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={2}
           pageCount={20}
           previousLabel="<< previous"
           renderOnZeroPageCount={null}

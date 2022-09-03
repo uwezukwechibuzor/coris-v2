@@ -7,7 +7,7 @@ const initialState: {
 } = {
   sidebarToggled: false,
   connectWalletModalToggled: false,
-  darkMode: true,
+  darkMode: false,
 };
 
 /**

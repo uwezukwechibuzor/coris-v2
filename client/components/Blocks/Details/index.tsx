@@ -207,7 +207,7 @@ function BlockHeightContent(props: any) {
             breakLabel="..."
             nextLabel="next >>"
             onPageChange={() => { }}
-            pageRangeDisplayed={5}
+            pageRangeDisplayed={2}
             pageCount={20}
             previousLabel="<< previous"
             renderOnZeroPageCount={null}
@@ -251,7 +251,7 @@ function BlockHeightContent(props: any) {
             breakLabel="..."
             nextLabel="next >>"
             onPageChange={() => { }}
-            pageRangeDisplayed={5}
+            pageRangeDisplayed={2}
             pageCount={20}
             previousLabel="<< previous"
             renderOnZeroPageCount={null}
