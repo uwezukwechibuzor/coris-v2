@@ -815,11 +815,11 @@ input.dark-mode{
   display: flex;
 }
 
-@media screen and (max-width: 513px) {
+/* @media screen and (max-width: 513px) {
   .pagination{
     display: block !important;
   }
-}
+} */
 
 .pagination li{
   padding: 10px;
