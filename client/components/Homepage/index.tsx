@@ -408,7 +408,7 @@ const GridItem = styled.div`
   display: block;
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
-  height: 300px !important;
+  height: 150px;
   &.chart{
     height:auto !important;
     min-height: 250px !important;
