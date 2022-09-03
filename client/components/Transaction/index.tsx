@@ -29,20 +29,20 @@ function TransactionContents(props) {
                         <button className={`${!isFormattedView ? 'selected' : ''} formatted`}
                             onClick={() => toggleView(false)}
                         >Raw</button>
-                        </div>
+                    </div>
                 </Flex>
                 <div className="version">beta v.0.319.293</div>
             </Flex>
             {
                 isFormattedView ? (
-                    <Formatted>
+                    <Formatted className={darkMode ? 'dark-mode' : ''}>
                         <SubTitle>Overview</SubTitle>
                         <Container>
                             <Grid>
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.height : null}</h4>
+                                            <h4>{txDetails?.txDetails ? txDetails.txDetails.tx_response.height : null}</h4>
                                             <h6 className="text-center">Height</h6>
                                         </div>
                                     </FlexCenter>
@@ -50,7 +50,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails? formatTimeDateYear(txDetails.txDetails?.tx_response?.timestamp) : null}</h4>
+                                            <h4>{txDetails?.txDetails ? formatTimeDateYear(txDetails.txDetails?.tx_response?.timestamp) : null}</h4>
                                             <h6 className="text-center">Time</h6>
                                         </div>
                                     </FlexCenter>
@@ -59,7 +59,7 @@ function TransactionContents(props) {
                                     <FlexCenter>
                                         <div>
                                             <Flex style={{ alignItems: "center" }}>
-                                                <h4 className={txDetails?.txDetails?.tx_response.code === 0 ? "text-success": txDetails?.txDetails?.tx_response.code === undefined? null: "text-danger"} style={{ marginLeft: "10px", marginBottom: "0px" }}>{txDetails?.txDetails?.tx_response.code === 0? "Success" : txDetails?.txDetails?.tx_response.code === undefined? null: "Failed"}</h4>
+                                                <h4 className={txDetails?.txDetails?.tx_response.code === 0 ? "text-success" : txDetails?.txDetails?.tx_response.code === undefined ? null : "text-danger"} style={{ marginLeft: "10px", marginBottom: "0px" }}>{txDetails?.txDetails?.tx_response.code === 0 ? "Success" : txDetails?.txDetails?.tx_response.code === undefined ? null : "Failed"}</h4>
                                             </Flex>
                                             <h6 className="text-center">Status</h6>
                                         </div>
@@ -68,7 +68,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_used : null}/{txDetails?.txDetails? txDetails.txDetails.tx_response.gas_wanted : null}</h4>
+                                            <h4>{txDetails?.txDetails ? txDetails.txDetails.tx_response.gas_used : null}/{txDetails?.txDetails ? txDetails.txDetails.tx_response.gas_wanted : null}</h4>
                                             <h6 className="text-center">gas</h6>
                                         </div>
                                     </FlexCenter>
@@ -76,7 +76,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount : null} {txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0]? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].denom : null}</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount : null} {txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].denom : null}</h4>
                                             <h6 className="text-center">Fee</h6>
                                         </div>
                                     </FlexCenter>
@@ -84,7 +84,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails?.tx_response.tx? abbrMessage(txDetails?.txDetails?.tx_response?.tx?.body?.messages) : null}</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx ? abbrMessage(txDetails?.txDetails?.tx_response?.tx?.body?.messages) : null}</h4>
                                             <h6 className="text-center">Activity</h6>
                                         </div>
                                     </FlexCenter>
@@ -92,7 +92,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.memo : null}</h4>
+                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body ? txDetails?.txDetails?.tx_response.tx.body.memo : null}</h4>
                                             <h6 className="text-center">Memo</h6>
                                         </div>
                                     </FlexCenter>
@@ -100,7 +100,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body? txDetails?.txDetails?.tx_response.tx.body.timeout_height : null}</h4>
+                                            <h4 className="text-center">{txDetails?.txDetails?.tx_response.tx.body ? txDetails?.txDetails?.tx_response.tx.body.timeout_height : null}</h4>
                                             <h6 className="text-center">Time out height</h6>
                                         </div>
                                     </FlexCenter>
@@ -108,7 +108,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'}>
                                     <FlexCenter>
                                         <div>
-                                            <Hash>{txDetails?.txDetails?.tx_response? txDetails?.txDetails?.tx_response.txhash : null}</Hash>
+                                            <Hash>{txDetails?.txDetails?.tx_response ? txDetails?.txDetails?.tx_response.txhash : null}</Hash>
                                             <h6 className="text-center">Hash</h6>
                                         </div>
                                     </FlexCenter>
@@ -117,27 +117,27 @@ function TransactionContents(props) {
                         </Container>
                         <SubTitle>Messages</SubTitle>
                         <Container className="my-3">
-                        {txDetails?.txDetails?.tx_response?.tx?.body?.messages.map(message =>
-                            <Accordion defaultActiveKey="0">
-                                <Accordion.Item eventKey="0" className="accordion-item">
-                                    <Accordion.Header className="accordion-header">
-                                        <div>
-                                            <h4 className="font-xl text-dark">Type: <strong>{abbrMessage(message)}</strong></h4>
-                                        </div>
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                    <Pre><pre style={{color: '#3a428a'}} >{txDetails? rawJSONMessages : null}</pre></Pre> 
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            </Accordion>
-                              )}
+                            {txDetails?.txDetails?.tx_response?.tx?.body?.messages.map(message =>
+                                <Accordion defaultActiveKey="0">
+                                    <Accordion.Item eventKey="0" className="accordion-item">
+                                        <Accordion.Header className="accordion-header">
+                                            <div>
+                                                <h4 className="font-xl text-dark">Type: <strong>{abbrMessage(message)}</strong></h4>
+                                            </div>
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <Pre><pre style={{ color: '#3a428a' }} >{txDetails ? rawJSONMessages : null}</pre></Pre>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
+                                </Accordion>
+                            )}
                         </Container>
                     </Formatted>
                 ) : (
                     <Raw>
                         <SubTitle>Overview</SubTitle>
                         <Container>
-                        <Card className={darkMode ? 'dark-mode': ''}><Pre><pre style={{color: '#3a428a'}}>{txDetails? rawJSON : null}</pre></Pre></Card>
+                            <Card className={darkMode ? 'dark-mode' : ''}><Pre className={darkMode ? 'dark-mode' : ''}><pre style={{ color: darkMode ? '#fff' : '#3a428a' }}>{txDetails ? rawJSON : null}</pre></Pre></Card>
                         </Container>
                         <style jsx>{`
                          pre {
@@ -227,6 +227,11 @@ const Pre = styled.div`
   grid-gap: 20px;
   @media screen and (max-width: 520px){
     grid-gap: 10px;
+  }
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+    color: white !important;
   }
 `;
 

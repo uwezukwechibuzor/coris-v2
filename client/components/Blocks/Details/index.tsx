@@ -8,7 +8,7 @@ import {
 } from "../../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery} from '../../../lib/chainApi';
+import { useGetChainActiveValidatorsQuery } from '../../../lib/chainApi';
 import Link from "next/link";
 import { useAppSelector } from '../../../lib/hooks';
 import ReactPaginate from 'react-paginate';
@@ -20,15 +20,15 @@ function BlockHeightContent(props: any) {
     blockData,
     txs
   } = props;
-   
+
   //convert single proposer address
-  const proposerToBech32FromBlockQuery =  blockData?.block?.header != undefined?  blockData?.block?.header?.proposer_address : null
+  const proposerToBech32FromBlockQuery = blockData?.block?.header != undefined ? blockData?.block?.header?.proposer_address : null
 
   //get the proposer adddress from signatures
   const getChainValidators = useGetChainActiveValidatorsQuery()
   const validatorsSignaturesDetails = blockData?.block?.last_commit?.signatures.map((validatorSignatureData) => {
     //convert proposer address from signatures to cosmosvalcons
-   const proposerToBech32 = toBech32("cosmosvalcons", fromHex(validatorSignatureData.validator_address))
+    const proposerToBech32 = toBech32("cosmosvalcons", fromHex(validatorSignatureData.validator_address))
     const getActiveChainValidators = getChainValidators?.data?.validators.map((validator) => {
       //fetch just the active validators
       //get the consensus pubkey
@@ -36,34 +36,34 @@ function BlockHeightContent(props: any) {
       const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
       const bech32Address = Bech32.encode("cosmosvalcons", addressData);
       if (bech32Address === proposerToBech32) {
-        return { validator, validatorSignatureData}
-       }
+        return { validator, validatorSignatureData }
+      }
     })
     return getActiveChainValidators
-  }) 
-   
-    //get the block proposer
-    //get the proposer name from the active validators existing in the total vaidators
-    let proposerName
-    validatorsSignaturesDetails?.map((details) => details?.map((data) => data?.validatorSignatureData?.validator_address === proposerToBech32FromBlockQuery? proposerName = data : null))
+  })
 
-    //get total transactions fee
-    let totalTxsFee = 0
-    let denom
-    txs?.tx_responses !== null? txs?.tx_responses?.map(tx =>{
-       totalTxsFee += Number(tx?.tx?.auth_info?.fee?.amount[0]?.amount) 
-       denom = tx?.tx?.auth_info?.fee?.amount[0]?.denom
-    }) : null
+  //get the block proposer
+  //get the proposer name from the active validators existing in the total vaidators
+  let proposerName
+  validatorsSignaturesDetails?.map((details) => details?.map((data) => data?.validatorSignatureData?.validator_address === proposerToBech32FromBlockQuery ? proposerName = data : null))
 
- return ( 
-   <div className={darkMode ? 'dark-mode' : ''}>
-     <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
+  //get total transactions fee
+  let totalTxsFee = 0
+  let denom
+  txs?.tx_responses !== null ? txs?.tx_responses?.map(tx => {
+    totalTxsFee += Number(tx?.tx?.auth_info?.fee?.amount[0]?.amount)
+    denom = tx?.tx?.auth_info?.fee?.amount[0]?.denom
+  }) : null
+
+  return (
+    <div className={darkMode ? 'dark-mode' : ''}>
+      <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Container>
         <Grid>
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{blockData?.block?.header? blockData?.block?.header.height : null}</h4>
+                <h4>{blockData?.block?.header ? blockData?.block?.header.height : null}</h4>
                 <h6 className="text-center">Height</h6>
               </div>
             </FlexCenter>
@@ -71,7 +71,7 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{blockData?.block?.header? formatTime(blockData?.block?.header?.time): null}</h4>
+                <h4>{blockData?.block?.header ? formatTime(blockData?.block?.header?.time) : null}</h4>
                 <h6 className="text-center">Time</h6>
               </div>
             </FlexCenter>
@@ -79,11 +79,11 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-              <Link href='/validators[address]' as={`/validators/${proposerName?.validator?.operator_address}`} ><a>
-                <Flex style={{ alignItems: "center" }}>
-                <img className="img" width={30} src={getValidatorsLogoFromWebsites(proposerName?.validator?.description?.website)} alt="" />
-                  <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>{proposerName?.validator?.description? proposerName?.validator?.description?.moniker : null}</h4>
-                </Flex>
+                <Link href='/validators[address]' as={`/validators/${proposerName?.validator?.operator_address}`} ><a>
+                  <Flex style={{ alignItems: "center" }}>
+                    <img className="img" width={30} src={getValidatorsLogoFromWebsites(proposerName?.validator?.description?.website)} alt="" />
+                    <h4 className="text-primary" style={{ marginLeft: "10px", marginBottom: "0px" }}>{proposerName?.validator?.description ? proposerName?.validator?.description?.moniker : null}</h4>
+                  </Flex>
                 </a></Link>
                 <h6 className="text-center">Proposer</h6>
               </div>
@@ -100,7 +100,7 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{blockData?.block?.data?.txs? blockData.block.data.txs.length : null}</h4>
+                <h4>{blockData?.block?.data?.txs ? blockData.block.data.txs.length : null}</h4>
                 <h6 className="text-center">Number of Txs</h6>
               </div>
             </FlexCenter>
@@ -116,56 +116,56 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-               <h6 className="text-center">Hash</h6>
-                <Hash>{blockData?.block_id? blockData?.block_id?.hash : null}</Hash>
-              </div> 
+                <h6 className="text-center">Hash</h6>
+                <Hash>{blockData?.block_id ? blockData?.block_id?.hash : null}</Hash>
+              </div>
             </FlexCenter>
-          </Card>   
+          </Card>
           <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
                 <h6 className="text-center">App Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.app_hash: null}</Hash>
-              </div> 
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.app_hash : null}</Hash>
+              </div>
               <div>
                 <h6 className="text-center">Consensus Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.consensus_hash: null}</Hash>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.consensus_hash : null}</Hash>
               </div>
             </FlexCenter>
-          </Card> 
+          </Card>
           <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-              <h6 className="text-center">Data_Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.data_hash: null}</Hash>
-              </div> 
+                <h6 className="text-center">Data_Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.data_hash : null}</Hash>
+              </div>
               <div>
-               <h6 className="text-center">Evidence Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.evidence_hash: null}</Hash>
+                <h6 className="text-center">Evidence Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.evidence_hash : null}</Hash>
               </div>
             </FlexCenter>
-          </Card>  
+          </Card>
           <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-              <h6 className="text-center">Last Commit Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.last_commit_hash: null}</Hash>
-              </div> 
+                <h6 className="text-center">Last Commit Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.last_commit_hash : null}</Hash>
+              </div>
               <div>
-              <h6 className="text-center">Last Results Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.last_results_hash: null}</Hash>
+                <h6 className="text-center">Last Results Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.last_results_hash : null}</Hash>
               </div>
             </FlexCenter>
-          </Card> 
+          </Card>
           <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-              <h6 className="text-center">Next Validators Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.next_validators_hash: null}</Hash>
-              </div> 
+                <h6 className="text-center">Next Validators Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.next_validators_hash : null}</Hash>
+              </div>
               <div>
-              <h6 className="text-center">Validators Hash</h6>
-                <Hash>{blockData?.block?.header? blockData?.block?.header?.validators_hash: null}</Hash>
+                <h6 className="text-center">Validators Hash</h6>
+                <Hash>{blockData?.block?.header ? blockData?.block?.header?.validators_hash : null}</Hash>
               </div>
             </FlexCenter>
           </Card>
@@ -173,44 +173,54 @@ function BlockHeightContent(props: any) {
       </Container>
       <Container className='my-3'>
         <h5>Signatures</h5>
-       <Card className={darkMode ? 'dark-mode p-3' : ' p-3'}>
-        <Responsive>
-        <table className="w-100 mt-3">
-            <thead>
-              <tr>
-                <th>Validators</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            {validatorsSignaturesDetails?.map((details) => {
-              return details?.map((data) => {
-                if (data !== undefined) {
-                  return (
-                    <tr>
-                      <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
-                        <td>
-                          <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          <p style={{display: 'inline', marginLeft: '10px'}}>{data?.validator?.description? data?.validator?.description?.moniker : null}</p>
+        <Card className={darkMode ? 'dark-mode p-3' : ' p-3'}>
+          <Responsive>
+            <table className="w-100 mt-3">
+              <thead>
+                <tr>
+                  <th>Validators</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              {validatorsSignaturesDetails?.map((details) => {
+                return details?.map((data) => {
+                  if (data !== undefined) {
+                    return (
+                      <tr>
+                        <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
+                          <td>
+                            <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
+                            <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description ? data?.validator?.description?.moniker : null}</p>
+                          </td>
+                        </a></Link>
+                        <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}
                         </td>
-                      </a></Link>
-                      <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}
-                      </td>
-                    </tr>
-                  )
-                }
+                      </tr>
+                    )
+                  }
+                })
               })
-            })
-        }
-          </table>
+              }
+            </table>
           </Responsive>
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="next >>"
+            onPageChange={() => { }}
+            pageRangeDisplayed={5}
+            pageCount={20}
+            previousLabel="<< previous"
+            renderOnZeroPageCount={null}
+            className="pagination"
+          />
         </Card>
       </Container>
 
       <Container className='w-100'>
         <h5>Transactions</h5>
-       <Card className={darkMode ? 'dark-mode w-100' : 'w-100'}>
+        <Card className={darkMode ? 'dark-mode w-100' : 'w-100'}>
           <Responsive className="p-3">
-           <table className={darkMode ? "dark-mode w-100 mt-3 table table-responsive" : 'w-100 mt-3 table table-responsive'}>
+            <table className={darkMode ? "dark-mode w-100 mt-3 table table-responsive" : 'w-100 mt-3 table table-responsive'}>
               <thead>
                 <tr style={{ fontWeight: "bold" }}>
                   <th>Tx hash</th>
@@ -221,32 +231,32 @@ function BlockHeightContent(props: any) {
                   <th>Time</th>
                 </tr>
               </thead>
-              {txs?.tx_responses !== null? txs?.tx_responses?.map(tx =>
-              <tbody>
-                <tr>
-                <Link href='/transaction[hash]' as={`/transaction/${tx.txhash}`} ><a>
-                  <td>{formatHash(tx?.txhash, 20, '..')}</td>
-                  </a></Link>
-                  <td>{tx?.height}</td>
-                  <td className={tx.code === 0 ?"text-success" : 'text-danger'}>{tx.code === 0 ? 'Success' : 'failed'}</td>
-                  <td>{tx?.tx?.auth_info?.fee?.amount[0]?.amount +' '+ tx?.tx?.auth_info?.fee?.amount[0]?.denom}</td>
-                  <td>{abbrMessage(tx.tx.body.messages)}</td>
-                  <td>{formatTimeDateYear(tx?.timestamp)}</td>
-                </tr>
-              </tbody>
-            ) : null}
+              {txs?.tx_responses !== null ? txs?.tx_responses?.map(tx =>
+                <tbody>
+                  <tr>
+                    <Link href='/transaction[hash]' as={`/transaction/${tx.txhash}`} ><a>
+                      <td>{formatHash(tx?.txhash, 20, '..')}</td>
+                    </a></Link>
+                    <td>{tx?.height}</td>
+                    <td className={tx.code === 0 ? "text-success" : 'text-danger'}>{tx.code === 0 ? 'Success' : 'failed'}</td>
+                    <td>{tx?.tx?.auth_info?.fee?.amount[0]?.amount + ' ' + tx?.tx?.auth_info?.fee?.amount[0]?.denom}</td>
+                    <td>{abbrMessage(tx.tx.body.messages)}</td>
+                    <td>{formatTimeDateYear(tx?.timestamp)}</td>
+                  </tr>
+                </tbody>
+              ) : null}
             </table>
           </Responsive>
-         <ReactPaginate
-           breakLabel="..."
-           nextLabel="next >>"
-           onPageChange={() => { }}
-           pageRangeDisplayed={5}
-           pageCount={20}
-           previousLabel="<< previous"
-           renderOnZeroPageCount={null}
-           className="pagination"
-         />
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="next >>"
+            onPageChange={() => { }}
+            pageRangeDisplayed={5}
+            pageCount={20}
+            previousLabel="<< previous"
+            renderOnZeroPageCount={null}
+            className="pagination"
+          />
         </Card>
       </Container>
       {/* <OverlapGroupContainer>
