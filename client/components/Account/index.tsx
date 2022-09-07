@@ -6,6 +6,8 @@ import AccountDelegationsContent from './Details/Delegations';
 import AccountRedelegationsContent from './Details/Redelegations';
 import AccountUndelegationsContent from './Details/Undelegations';
 import { useAppSelector } from '../../lib/hooks';
+import Doughnut from './Doughnut';
+import ReactPaginate from 'react-paginate';
 
 function AccountContents(props) {
     const darkMode = useAppSelector(state => state.general.darkMode)
@@ -49,102 +51,107 @@ function AccountContents(props) {
     return (
         <>
             <Title className={darkMode ? 'dark-mode' : ''}>Account Details</Title>
-            <Container className="mb-3">
-                <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "40px" }}>
-                    <QRContainer>
-                        <QRCode value="hey" size={150} />
-                    </QRContainer>
-                    <FlexMiddle className="mt-3">Address</FlexMiddle>
-                    <FlexMiddle>
-                        <h4>{authAccount?.account?.address ? authAccount.account.address : null}</h4>
-                    </FlexMiddle>
-                    <FlexMiddle>
-                        <div>
-                            <div><span>Account No</span></div>
-                            <strong>{authAccount?.account?.account_number ? authAccount.account.account_number : null}</strong>
-                            <div><span>Sequence</span></div>
-                            <strong>{authAccount?.account?.sequence ? authAccount.account.sequence : 0}</strong>
-                        </div>
+            <Grid1>
 
-                    </FlexMiddle>
-                    <FlexMiddle className="mt-3">Type</FlexMiddle>
-                    <FlexMiddle>
-                        <h4>{authAccount?.account['@type'] ? authAccount.account['@type'] : null}</h4>
-                    </FlexMiddle>
-                    <FlexMiddle>
-                        <div>
-                            <div><span style={{ marginLeft: '70px' }} ><FlexMiddle className="mt-3">PubKey</FlexMiddle></span></div>
-                            <strong>
-                                {authAccount?.account?.pub_key['@type']}
-                                <br />
-                                {authAccount?.account?.pub_key.key}
-                            </strong>
-                        </div>
-
-                    </FlexMiddle>
-                </Card>
-            </Container>
-            <Container className='w-100'>
-                <Card className={darkMode ? 'dark-mode w-100' : 'w-100'} style={{ height: '400px' }}>
-                    <Flex className='block-sm'>
-                        <Flex className='w-40 w-100-sm'>
-                        </Flex>
-                        <Flex className='w-60 p-3 w-100-sm' style={{ flexDirection: "column" }}>
+                <Container className="mb-3">
+                    <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "40px" }}>
+                        <QRContainer>
+                            <QRCode value="hey" size={100} />
+                        </QRContainer>
+                        <FlexMiddle className="mt-3">Address</FlexMiddle>
+                        <FlexMiddle>
+                            <h5>{authAccount?.account?.address ? authAccount.account.address : null}</h5>
+                        </FlexMiddle>
+                        <hr style={{ border: "1px solid rgb(199 199 199)" }} />
+                        <FlexMiddle>
+                            <div className="d-flex w-100" style={{justifyContent: "space-between"}}>
+                                <div>
+                                    <div><span>Account No</span></div>
+                                    <strong>{authAccount?.account?.account_number ? authAccount.account.account_number : null}</strong>
+                                </div>
+                                <div>
+                                    <div><span>Sequence</span></div>
+                                    <strong>{authAccount?.account?.sequence ? authAccount.account.sequence : 0}</strong>
+                                </div>
+                            </div>
+                        </FlexMiddle>
+                        <hr style={{ border: "1px solid rgb(199 199 199)"}} />
+                        <FlexMiddle className="mt-3">Type</FlexMiddle>
+                        <FlexMiddle>
+                            <h6>{authAccount?.account['@type'] ? authAccount.account['@type'] : null}</h6>
+                        </FlexMiddle>
+                        <FlexMiddle>
                             <div>
-                                <h4><strong></strong></h4>
+                                <div><span style={{ marginLeft: '70px' }} ><FlexMiddle>PubKey</FlexMiddle></span></div>
+                                <h6>
+                                    {authAccount?.account?.pub_key['@type']}
+                                    <br />
+                                    {authAccount?.account?.pub_key.key}
+                                </h6>
                             </div>
-                            <div style={{ margin: "40px" }}>
-                                <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
-                                    <Flex>
-                                        <Box />
-                                        <h5 className="ml-3">Balance</h5>
-                                    </Flex>
-                                    <Flex>
-                                        <h5><strong>{accountBalance?.balances[0] ? balance : 0} {denom}</strong></h5>
-                                    </Flex>
-                                </Flex>
-                                <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
-                                    <Flex>
-                                        <Box />
-                                        <h5 className="ml-3">Reward</h5>
-                                    </Flex>
-                                    <Flex>
-                                        <h5><strong>{delegationRewards?.rewards !== NaN ? 0 : totalRewards.toFixed(2)} {denom}</strong></h5>
-                                    </Flex>
-                                </Flex>
-                                <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
-                                    <Flex>
-                                        <Box />
-                                        <h5 className="ml-3">Delegation</h5>
-                                    </Flex>
-                                    <Flex>
-                                        <h5><strong>{accountDelegations?.delegation_responses ? totalDelegationsAmount : 0} {denom}</strong></h5>
-                                    </Flex>
-                                </Flex>
-                                <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
-                                    <Flex>
-                                        <Box />
-                                        <h5 className="ml-3">Redelegation</h5>
-                                    </Flex>
-                                    <Flex>
-                                        <h5><strong>{accountReledelgations?.redelegation_responses ? totalReledegationsAmount : 0} {denom}</strong></h5>
-                                    </Flex>
-                                </Flex>
-                                <Flex style={{ alignItems: 'center', justifyContent: "space-between" }}>
-                                    <Flex>
-                                        <Box />
-                                        <h5 className="ml-3">Undelegation</h5>
-                                    </Flex>
-                                    <Flex>
-                                        <h5><strong>{accountUnboundingDelegations?.unbonding_responses ? totalUnboundingDelegationsAmount : null} {denom}</strong></h5>
-                                    </Flex>
-                                </Flex>
-                            </div>
-                        </Flex>
-                    </Flex>
-                </Card>
-            </Container>
 
+                        </FlexMiddle>
+                    </Card>
+                </Container>
+                <Container className="mb-3">
+                    <Card className={darkMode ? 'dark-mode w-100 h-100 py-3' : 'w-100 h-100 py-3'}>
+                        <Flex className='block-sm align-items-center' style={{flexDirection: 'column'}}>
+                            <Flex className='w-40 w-100-sm justify-content-center align-items-center'>
+                                <Doughnut/>
+                            </Flex>
+                            <Flex className='pt-3 w-100' style={{ flexDirection: "column" }}>
+                                <div className="px-3">
+                                    <Flex style={{ alignItems: 'center', justifyContent: "space-between", flexWrap: 'wrap'}}>
+                                        <Flex>
+                                            <Box />
+                                            <h5 className="ml-3">Balance</h5>
+                                        </Flex>
+                                        <Flex className="ml-3">
+                                            <h5><strong>{accountBalance?.balances[0] ? balance : 0} {denom}</strong></h5>
+                                        </Flex>
+                                    </Flex>
+                                    <Flex style={{ alignItems: 'center', justifyContent: "space-between", flexWrap: 'wrap' }}>
+                                        <Flex>
+                                            <Box />
+                                            <h5 className="ml-3">Reward</h5>
+                                        </Flex>
+                                        <Flex>
+                                            <h5><strong>{delegationRewards?.rewards !== NaN ? 0 : totalRewards.toFixed(2)} {denom}</strong></h5>
+                                        </Flex>
+                                    </Flex>
+                                    <Flex style={{ alignItems: 'center', justifyContent: "space-between", flexWrap: 'wrap' }}>
+                                        <Flex>
+                                            <Box />
+                                            <h5 className="ml-3">Delegation</h5>
+                                        </Flex>
+                                        <Flex>
+                                            <h5><strong>{accountDelegations?.delegation_responses ? totalDelegationsAmount : 0} {denom}</strong></h5>
+                                        </Flex>
+                                    </Flex>
+                                    <Flex style={{ alignItems: 'center', justifyContent: "space-between", flexWrap: 'wrap' }}>
+                                        <Flex>
+                                            <Box />
+                                            <h5 className="ml-3">Redelegation</h5>
+                                        </Flex>
+                                        <Flex>
+                                            <h5><strong>{accountReledelgations?.redelegation_responses ? totalReledegationsAmount : 0} {denom}</strong></h5>
+                                        </Flex>
+                                    </Flex>
+                                    <Flex style={{ alignItems: 'center', justifyContent: "space-between", flexWrap: 'wrap' }}>
+                                        <Flex>
+                                            <Box />
+                                            <h5 className="ml-3">Undelegation</h5>
+                                        </Flex>
+                                        <Flex>
+                                            <h5><strong>{accountUnboundingDelegations?.unbonding_responses ? totalUnboundingDelegationsAmount : null} {denom}</strong></h5>
+                                        </Flex>
+                                    </Flex>
+                                </div>
+                            </Flex>
+                        </Flex>
+                    </Card>
+                </Container>
+            </Grid1>
             <Container className="my-3">
                 <h5>Tokens</h5>
                 <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "10px" }}>
@@ -185,6 +192,16 @@ function AccountContents(props) {
                             </tbody>
                         </table>
                     </Responsive>
+                    <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="next"
+                        onPageChange={() => { }}
+                        pageRangeDisplayed={2}
+                        pageCount={20}
+                        previousLabel="prev"
+                        renderOnZeroPageCount={null}
+                        className="pagination"
+                    />
                 </Card>
             </Container>
 
@@ -258,7 +275,7 @@ function AccountContents(props) {
                 </Grid>
             </Container>
             <Container className="my-3">
-                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px", minHeight: "400px" }}>
+                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px" }}>
                     <Responsive>
                         <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
                             <thead>
@@ -290,11 +307,21 @@ function AccountContents(props) {
                             </tbody>
                         </table>
                     </Responsive>
+                    <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="next"
+                        onPageChange={() => { }}
+                        pageRangeDisplayed={2}
+                        pageCount={20}
+                        previousLabel="prev"
+                        renderOnZeroPageCount={null}
+                        className="pagination"
+                    />
                 </Card>
             </Container>
             <Container className="my-3">
                 <h4>Transactions</h4>
-                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px", minHeight: "400px" }}>
+                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px" }}>
                     <Responsive>
                         <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
                             <thead>
@@ -327,6 +354,16 @@ function AccountContents(props) {
                             </tbody>
                         </table>
                     </Responsive>
+                    <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="next"
+                        onPageChange={() => { }}
+                        pageRangeDisplayed={2}
+                        pageCount={20}
+                        previousLabel="prev"
+                        renderOnZeroPageCount={null}
+                        className="pagination"
+                    />
                 </Card>
             </Container>
         </>
@@ -387,7 +424,6 @@ const QRContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
-  height: 150px;
 `;
 
 const Card = styled.div`
@@ -420,6 +456,15 @@ const Grid = styled.div`
   }
 `;
 
+const Grid1 = styled.div`
+  display: grid;
+  grid-template-columns:400px auto;
+  grid-gap: 30px;
+  @media screen and (max-width:1168px){
+    grid-template-columns:auto;
+  }
+`;
+
 const Container = styled.div`
   display: block;
 `;
@@ -427,8 +472,11 @@ const Container = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 700px){
-    width: 85vw;
+  @media screen and (max-width: 1074px){
+    width: calc(100vw - 70px);
+  };
+  @media (min-width: 1074px) and (max-width: 1334px){
+    width: calc(100vw - 200px);
   }
   `;
 

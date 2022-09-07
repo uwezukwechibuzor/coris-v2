@@ -209,7 +209,8 @@ const Title = styled.h1`
   min-height: 48px;
   min-width: 112px;
   letter-spacing: 0;
-  margin-top: 30px
+  margin-top: 50px;
+  margin-bottom: 30px;
 `;
 
 const Validators = styled.div`

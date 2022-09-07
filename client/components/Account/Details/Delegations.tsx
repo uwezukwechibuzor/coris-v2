@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import ReactPaginate from "react-paginate";
 import styled from 'styled-components';
 import { formatHash } from "../../../lib/Util/format";
 
@@ -63,6 +64,16 @@ function AccountDelegationsContent(props) {
                         )}
                     </table>
                 </Responsive>
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="next"
+                    onPageChange={() => { }}
+                    pageRangeDisplayed={2}
+                    pageCount={20}
+                    previousLabel="prev"
+                    renderOnZeroPageCount={null}
+                    className="pagination"
+                />
             </Delegation>
         </>
     )
@@ -79,8 +90,11 @@ const Flex = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 700px){
-    width: 85vw;
+  @media screen and (max-width: 1074px){
+    width: calc(100vw - 70px);
+  };
+  @media (min-width: 1074px) and (max-width: 1334px){
+    width: calc(100vw - 200px);
   }
   `
 
