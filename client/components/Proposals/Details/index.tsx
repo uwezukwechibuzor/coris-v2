@@ -55,7 +55,7 @@ function ProposalDetailsContents(props) {
 
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
-      <Title className={darkMode ? 'dark-mode' : ''}>Proposer Details</Title>
+      <Title className={darkMode ? 'dark-mode' : ''}>Proposal Details</Title>
       <Box className={darkMode ? 'dark-mode' : ''}>
         <span>{proposal?.proposal?.content?.title ? proposal?.proposal.content.title : null}</span>
         <Container>

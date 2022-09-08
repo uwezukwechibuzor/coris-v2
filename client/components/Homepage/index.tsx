@@ -83,6 +83,19 @@ function HomePageContent(props) {
   }, [])
   //console.log(coinData)
 
+  //get price data and pass to price chart component
+  const [priceData, setPriceData]: any = useState([])
+  let API_PriceData = `https://api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=1`
+  useEffect(() => {
+    axios.get(API_PriceData).then((response) => {
+      const getPrice = response.data.prices
+        setPriceData(getPrice)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  //console.log(priceData)
+
   //get Bonded Token and Not bonded Token
   const getPool = useGetChainPoolQuery()
   const bondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.bonded_tokens / denom).toFixed(2) : null
@@ -161,7 +174,7 @@ function HomePageContent(props) {
               5.67% (24h)
             </Flex>
           </Stat>
-          <PriceChart />
+          <PriceChart {...priceData} />
         </GridItem>
         <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
           <FlexCol className="h-100">

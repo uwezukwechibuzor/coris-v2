@@ -7,6 +7,12 @@ export const chainApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "https:",
      mode: 'cors',  
+     prepareHeaders: (headers) => {
+      //headers.set('Access-Control-Allow-Origin', '*')
+      // headers.set('Access-Control-Allow-Methods', 'GET') //
+       //headers.set('Access-Control-Allow-Headers', '*') //
+      return headers
+    },
   }),
   extractRehydrationInfo(action, { reducerPath }) {
     if (action.type === HYDRATE) {
