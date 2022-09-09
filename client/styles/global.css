@@ -825,3 +825,19 @@ input.dark-mode{
   padding: 10px;
   border: 1px solid #19172d;
 }
+
+.list-group-item.no-border{
+  border: 0px !important;
+  background: transparent!important;
+  background: black;
+}
+
+.list-group-item.no-border:hover{
+  background: rgba(241, 245, 252, 0.692) !important;
+  cursor: pointer;
+}
+
+.list-group-item.no-border.dark-mode:hover{
+  background: rgba(78, 143, 255, 0.692) !important;
+  cursor: pointer;
+}
