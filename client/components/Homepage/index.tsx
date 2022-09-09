@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces } from "../../lib/Util/format"
+import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces, formatNumbers } from "../../lib/Util/format"
 import styled from "styled-components";
 import Details from './Details'
 import Details2 from './Details2'
@@ -32,7 +32,7 @@ const PoolChart = dynamic(() => import('./Details/poolChart'), {
   ssr: false
 })
 
-let coinID = 'cosmos'
+let coinID = 'juno-network'
 const denom = 1000000;
 
 function HomePageContent(props) {
@@ -50,7 +50,7 @@ function HomePageContent(props) {
     viewAll,
     getBlocks,
   } = props;
-  //console.log(getBlocks)
+  console.log( Date.now(), getBlocks[0].time)
 
   //function that receieves proposer address and returns the validators details
   const getChainValidators = useGetChainActiveValidatorsQuery()
@@ -80,26 +80,25 @@ function HomePageContent(props) {
     }).catch((error) => {
       console.log(error)
     })
-  }, [])
-  //console.log(coinData)
+  }, []);
 
   //get price data and pass to price chart component
-  const [priceData, setPriceData]: any = useState([])
+  const [priceChart, setPriceChart]: any = useState([])
   let API_PriceData = `https://api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=1`
   useEffect(() => {
     axios.get(API_PriceData).then((response) => {
       const getPrice = response.data.prices
-        setPriceData(getPrice)
+        setPriceChart(getPrice)
     }).catch((error) => {
       console.log(error)
     })
   }, [])
-  //console.log(priceData)
+  //console.log(priceChart)
 
   //get Bonded Token and Not bonded Token
   const getPool = useGetChainPoolQuery()
   const bondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.bonded_tokens / denom).toFixed(2) : null
-  const notBondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.not_bonded_tokens / 1000000).toFixed(2) : null
+  const notBondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.not_bonded_tokens / denom).toFixed(2) : null
 
   //get voting power and the active validators
   const getAllValidators = useGetChainValidatorsQuery()
@@ -126,7 +125,7 @@ function HomePageContent(props) {
 
   //percentage of online Voting Power
   const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false ? Math.round(Number(totalActiveVotingPower / totalVotingPower) * 100) : null
-  console.log(percentageOfVotingPower)
+ 
 
   const detailsData = {
     onlineVotingPower: "Online Voting power",
@@ -150,14 +149,14 @@ function HomePageContent(props) {
           <Icon>
             {
               darkMode ? (
-                <><img className="asset-6-2" src="/img/asset-6-3@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-2@2x.png" height="20" /></>
+                <><img className="asset-6-2" src={coinData?.image?.large} height="40" /> {coinData?.symbol?.toUpperCase()}</>
               ) : (
-                <><img className="asset-6-2" src="/img/asset-6-2@2x.png" height="30" /><img className="asset-7-2" src="/img/asset-7-1@2x.png" height="20" /></>
+                <><img className="asset-6-2" src={coinData?.image?.large} height="40" />   {coinData?.symbol?.toUpperCase()}</>
               )
             }
           </Icon>
           <Stat>
-            <Amount>$0.10</Amount>
+            {Math.sign(coinData?.market_data?.current_price?.usd) === 1? <Amount>${coinData?.market_data?.current_price?.usd}</Amount>: Math.sign(coinData?.market_data?.current_price?.usd) === -1? <Amount style={{color: 'red'}}>${coinData?.market_data?.current_price?.usd}</Amount> : null }
             <Flex>
               <FlexCol>
                 {/* <Increase>
@@ -167,14 +166,15 @@ function HomePageContent(props) {
                 </Increase> */}
                 <Decrease>
                   <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 10L7 0L14 10H0Z" fill="red" />
+                    <path d="M0 10L7 0L14 10H0Z" fill={Math.sign(coinData?.market_data?.price_change_percentage_24h) === 1? '#2ec169' : Math.sign(coinData?.market_data?.price_change_percentage_24h) === -1? 'red' : null} />
                   </svg>
                 </Decrease>
               </FlexCol>
-              5.67% (24h)
+              <p style={{marginTop: '-12px'}}>{coinData?.market_data?.price_change_percentage_24h? coinData?.market_data?.price_change_percentage_24h.toFixed(2)+'%': null} (24h)</p>
             </Flex>
           </Stat>
-          <PriceChart {...priceData} />
+          <br />
+          <PriceChart {...priceChart} />
         </GridItem>
         <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
           <FlexCol className="h-100">
@@ -216,10 +216,10 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <div className="p-3">
               <APR1 className={darkMode ? 'dark-mode' : ''}>
-                APR
+              Coingecko Rank
                 {/* {apr} */}
               </APR1>
-              <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{aprValue}</Text1>
+              <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{coinData?.coingecko_rank}</Text1>
             </div>
           </FlexCenter>
         </GridItem1>
@@ -227,7 +227,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <OverlapGroup13>
               <Place className={darkMode ? 'dark-mode' : ''}>{place1}</Place>
-              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null? numberWithSpaces(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
+              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null? formatNumbers(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
@@ -287,12 +287,12 @@ function HomePageContent(props) {
                 <FlexCol><Bullet /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
                   <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
-                  <Phone className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(bondedTokens)}</Phone>
+                  <Phone className={darkMode ? 'dark-mode' : ''}>{formatNumbers(bondedTokens)}</Phone>
                 </FlexCol>
                 <FlexCol><Bullet className="light" /></FlexCol>
                 <FlexCol style={{ margin: '0px 20px' }}>
                   <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
-                  <Phone1 className={darkMode ? 'dark-mode' : ''}>{numberWithSpaces(notBondedTokens)}</Phone1>
+                  <Phone1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(notBondedTokens)}</Phone1>
                 </FlexCol>
               </Flex>
             </FlexCol>
@@ -347,16 +347,6 @@ function HomePageContent(props) {
             }
           </table>
         </Responsive>
-        <ReactPaginate
-          breakLabel="..."
-          nextLabel="next >>"
-          onPageChange={() => { }}
-          pageRangeDisplayed={2}
-          pageCount={20}
-          previousLabel="<< previous"
-          renderOnZeroPageCount={null}
-          className="pagination"
-        />
       </Container>
     </Wrapper>
   )
@@ -620,6 +610,7 @@ const APR1 = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   letter-spacing: 0;
+  margin-left: 20px
 `;
 
 const Text1 = styled.div`
@@ -631,6 +622,7 @@ const Text1 = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-left: 30px;
 `;
 
 const OverlapGroup13 = styled.div`

@@ -1,13 +1,16 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Button from 'react-bootstrap/Button'
 import styled from "styled-components";
 import { useAppSelector } from '../../../../lib/hooks';
 
-
 function WalletButton({ className }) {
   const darkMode = useAppSelector(state => state.general.darkMode)
+  const router = useRouter()
+
   return (
-    <Wallet className={`${className} ${darkMode ? 'dark-mode' : ''} connect-wallet`}>
-      Connect Wallet
+    <Wallet className={`${className} ${darkMode ? 'dark-mode' : ''} connect-wallet`} onClick={() => router.push('https://wallet.keplr.app/')} >
+    Connect Wallet
     </Wallet>
   )
 }

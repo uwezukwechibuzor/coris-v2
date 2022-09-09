@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import axios from 'axios'
 import { useGetChainAnnualProvisionsQuery, useGetChainCommunityPoolQuery, useGetChainInflationQuery} from "../lib/chainApi";
+import { formatNumbers } from "../lib/Util/format";
 
 function Home () {
 
@@ -31,7 +32,7 @@ function Home () {
 
   //get Community Pool
   const getCommunityPool = useGetChainCommunityPoolQuery()
-  const communityPool = getCommunityPool.isLoading == false? (Number(getCommunityPool?.data?.pool[0]?.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:2}) + ' ' +getCommunityPool?.data?.pool[0]?.denom ) : null
+  const communityPool = getCommunityPool.isLoading == false? formatNumbers(getCommunityPool?.data?.pool[0]?.amount) + ' ' +getCommunityPool?.data?.pool[0]?.denom  : null
   
   const homePageData = {
     title: "Overview",

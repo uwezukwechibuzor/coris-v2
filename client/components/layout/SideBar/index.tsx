@@ -47,7 +47,7 @@ function SideNavBar(props) {
     <SideNavigation className={`${sidebarToggled && 'show'} ${darkMode && 'dark-mode'}`}>
       <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
       <Clicker onClick={() => navigate("/")}><Logo /></Clicker>
-      <SearchBar src={searchBarData.src} className="mobile" />
+      <SearchBar src={searchBarData.src} className="mobile"  />
       <Wrapper>
         <Clicker onClick={() => navigate("/")} title="Overview">
           <a className="m-24">

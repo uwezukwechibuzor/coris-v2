@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../lib/hooks";
+import { formatNumbers } from "../../../lib/Util/format";
 import { UrbanistBoldBlack16px, UrbanistNormalBlack24px, UrbanistNormalBlack16px } from "../../../styledMixins";
 
 
@@ -12,17 +13,15 @@ function Details(props) {
     <Details1>
       <OnlineVotingPower className={darkMode ? 'dark-mode' : ''}>{onlineVotingPower}</OnlineVotingPower>
       <Group7328>
-        <X36516m className={darkMode ? 'dark-mode' : ''}>{x36516M1.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
-        })}</X36516m>
+        <X36516m className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M1)}</X36516m>
         <div>
           <Place
             style={{
               color: darkMode ? 'white' : 'black'
             }}
-          >{place}</Place>
+          >From</Place>
         </div>
-        <X36516m1 className={darkMode ? 'dark-mode' : ''}>{x36516M2.toLocaleString(undefined, {minimumFractionDigits: 0,maximumFractionDigits: 0
-        })}</X36516m1>
+        <X36516m1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M2)}</X36516m1>
       </Group7328>
     </Details1>
   );
@@ -39,7 +38,7 @@ const OnlineVotingPower = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   letter-spacing: 0;
-  width: 100px;
+  width: 160px;
   &.darkMode{
     color: white;
   }
@@ -70,7 +69,7 @@ const X36516m = styled.div`
 const Place = styled.div`
   ${UrbanistNormalBlack16px}
   min-height: 19px;
-  margin-left: 10px;
+  margin-left: -40px;
   min-width: 34px;
   letter-spacing: 0;
   font-size: 14px;
