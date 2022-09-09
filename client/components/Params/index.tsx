@@ -26,6 +26,8 @@ function ParamsContent() {
     getDistributionParams = useGetChainDistributionParamsQuery(),
     getNodeInfo = useGetChainNodeInfoQuery();
 
+    console.log(getNodeInfo)
+
   const minitingParamtersData = {
     mintDenom: "Mint Denom",
     inflationRateChange: "Inflation Rate Change",

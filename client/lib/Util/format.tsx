@@ -1,3 +1,33 @@
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import utc from 'dayjs/plugin/utc'
+import localeData from 'dayjs/plugin/localeData'
+
+dayjs.extend(localeData)
+dayjs.extend(duration)
+dayjs.extend(relativeTime)
+dayjs.extend(updateLocale)
+dayjs.extend(utc)
+dayjs.updateLocale('en', {
+  relativeTime: {
+    future: 'in %s',
+    past: '%s ago',
+    s: '%ds',
+    m: '1m',
+    mm: '%dm',
+    h: 'an hour',
+    hh: '%d hours',
+    d: 'a day',
+    dd: '%d days',
+    M: 'a month',
+    MM: '%d months',
+    y: 'a year',
+    yy: '%d years',
+  },
+})
+
 
 export const formatTime = (t: Date) => {
   if (t == null){
@@ -107,3 +137,22 @@ export function abbrMessage(msg) {
   if (n >= 1e9 && n < 1e12) return +(n / 1e9).toFixed(1) + "B";
   if (n >= 1e12) return +(n / 1e12).toFixed(1) + "T";
 };
+
+export function toDay(time:any, format = 'long') {
+  if (format === 'long') {
+    return dayjs(time).format('YYYY-MM-DD HH:mm')
+  }
+  if (format === 'date') {
+    return dayjs(time).format('YYYY-MM-DD')
+  }
+  if (format === 'time') {
+    return dayjs(time).format('HH:mm:ss')
+  }
+  if (format === 'from') {
+    return dayjs(time).fromNow()
+  }
+  if (format === 'to') {
+    return dayjs(time).toNow()
+  }
+  return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+}

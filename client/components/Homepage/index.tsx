@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces, formatNumbers } from "../../lib/Util/format"
+import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces, formatNumbers, toDay } from "../../lib/Util/format"
 import styled from "styled-components";
 import Details from './Details'
 import Details2 from './Details2'
@@ -50,7 +50,6 @@ function HomePageContent(props) {
     viewAll,
     getBlocks,
   } = props;
-  console.log( Date.now(), getBlocks[0].time)
 
   //function that receieves proposer address and returns the validators details
   const getChainValidators = useGetChainActiveValidatorsQuery()
@@ -201,12 +200,12 @@ function HomePageContent(props) {
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <BlockTime className={darkMode ? 'dark-mode' : ''}>Block Time</BlockTime>
-              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks ? formatTime(getBlocks[0]?.time) : null}</X602s>
+              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks ? toDay(getBlocks[0]?.time, 'from') : null}</X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
               <Chain className={darkMode ? 'dark-mode' : ''}>chain</Chain>
-              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData ? coinData?.id : null}</Corichain1>
+              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData ? coinData?.symbol?.toUpperCase() : null}</Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
@@ -338,7 +337,7 @@ function HomePageContent(props) {
                         </td>
                       </a></Link>
                       <td>{data?.block?.noTxs}</td>
-                      <td>{data?.block?.time ? formatTime(data?.block.time) : null}</td>
+                      <td>{data?.block?.time ? toDay(data?.block.time, 'from') : null}</td>
                     </tr>
                   )
                 }
@@ -848,7 +847,7 @@ const Chain = styled.div`
 
 const Corichain1 = styled.div`
   ${UrbanistBoldBlack26px}
-  min-height: 31px;
+  min-height: 40px;
   margin-top: 16px;
   letter-spacing: 0;
 `;
