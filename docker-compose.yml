@@ -73,6 +73,7 @@ services:
       - coris
 
   adminer:
+    profiles: ["adminer"]
     container_name: local_adminer
     image: adminer
     restart: unless-stopped
