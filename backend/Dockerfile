@@ -7,7 +7,3 @@ WORKDIR /usr/app
 COPY ./ ./
 
 RUN npm install --force
-
-EXPOSE 5000
-
-CMD [ "node", "server.js" ]
