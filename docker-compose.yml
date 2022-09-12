@@ -58,6 +58,7 @@ services:
       NEXT_PUBLIC_CosmosChain_RESTAPI: https://api.aphrodite.main.network.umee.cc
       NEXT_PUBLIC_GetBlocksLatest: http://backend:5100/blocks/latest
       NEXT_PUBLIC_GetBlocks: http://backend:5100/blocks
+      NEXT_PUBLIC_COIN_ID: umee
     volumes:
       - ./client:/usr/app/client
       - client-ignore:/usr/app/client/node_modules
