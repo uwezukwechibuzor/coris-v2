@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from "styled-components";
 import { toggleConnectWalletModal, toggleDarkMode, toggleSidebar } from '../../../lib/features/generalSlice';
 import { useAppDispatch, useAppSelector } from '../../../lib/hooks';
@@ -11,7 +10,6 @@ import {
 } from "../../../styledMixins";
 import { searchBarData } from '../Header';
 import ConnectWallet from '../Header/ConnectWallet';
-import WalletButton from '../Header/ConnectWallet/walletButton';
 import SearchBar from '../Header/SearchBar';
 import Logo from "./Logo";
 

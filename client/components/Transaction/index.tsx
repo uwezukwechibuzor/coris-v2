@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Accordion } from 'react-bootstrap';
+import { Accordion, Table } from 'react-bootstrap';
 import styled from 'styled-components';
-import { abbrMessage, formatTimeDateYear } from '../../lib/Util/format';
+import { abbrMessage, formatTimeDateYear, toDay } from '../../lib/Util/format';
 import { UrbanistBoldBlack40px } from '../../styledMixins';
 import { useAppSelector } from '../../lib/hooks';
+import { COIN, DENOM } from '../../lib/Util/constants';
 
 function TransactionContents(props) {
     const darkMode = useAppSelector(state => state.general.darkMode)
@@ -50,7 +51,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails ? formatTimeDateYear(txDetails.txDetails?.tx_response?.timestamp) : null}</h4>
+                                            <h4>{txDetails?.txDetails ? toDay(txDetails.txDetails?.tx_response?.timestamp, 'from') : null}</h4>
                                             <h6 className="text-center">Time</h6>
                                         </div>
                                     </FlexCenter>
@@ -76,7 +77,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount : null} {txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].denom : null}</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount/DENOM : null } {COIN}</h4>
                                             <h6 className="text-center">Fee</h6>
                                         </div>
                                     </FlexCenter>
@@ -118,15 +119,15 @@ function TransactionContents(props) {
                         <SubTitle>Messages</SubTitle>
                         <Container className="my-3">
                             {txDetails?.txDetails?.tx_response?.tx?.body?.messages.map(message =>
-                                <Accordion defaultActiveKey="0">
-                                    <Accordion.Item eventKey="0" className="accordion-item">
+                                <Accordion defaultActiveKey="0" >
+                                    <Accordion.Item eventKey="0" className="accordion-item" style={{ background: darkMode ? '#19172d' : '#fff' }}>
                                         <Accordion.Header className="accordion-header">
                                             <div>
-                                                <h4 className="font-xl text-dark">Type: <strong>{abbrMessage(message)}</strong></h4>
+                                                <h4 className="font-xl text-dark" >Type: <strong>{abbrMessage(message)}</strong></h4>
                                             </div>
                                         </Accordion.Header>
-                                        <Accordion.Body>
-                                            <Pre><pre style={{ color: '#3a428a' }} >{txDetails ? rawJSONMessages : null}</pre></Pre>
+                                        <Accordion.Body className={darkMode ? 'dark-mode' : ''}>
+                                            <Pre className={darkMode ? 'dark-mode' : ''}><pre style={{ color: darkMode ? '#fff' : '#3a428a' }} >{txDetails ? rawJSONMessages : null}</pre></Pre>
                                         </Accordion.Body>
                                     </Accordion.Item>
                                 </Accordion>

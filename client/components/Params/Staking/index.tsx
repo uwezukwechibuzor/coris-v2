@@ -1,125 +1,71 @@
 import React from 'react'
 import styled from "styled-components";
-import {
-  UrbanistNormalBlack24px,
-  UrbanistSemiBoldBlack24px,
-  ValignTextMiddle,
-} from "../../../styledMixins";
 import { periodsInDays } from '../../../lib/Util/format';
+import { useAppSelector } from '../../../lib/hooks';
+import { COIN, DENOM } from '../../../lib/Util/constants';
 
 function StakingParams(props) {
-    const {
-        unbondingTime,
-        name2,
-        name3,
-        historicalEntries,
-        surname,
-        stakingParamsData
-      } = props;
+
+  const darkMode = useAppSelector(state => state.general.darkMode)
+
+    const getStakingParams = props?.govStakingParams
 
     return (
         <>
-        <FlexRow4>
-              <FlexCol9>
-                <MintDenom>{unbondingTime}</MintDenom>
-                <InflationRateChange>{name2}</InflationRateChange>
-                <InflationRateChange>{name3}</InflationRateChange>
-                <InflationRateChange>{historicalEntries}</InflationRateChange>
-                <InflationRateChange>{surname}</InflationRateChange>
-              </FlexCol9>
-              <FlexCol10>
-                <CORIS>{stakingParamsData?.data?.params?.unbonding_time?  periodsInDays(stakingParamsData.data.params.unbonding_time) : null}</CORIS>
-                <Number>{stakingParamsData?.data?.params?.max_validators ? stakingParamsData.data.params.max_validators : null }</Number>
-                <Number1>{stakingParamsData?.data?.params?.max_entries ? stakingParamsData.data.params.max_entries : null}</Number1>
-                <Address5>{stakingParamsData?.data?.params?.historical_entries ? stakingParamsData.data.params.historical_entries : null}</Address5>
-                <Address6>{stakingParamsData?.data?.params?.bond_denom ? stakingParamsData.data.params.bond_denom : null}</Address6>
-              </FlexCol10>
-            </FlexRow4>
+         <GridItem>
+          <FlexColumn>
+            <span>Staking Parameters</span>
+            <Card className={darkMode ? 'dark-mode w-100' : 'w-100'}>
+              <FlexBetween>
+                <span>Unbounding Time</span>
+                <strong>{getStakingParams?.params?.unbonding_time ? periodsInDays(getStakingParams?.params.unbonding_time) : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Max Validator</span>
+                <strong>{getStakingParams?.params?.max_validators ? getStakingParams?.params.max_validators : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Max Entries</span>
+                <strong>{getStakingParams?.params?.max_entries ? getStakingParams.params.max_entries : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Historical Entries</span>
+                <strong>{getStakingParams?.params?.historical_entries ? getStakingParams.params.historical_entries : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Bond Demon</span>
+                <strong>{COIN}</strong>
+              </FlexBetween>
+            </Card>
+          </FlexColumn>
+        </GridItem>
         </>
     )
 } 
 
-const MintDenom = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  letter-spacing: 0;
-`;
-
-const InflationRateChange = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  letter-spacing: 0;
-`;
-
-const CORIS = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  min-width: 71px;
-  letter-spacing: 0;
-`;
-
-const FlexRow4 = styled.div`
-  height: 273px;
-  margin-left: 16px;
-  display: flex;
-  padding: 31px 16px;
-  align-items: flex-start;
-  min-width: 660px;
-  background-color: var(--white);
-  border-radius: 20px;
+const GridItem = styled.div`
+  display:block;
+`
+const Card = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const FlexCol9 = styled.div`
-  ${UrbanistNormalBlack24px}
-  width: 174px;
+  border-radius: 20px;
+  height: 100%;
+  margin-top: 10px;
+  padding: 20px 10px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
+`
+const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  min-height: 209px;
-`;
-
-const FlexCol10 = styled.div`
-  ${UrbanistSemiBoldBlack24px}
-  width: 148px;
-  margin-left: 306px;
+  height: 100%;
+`
+const FlexBetween = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-height: 209px;
-`;
-
-const Number = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 29px;
-  letter-spacing: 0;
-`;
-
-const Number1 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 14px;
-  letter-spacing: 0;
-`;
-
-const Address5 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 70px;
-  letter-spacing: 0;
-`;
-
-const Address6 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 14px;
-  letter-spacing: 0;
-`;
+  justify-content:space-between;
+  padding: 5px 0px;
+`
 
 export default StakingParams

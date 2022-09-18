@@ -4,36 +4,56 @@ import HomePageContent from "../components/Homepage";
 import Head from "next/head";
 import Link from "next/link";
 import axios from 'axios'
-import { useGetChainAnnualProvisionsQuery, useGetChainCommunityPoolQuery, useGetChainInflationQuery} from "../lib/chainApi";
-import { formatNumbers } from "../lib/Util/format";
+import { GetServerSideProps } from "next";
+import { allChainValidatorsEndpoint, chainActiveValidatorsEndpoint, chainPoolEndpoint, communityPoolEndpoint, inflationEndpoint } from "../lib/chainApiEndpoints";
+import { DENOM } from "../lib/Util/constants";
 
-function Home () {
 
-  const [blocks, setBlocks] = useState([])
-  //fetch the latest blocks
-  const queryTotalBlocks = 15
-  let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
+
+const isServerReq = req => !req.url.startsWith('/_next');
+
+function Home (props) {
+
+  const [blocks, setBlocks] = useState([]);
+  const [getAllTxs, setGetAllTxs] = useState([])
+
+  
+  const queryTotalBlocks = 7;
+  const queryTotalTxs = 7;
+
+  //fetch latest transactions
+  let getAPi = process.env.NEXT_PUBLIC_GetBlocks
   useEffect(() => {
-      axios.get(`${getBlocksAPi}/blocks/latest?limit=${queryTotalBlocks}`).then((response) => {
+      axios.get(`${getAPi}/blocks/latest?limit=${queryTotalBlocks}`).then((response) => {
           setBlocks(response.data)
       }).catch((error) => {
           console.log(error)
       })
   }, [blocks])
-   
-  //check if fetching is still loading
-  //get inflation percentage
-  const getInflation = useGetChainInflationQuery()
-  const inflation = getInflation?.isLoading == false? (getInflation?.data?.inflation*100).toFixed(2)+'%' : null;
 
-  //get annual provisions 
-  const getAnnualProvisions = useGetChainAnnualProvisionsQuery()
-  const annualProvisions = getAnnualProvisions?.isLoading == false? (Number(getAnnualProvisions?.data?.annual_provisions).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:2})) : null;
+ //get all latest transactions
+ useEffect(() => {
+  axios.get(`${getAPi}/txs?limit=${queryTotalTxs}`).then((response) => {
+      setGetAllTxs(response.data)
+  }).catch((error) => {
+      console.log(error)
+  })
+}, [getAllTxs])
+
+
+  //get inflation percentage
+  const inflation = (props.inflationData.inflation*100).toFixed(2)+'%'
 
   //get Community Pool
-  const getCommunityPool = useGetChainCommunityPoolQuery()
-  const communityPool = getCommunityPool.isLoading == false? formatNumbers(getCommunityPool?.data?.pool[0]?.amount) + ' ' +getCommunityPool?.data?.pool[0]?.denom  : null
+  const communityPool = ((props.commuintyPoolData?.pool[0]?.amount)/DENOM).toFixed(2)+'%';
   
+  //active validators
+  const activeValidators = props?.chainActiveValidatorsData 
+  const chainAllValidators = props?.chainAllValidators?.validators
+  
+  //get Pool
+  const poolData = props?.poolData
+
   const homePageData = {
     title: "Overview",
     text2: "13:00",
@@ -43,7 +63,6 @@ function Home () {
     time: "3:59AM",
     price: "$376",
     apr: "Annual Provisions",
-    aprValue: annualProvisions,
     place1: "Supply",
     address1: "1 453 930 716.2345 CORIS",
     percent1: "100%",
@@ -59,6 +78,10 @@ function Home () {
     latestBlocks: "Latest Blocks",
     viewAll: "View all",
     getBlocks: blocks,  
+    getAllTxs: getAllTxs,
+    activeValidators: activeValidators,
+    chainAllValidators: chainAllValidators,
+    poolData: poolData
   }
 
   return (
@@ -68,9 +91,53 @@ function Home () {
   );
 }
 
+export async function getServerSideProps({ res, req }) {
 
+     try {
+        // Fetch data from external API
+      //get inflation data
+      const inflationEndPoint = inflationEndpoint
+      const getInflationData = isServerReq(req) ? await fetch(`https:${inflationEndPoint}`) : null
+      const inflationData = await getInflationData.json()
+    
+     //get community pool
+     const getCommunityPool = isServerReq(req) ? await fetch(`https:${communityPoolEndpoint}`) : null
+     const commuintyPoolData = await getCommunityPool.json();
+    
+     //get chain active validators
+     const getChainActiveValidators = isServerReq(req) ? await fetch(`https:${chainActiveValidatorsEndpoint}`) : null
+     const chainActiveValidatorsData = await getChainActiveValidators.json()
+    
+     //get Pool
+     const getPool = isServerReq(req) ? await fetch(`https:${chainPoolEndpoint}`) : null
+     const poolData = await getPool.json() 
+    
+     const getAllChainValidators = isServerReq(req) ? await fetch(`https:${allChainValidatorsEndpoint}`) : null
+     const chainAllValidators = await getAllChainValidators.json();
+
+     res.setHeader(
+      'Cache-Control',
+      'public, s-maxage=600, stale-while-revalidate=900'
+    )
+    //res.writeHead(307, { Location: '/_error' }).end()
+  
+    return {
+      props: {
+        inflationData: Object.assign({}, inflationData),
+        commuintyPoolData: Object.assign({}, commuintyPoolData),
+        chainActiveValidatorsData: Object.assign({}, chainActiveValidatorsData),
+        poolData: Object.assign({}, poolData),
+        chainAllValidators: Object.assign({}, chainAllValidators)
+      },
+    }
+
+  } catch (error) {
+    
+  }
+} 
+     
 export default Home
 
 Home.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>
+  return <Layout>{page}{}</Layout>
 };

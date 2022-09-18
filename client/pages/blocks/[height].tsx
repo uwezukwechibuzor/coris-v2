@@ -1,35 +1,68 @@
 import React from 'react'
 import Layout from "../../components/layout/Layout";
-import {
-    useGetChainBlockHeightQuery, useGetChainTxsQuery
-} from '../../lib/chainApi';
 import { useRouter } from 'next/router'
 import BlockHeightContent from '../../components/Blocks/Details';
+import { chainActiveValidatorsEndpoint, chainBlockHeightDetailsEndpont, chainBlockHeightTxsEndpoint } from '../../lib/chainApiEndpoints';
 
-function BlocksDetails() {
-    const {query} = useRouter()
+const isServerReq = req => !req.url.startsWith('/_next');
 
+
+function BlocksDetails(props) {
     //get blocks details from query
-    const getBlockData = useGetChainBlockHeightQuery(query.height)
-    const blockData = getBlockData.isLoading == false && getBlockData.isSuccess == true? getBlockData?.data : null
+    const blockData = props.blockHeightDetails !== undefined? props.blockHeightDetails : null
     
     //get all transactions existing on each blocks
-    const getAllTxsOnBlockHeight = useGetChainTxsQuery(query.height) 
-    const transactions = getAllTxsOnBlockHeight.isLoading == false && getAllTxsOnBlockHeight.isSuccess == true? getAllTxsOnBlockHeight?.data : null
+    const transactions =  props.blockHeightTxs !== undefined? props?.blockHeightTxs : null
 
+    const activeValidators =  props.chainActiveValidatorsData !== undefined? props?.chainActiveValidatorsData : null
+   
     const blockDetailsData = {
         title: "Block Details",
         blockData: blockData,
-        txs: transactions
+        txs: transactions,
+        activeValidators: activeValidators
     };
     
-
     return (
         <>
         <BlockHeightContent {...blockDetailsData} />
         </>
     )
 }
+
+export async function getServerSideProps({ query, res, req }) {
+
+    try {
+       // Fetch data from external API
+     //get inflation data
+     const getBlockHeightDetails =  isServerReq(req) ?  await fetch(`https:${chainBlockHeightDetailsEndpont(query.height)}`) : null
+     const blockHeightDetails = await getBlockHeightDetails.json();
+
+     const getBlocksHeightTxs =  isServerReq(req) ?  await fetch(`https:${chainBlockHeightTxsEndpoint(query.height)}`) : null
+     const blockHeightTxs = await getBlocksHeightTxs.json()
+
+       //get chain active validators
+    const getChainActiveValidators =  isServerReq(req) ?  await fetch(`https:${chainActiveValidatorsEndpoint}`)
+    : null
+    const chainActiveValidatorsData = await getChainActiveValidators.json()
+     
+    res.setHeader(
+     'Cache-Control',
+     'public, s-maxage=600, stale-while-revalidate=900'
+   )
+ 
+   return {
+     props: {
+        blockHeightDetails: Object.assign({}, blockHeightDetails),
+        blockHeightTxs: Object.assign({}, blockHeightTxs),
+        chainActiveValidatorsData: Object.assign({}, chainActiveValidatorsData)
+     },
+   }
+
+ } catch (error) {
+   
+ }
+} 
 
 export default BlocksDetails
 

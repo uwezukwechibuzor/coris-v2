@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/index.tsx", "pages/_document.jsx", "pages/validators/index.tsx", "components/Homepage/Details/priceChart.tsx", "components/Homepage/Details/priceChart2.js", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.js", "pages/Wallet/index.tsx"  ],
+, "pages/index.tsx", "pages/_document.jsx", "pages/validators/index.tsx", "components/Homepage/Details/priceChart.tsx", "components/Homepage/Details/priceChart2.js", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.jsx", "components/Homepage/Details/poolChart.js", "pages/Wallet/index.tsx", "components/ErrorBoundary.js", "pages/_app.tsx", "pages/validators/[address].tsx"  ],
   "exclude": [
     "node_modules"
   ]

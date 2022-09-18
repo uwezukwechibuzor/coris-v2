@@ -1,6 +1,6 @@
 import React from 'react';
 import {Pie} from 'react-chartjs-2';
-import { Chart as ChartJs} from "chart.js/auto";
+import 'chart.js/auto';
 
 export default class PoolChart extends React.Component {
   render() {
@@ -39,11 +39,13 @@ export default class PoolChart extends React.Component {
         />
           <style jsx>{`
           .pie {
-             width: 110px
+             width: 100px
            }
            @media (max-width: 768px) {
             .pie {
               width: 70px;
+              margin-left: -150px;
+
             }
           }  
       

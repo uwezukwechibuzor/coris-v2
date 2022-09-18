@@ -13,24 +13,25 @@ import SearchButton from "./SearchButton";
 import Link from "next/link";
 import { Router, useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
-import ReactPaginate from 'react-paginate';
 
 function ValidatorsContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
   const [query, setQuery] = useState("")
 
   const {
-    validators,
-    totalBondedTokens
+    totalBondedTokens,
+    uptimeByBlocksHeights,
+    chainAllValidators 
   } = props;
+  //console.log( uptimeByBlocksHeights)
 
-  var activeValidatorsData = validators?.map((data) => {
+  var activeValidatorsData =  chainAllValidators?.map((data) => {
     if (data.status === 'BOND_STATUS_BONDED') {
       return data
     }
   })
 
-  var inActiveValidatorsData = validators?.map((data) => {
+  var inActiveValidatorsData =  chainAllValidators?.map((data) => {
     if (data.status === 'BOND_STATUS_UNBONDED' || data.status === 'BOND_STATUS_UNBONDING') {
       return data
     }
@@ -62,7 +63,7 @@ function ValidatorsContent(props) {
                     <th>Voting Power</th>
                     <th>Cummulative Share</th>
                     <th>Commission</th>
-                    <th></th>
+                    <th>Uptime</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -99,7 +100,7 @@ function ValidatorsContent(props) {
                           </td>
                           <td>{activeValidatorsCumulativeShare.toFixed(2) + '%'}</td>
                           <td>{commission.toFixed(2) + '%'}</td>
-                          <td>Delegate</td>
+                          <td>100%</td>
                         </tr>
                       )
                     }
@@ -119,7 +120,7 @@ function ValidatorsContent(props) {
                   <th>Voting Power</th>
                   <th>Cummulative Share</th>
                   <th>Commission</th>
-                  <th></th>
+                  <th>Uptime</th>
                 </tr>
               </thead>
               <tbody>
@@ -156,7 +157,7 @@ function ValidatorsContent(props) {
                         </td>
                         <td>{inActiveValidatorsCumulativeShare.toFixed(2) + '%'}</td>
                         <td>{commission.toFixed(2) + '%'}</td>
-                        <td>Delegate</td>
+                        <td>0%</td>
                       </tr>
                     )
                   })}
@@ -166,16 +167,6 @@ function ValidatorsContent(props) {
           </Tab>
         </Tabs>
       </div>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >>"
-        onPageChange={() => { }}
-        pageRangeDisplayed={2}
-        pageCount={20}
-        previousLabel="<< previous"
-        renderOnZeroPageCount={null}
-        className="pagination"
-      />
     </div>
   );
 }

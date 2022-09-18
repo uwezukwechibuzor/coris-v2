@@ -1,11 +1,9 @@
 import React from "react";
 import Title from "./Title"
 import styled from "styled-components";
-import { formatTime, formatTimeDateYear, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber } from "../../../lib/Util/format";
+import { formatTime, formatTimeDateYear, getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, toDay } from "../../../lib/Util/format";
 import Link from "next/link";
-import { useGetChainPoolQuery, useGetChainDelegationsQuery, useGetChainUnDelegationsQuery, useGetChainRedelegationsQuery, useGetChainBlockHeightQuery, useGetChainValidatorsSlashingSigningInfosDetailsQuery } from '../../../lib/chainApi';
 import UndelegationsContent from "./Undelegations";
-import RelegationsContent from "./Redelegations";
 import DelegationsContent from "./Delegation";
 import { useState } from "react";
 import { sha256 } from "@cosmjs/crypto";
@@ -14,19 +12,25 @@ import Badge from 'react-bootstrap/Badge';
 import { OverlayTrigger, ProgressBar } from "react-bootstrap";
 import { useAppSelector } from "../../../lib/hooks";
 import CopyClip from "./CopyClip";
+import { DENOM } from "../../../lib/Util/constants";
+import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 
 function ValidatorsDetailsContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     getValidatorDetails,
-    getUptimeByBlocksHeights
+    getUptimeByBlocksHeights,
+    chainValidatorsSlashingInfo,
+    chainValidatorDelegations,
+    chainValidatorUnDelegations,
+    poolData
   }  = props
-   //console.log( getValidatorDetails)
 
   const [selectedDelegations, setDelegationPage] = useState('delegations')
 
-  const validatorsDetails =  getValidatorDetails.isLoading === false?  getValidatorDetails?.data?.validator: null
+  const validatorsDetails =  getValidatorDetails?.validator !== undefined?  getValidatorDetails?.validator: null
   
 
 
@@ -45,13 +49,14 @@ try {
   accountAddress = toBech32("cosmos", fromHex(toHex(fromBech32(operatorAddress).data)))
   
   hexAddress = toHex(fromBech32(bech32Address).data)
+  
 } catch (error) {
    //console.log(error)
 }
 
 //get missed Blocks  && validators signing info
-const getValSigningInfo = useGetChainValidatorsSlashingSigningInfosDetailsQuery(bech32Address)
-const missedBlocks = getValSigningInfo.isLoading === false? getValSigningInfo?.data?.val_signing_info?.missed_blocks_counter : null
+const missedBlocks = chainValidatorsSlashingInfo !== undefined? chainValidatorsSlashingInfo?.val_signing_info?.missed_blocks_counter : null
+
 
 //uptimeByBlocksHeights
 const convertedSignatures = getUptimeByBlocksHeights?.map(data => {
@@ -77,19 +82,19 @@ const getUptime = convertedSignatures.map((sigs, index) => {
 const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? totalSignedBlocks/totalBlocks*100 : 0
   
   //delegators shares
-  const delegatorsShares = (validatorsDetails?.delegator_shares / 1000000).toFixed(2)
+  const delegatorsShares = (validatorsDetails?.delegator_shares / DENOM).toFixed(2)
 
   //get total bonded tokens
-  const getChainPool = useGetChainPoolQuery()
-  const bondedTokens = getChainPool?.data?.pool?.bonded_tokens
+  const bondedTokens = poolData?.pool?.bonded_tokens
   const percentageofVotingPower: number = getPercentageOfValidatorsBondedTokens(validatorsDetails?.tokens, bondedTokens)
 
   //get validatorsDelegations and pass to delegation component and relegation to get fetch the delegators address
   let validatorsDelegations, unDelegations
   try {
-    validatorsDelegations = useGetChainDelegationsQuery(validatorsDetails?.operator_address)
+    validatorsDelegations =  chainValidatorDelegations
     //get UnDelegations and pass to delegation component
-    unDelegations = useGetChainUnDelegationsQuery(validatorsDetails?.operator_address)
+    unDelegations =  chainValidatorUnDelegations
+    
   } catch(error) {
 
   }
@@ -146,18 +151,34 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
         <GridItemThree className={darkMode ? 'dark-mode' : ''}>
           <Flex className="w-100 h-100">
             <FlexCenter className="w-50">
-            {percentageofVotingPower? percentageofVotingPower.toFixed(2)+'%' : null}
+            <div style={{ width: 100, height: 100 }} className={darkMode ? 'dark-mode' : ''}>
+            <CircularProgressbar 
+              value={percentageofVotingPower} 
+              text={`${percentageofVotingPower.toFixed(2)}%`} 
+              backgroundPadding={6}
+              styles={buildStyles({
+                backgroundColor: "yellow",
+                textColor: "#3a428a",
+                pathColor: "#3a428a",
+                trailColor: ""
+              })}
+            />
+          </div>
             </FlexCenter>
             <FlexCenter className="w-50">
               <FlexColumn>
                 <span>Voting Power</span>
-                <h5>{validatorsDetails?.tokens? roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens) : null}</h5>
-                <OverlayTrigger  overlay={<Tooltip id="tooltip-disabled">{percentageofVotingPower.toFixed(2)+'%'}</Tooltip>}>
+                <h5>
+   
+                  {validatorsDetails?.tokens? roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens) : null}</h5>
+                {/*<OverlayTrigger  overlay={<Tooltip id="tooltip-disabled">{percentageofVotingPower.toFixed(2)+'%'}</Tooltip>}>
                   <ProgressBar animated   now={percentageofVotingPower} />
-                </OverlayTrigger>
+  </OverlayTrigger> */}
+   
               </FlexColumn>
             </FlexCenter>
           </Flex>
+      
         </GridItemThree>
         <GridItemFour className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
@@ -179,7 +200,7 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Updated</div>
-                <strong>{validatorsDetails?.commission? formatTime(validatorsDetails?.commission?.update_time): null}</strong>
+                <strong>{validatorsDetails?.commission? toDay(validatorsDetails?.commission?.update_time, 'from'): null}</strong>
               </FlexBetween>
             </div>
           </FlexColumn>
@@ -281,21 +302,13 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
               onClick={() => setDelegationPage('underdelegations')}
               className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
             >Undelegations</TabTogglerItem>
-            <TabTogglerItem
-              onClick={() => setDelegationPage('redelegations')}
-              className={`${selectedDelegations === 'redelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
-            >Redelegations</TabTogglerItem>
            </TabToggler>
           {
             selectedDelegations === 'delegations' ? (
 
             <DelegationsContent {...validatorsDelegations} />
 
-            ) : selectedDelegations === 'redelegations' ? (
-
-             <RelegationsContent {...validatorsDelegations}/>
-
-              ) : (
+            )  : (
               <UndelegationsContent {...unDelegations} />
                           
               )

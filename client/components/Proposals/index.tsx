@@ -1,156 +1,158 @@
 import React, { useState } from 'react'
 import styled from "styled-components";
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
 import Badge from 'react-bootstrap/Badge'
 import {
-  UrbanistSemiBoldBlack172px,
-  UrbanistNormalNewCar172px,
-  UrbanistMediumBlack172px,
-  UrbanistBoldWhite20px,
   UrbanistBoldBlack40px,
-  ValignTextMiddle,
 } from "../../styledMixins";
 import SearchButton from './SearchButton';
-import { formatTimeDateYear } from '../../lib/Util/format';
+import { abbrMessage, formatTimeDateYear, toDay } from '../../lib/Util/format';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '../../lib/hooks';
 import ReactPaginate from 'react-paginate';
-import { ProgressBar } from 'react-bootstrap';
+import { Button, ProgressBar } from 'react-bootstrap';
+import { COIN, DENOM } from '../../lib/Util/constants';
 
 function ProposalsContent(props) {
+
   const darkMode = useAppSelector(state => state.general.darkMode)
+  const [currentPage, setCurrentPage] = useState(0);
+
   const [query, setQuery] = useState("")
 
   const {
     proposalsData
   } = props;
-  //console.log(proposalsData)
 
-  const activeProposals = proposalsData?.data?.proposals?.map(proposal => {
+  const activeProposals = proposalsData?.proposals?.map(proposal => {
     if (proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD' || proposal.status === 'PROPOSAL_STATUS_PASSED' || proposal.status === 'PROPOSAL_STATUS_REJECTED' || proposal.status === 'PROPOSAL_STATUS_FAILED') {
       return proposal
     }
   })
 
-  const pendingProposals = proposalsData?.data?.proposals?.map(proposal => {
-    if (proposal.status === 'PROPOSAL_STATUS_DEPOSIT_PERIOD') {
-      return proposal
+  //get the first from data from the ative proposals
+  const getFirstFourActiveProposals = activeProposals.slice(0, 4);
+
+ 
+  var finalTallyResultSum
+  var tallyArray  = []
+  var max
+  const tallyPercentage = (tallyResult: number) => ((tallyResult / finalTallyResultSum) * 100)
+ 
+    //add pagination to signatures
+    const PER_PAGE = 15;
+    const offset = currentPage * PER_PAGE;
+    const currentactiveProposals = activeProposals?.slice(offset, offset + PER_PAGE) 
+    const pageCount = Math.ceil(activeProposals?.length / PER_PAGE);
+    function handlePageClick({ selected: selectedPage }) {
+      setCurrentPage(selectedPage);
     }
-  })
 
   const router = useRouter()
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
       <Title className={darkMode ? 'dark-mode' : ''}>Proposals</Title>
       <Grid>
+        { getFirstFourActiveProposals.map((proposal, i)=> {
+          
+          finalTallyResultSum = Number(proposal?.final_tally_result?.yes) + Number(proposal?.final_tally_result?.no) + Number(proposal?.final_tally_result?.no_with_veto) + Number(proposal?.final_tally_result?.abstain)
+
+          tallyArray.push(Object.values(proposal.final_tally_result))
+          max = Math.max(...tallyArray[i]);
+          
+         return (
         <GridItem className={darkMode ? 'dark-mode' : ''}>
           <FlexBetween>
-            <h5>#76</h5>
+            <h5>#{proposal?.proposal_id}</h5>
             <BadgeStatus>
               <Bullet />
-              <BadgeText>VOTING PERIOD</BadgeText>
+              <BadgeText>{proposal.status === 'PROPOSAL_STATUS_PASSED' ? (<Badge bg="success">PASSED</Badge>) : proposal.status === 'PROPOSAL_STATUS_REJECTED' ? (<Badge bg="danger">REJECTED</Badge>) : proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? (<Badge bg="info">VOTING PERIOD</Badge>) : (<Badge bg="warning">FAILED</Badge>)}</BadgeText>
             </BadgeStatus>
           </FlexBetween>
-          <h6>## Require a minimum 5% commission for all validator nodes</h6>
-          <table>
+          <h6>## {proposal?.content?.description ? proposal.content.title : null}</h6>
+         <table>
+          <thead>
             <TableRow>
               <TableData style={{width: '110px'}}>Proposer</TableData>
-              <TableData><b>dqo3jr...dqeqwx</b></TableData>
+              <TableData><b>{abbrMessage(proposal.content)}</b></TableData>
             </TableRow>
             <TableRow>
               <TableData>Voting start</TableData>
               <TableData>
-                <b>2022-08-25 21:23:35</b>
+                <b>{toDay(proposal.voting_start_time)}</b>
 
               </TableData>
             </TableRow>
+            </thead>
+            <tbody>
             <TableRow>
               <TableData>Voting end</TableData>
               <TableData>
-                <b>2022-08-25 21:23:35</b>
+                <b>{toDay(proposal.voting_end_time)}</b>
               </TableData>
             </TableRow>
-          </table>
+            </tbody>
+         </table>
+
           <Flex>
             <div className="mt-3" style={{ width: "70%", borderRight: "1px solid #f3f3f3", paddingRight: "20px"}}>
             <ProgressBar style={{ height: "30px" }}>
-            <ProgressBar striped variant="success" now={20} />
-            <ProgressBar variant="danger" now={20} />
-            <ProgressBar striped variant="warning" now={20} />
-            <ProgressBar striped variant="info" now={20} />
+            <ProgressBar striped variant="success" now={proposal? tallyPercentage(proposal?.final_tally_result?.yes) : 0} key={1} label={proposal? tallyPercentage(proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} />
+            <ProgressBar variant="danger" now={proposal? tallyPercentage(proposal?.final_tally_result?.no): 0} key={2} label={proposal? tallyPercentage(proposal?.final_tally_result?.no).toFixed(2) + '%': 0} />
+            <ProgressBar striped variant="warning" now={proposal? tallyPercentage(proposal?.final_tally_result?.no_with_veto): 0} key={3} label={proposal? tallyPercentage(proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} />
+            <ProgressBar striped style={{background: 'gray'}} now={proposal? tallyPercentage(proposal?.final_tally_result?.abstain): 0} key={4} label={proposal? tallyPercentage(proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} />
           </ProgressBar>
+          <Grid>
+            <Container>
+              <Flex>
+                <Color className="first" />
+                <strong style={{ marginLeft: "10px" }}>Yes</strong>
+              </Flex>
+              <div>{proposal? tallyPercentage(proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} ({proposal?.final_tally_result?.yes ? (proposal.final_tally_result.yes/DENOM).toFixed(2) : 0}  {COIN})</div>
+            </Container>
+            <Container>
+              <Flex>
+                <Color className="second" />
+                <strong style={{ marginLeft: "10px" }}>No</strong>
+              </Flex>
+              <div>{proposal? tallyPercentage(proposal?.final_tally_result?.no).toFixed(2) + '%' : 0} ({proposal?.final_tally_result?.no ? (proposal.final_tally_result.no/DENOM).toFixed(2) : 0} {COIN})</div>
+            </Container>
+            <Container>
+              <Flex>
+                <Color className="third" />
+                <strong style={{ marginLeft: "10px" }}>No With Veto</strong>
+              </Flex>
+              <div>{proposal? tallyPercentage(proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} ({proposal?.final_tally_result?.no_with_veto ? (proposal.final_tally_result.no_with_veto/DENOM).toFixed(2) : 0} {COIN})</div>
+            </Container>
+            <Container>
+              <Flex>
+                <Color className="fourth" />
+                <strong style={{ marginLeft: "10px" }}>Abstain</strong>
+              </Flex>
+              <div>{proposal? tallyPercentage(proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} ({proposal?.final_tally_result?.abstain ? (proposal.final_tally_result.abstain/DENOM).toFixed(2) : 0} {COIN})</div>
+            </Container>
+          </Grid>
             </div>
             <div className="ml-3">
               <b>Most voted on</b>
               <FlexMiddle>
-                <Box style={{marginRight: '5px'}} />
+                <Box style={{marginRight: '5px'}} className={tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.yes) ? 'first' : tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.no) ? 'second' : tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.no_with_veto) ? 'third' : 'fourth'} />
                 <div>
-                  <span>No </span> 
-                  <span>66.<span style={{fontSize: "12px"}}>83</span></span>
+                  <span>{tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.yes) ? 'Yes' : tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.no) ? 'No' : tallyPercentage(max) === tallyPercentage(proposal?.final_tally_result?.no_with_veto) ? 'No With Veto' : 'Abstain'}</span> 
+                  <span style={{marginLeft: '5px'}} >{tallyPercentage(max).toFixed(2)}<span style={{fontSize: "12px"}}>%</span></span>
                 </div>
               </FlexMiddle>
+              <br />
+              <Button variant="outline-primary" onClick={() => router.push(`/proposals/${proposal?.proposal_id}`)}>Read more</Button>{' '}
             </div>
           </Flex>
-          
         </GridItem>
-        <GridItem className={darkMode ? 'dark-mode' : ''}>
-          <FlexBetween>
-            <h5>#76</h5>
-            <BadgeStatus>
-              <Bullet />
-              <BadgeText>VOTING PERIOD</BadgeText>
-            </BadgeStatus>
-          </FlexBetween>
-          <h6>## Require a minimum 5% commission for all validator nodes</h6>
-          <table>
-            <TableRow>
-              <TableData style={{ width: '110px' }}>Proposer</TableData>
-              <TableData><b>dqo3jr...dqeqwx</b></TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>Voting start</TableData>
-              <TableData>
-                <b>2022-08-25 21:23:35</b>
-
-              </TableData>
-            </TableRow>
-            <TableRow>
-              <TableData>Voting end</TableData>
-              <TableData>
-                <b>2022-08-25 21:23:35</b>
-              </TableData>
-            </TableRow>
-          </table>
-          <Flex>
-            <div className="mt-3" style={{ width: "70%", borderRight: "1px solid #f3f3f3", paddingRight: "20px" }}>
-              <ProgressBar style={{ height: "30px" }}>
-                <ProgressBar striped variant="success" now={20} />
-                <ProgressBar variant="danger" now={20} />
-                <ProgressBar striped variant="warning" now={20} />
-                <ProgressBar striped variant="info" now={20} />
-              </ProgressBar>
-            </div>
-            <div className="ml-3">
-              <b>Most voted on</b>
-              <FlexMiddle>
-                <Box style={{ marginRight: '5px' }} />
-                <div>
-                  <span>No </span>
-                  <span>66.<span style={{ fontSize: "12px" }}>83</span></span>
-                </div>
-              </FlexMiddle>
-            </div>
-          </Flex>
-
-        </GridItem>
+         ) } 
+   )}
       </Grid>
-      <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
-        <Tab eventKey="active" title="Active">
-          <SearchButton setQuery={setQuery} />
+          {/*<SearchButton setQuery={setQuery} />*/}
           <Responsive>
             <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
-              <tbody>
+              <thead>
                 <tr>
                   <th>#ID</th>
                   <th>Title</th>
@@ -159,9 +161,9 @@ function ProposalsContent(props) {
                   <th>Voting end</th>
                   <th>Total deposit</th>
                 </tr>
-              </tbody>
+              </thead>
               <tbody>
-                {activeProposals?.filter(proposal => {
+                {currentactiveProposals?.filter(proposal => {
                   if (query === ' ') {
                     return proposal
                   } else if (proposal?.content?.title.toLowerCase().includes(query.toLocaleLowerCase())) {
@@ -173,79 +175,53 @@ function ProposalsContent(props) {
                       <td>{proposal?.proposal_id}</td>
                       <td>{proposal?.content?.description ? proposal.content.title.slice(0, 40) + '....' : null}</td>
                       <td>{proposal.status === 'PROPOSAL_STATUS_PASSED' ? (<Badge bg="success">PASSED</Badge>) : proposal.status === 'PROPOSAL_STATUS_REJECTED' ? (<Badge bg="danger">REJECTED</Badge>) : proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? (<Badge bg="info">VOTING PERIOD</Badge>) : (<Badge bg="warning">FAILED</Badge>)}</td>
-                      <td>{formatTimeDateYear(proposal.voting_start_time)}</td>
-                      <td>{formatTimeDateYear(proposal.voting_end_time)}</td>
-                      <td>{proposal.total_deposit[0].amount + ' ' + proposal.total_deposit[0].denom}</td>
+                      <td>{toDay(proposal.voting_start_time)}</td>
+                      <td>{toDay(proposal.voting_end_time)}</td>
+                      <td>{(proposal.total_deposit[0].amount/DENOM).toFixed(2)} {COIN}</td>
                     </tr>
                   ))
                 }
               </tbody>
             </table>
           </Responsive>
+          {currentactiveProposals?.length !== 0 ? 
           <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >>"
-            onPageChange={() => { }}
-            pageRangeDisplayed={2}
-            pageCount={20}
-            previousLabel="<< previous"
-            renderOnZeroPageCount={null}
-            className="pagination"
-          />
-        </Tab>
-        <Tab eventKey="pending" title="Pending">
-          <OverlapGroup13>
-            <SearchButton setQuery={setQuery} />
-            <Responsive>
-              <table className="w-100">
-                <thead>
-                  <tr>
-                    <th>#ID</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Voting start</th>
-                    <th>Voting end</th>
-                    <th>Total deposit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pendingProposals?.filter(proposal => {
-                    if (query === ' ') {
-                      return proposal
-                    } else if (proposal?.content?.title.toLowerCase().includes(query.toLocaleLowerCase())) {
-                      return proposal
-                    }
-                  })
-                    .map((proposal) => (
-                      <tr style={{ cursor: 'pointer' }} onClick={() => router.push(`/proposals/${proposal?.proposal_id}`)}>
-                        <td>{proposal?.proposal_id}</td>
-                        <td>{proposal?.content?.description ? proposal.content.title.slice(0, 40) + '....' : null}</td>
-                        <td>{proposal.status === 'PROPOSAL_STATUS_PASSED' ? (<Badge bg="success">PASSED</Badge>) : proposal.status === 'PROPOSAL_STATUS_REJECTED' ? (<Badge bg="danger">REJECTED</Badge>) : proposal.status === 'PROPOSAL_STATUS_VOTING_PERIOD' ? (<Badge bg="info">VOTING PERIOD</Badge>) : (<Badge bg="warning">FAILED</Badge>)}</td>
-                        <td>{formatTimeDateYear(proposal.voting_start_time)}</td>
-                        <td>{formatTimeDateYear(proposal.voting_end_time)}</td>
-                        <td>{proposal.total_deposit[0].amount + ' ' + proposal.total_deposit[0].denom}</td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-            </Responsive>
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="next >>"
-              onPageChange={() => { }}
-              pageRangeDisplayed={5}
-              pageCount={20}
-              previousLabel="<< previous"
-              renderOnZeroPageCount={null}
-              className="pagination"
-            />
-          </OverlapGroup13>
-        </Tab>
-      </Tabs>
+            previousLabel={"←"}
+            nextLabel={"→"}
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          /> : null }    
     </div>
   )
 }
+
+const Container = styled.div`
+  display:block;
+`
+
+const Color = styled.div`
+  width: 25px;
+  height: 25px;
+  background: red;
+  border-radius: 5px;
+  &.first{
+    background: #16A82E;
+  }
+  &.second{
+    background: #dc3545;
+  }
+  &.third{
+    background: #ffc107
+  }
+  &.fourth{
+    background: gray;
+  }
+`
 
 const FlexMiddle = styled.div`
   display: flex;
@@ -253,9 +229,21 @@ const FlexMiddle = styled.div`
 `;
 
 const Box = styled.div`
-  width: 10px;
-  height: 10px;
-  background: red;
+width: 10px;
+height: 10px;
+background: red;
+&.first{
+  background: #16A82E;
+}
+&.second{
+  background: #dc3545;
+}
+&.third{
+  background: #ffc107
+}
+&.fourth{
+  background: gray;
+}
 `;
 
 const Flex = styled.div`
@@ -344,163 +332,6 @@ const Title = styled.h1`
   ${UrbanistBoldBlack40px}
   min-height: 48px;
   margin-top: 54px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup13 = styled.div`
-  width: 100%;
-  margin-top: 14px;
-  display: flex;
-  flex-direction: column;
-  padding: 27px 13px;
-  align-items: center;
-  min-height: 886px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-
-const ProposalHeading = styled.div`
-  ${UrbanistSemiBoldBlack172px}
-  align-self: flex-end;
-  margin-top: 40px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 1292px;
-`;
-
-const ID = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  align-self: flex-end;
-  margin-bottom: 0;
-  min-width: 30px;
-  letter-spacing: 0;
-`;
-
-const Title1 = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 48px;
-  min-width: 34px;
-  letter-spacing: 0;
-`;
-
-const Status = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 404px;
-  min-width: 50px;
-  letter-spacing: 0;
-`;
-
-const VotingStart = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 150px;
-  min-width: 94px;
-  letter-spacing: 0;
-`;
-
-const VotingEnd = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  margin-left: 133px;
-  min-width: 84px;
-  letter-spacing: 0;
-`;
-
-const TotalDeposit = styled.div`
-  ${ValignTextMiddle}
-  height: 21px;
-  align-self: flex-end;
-  margin-left: 140px;
-  min-width: 102px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroupContainer1 = styled.div`
-  width: 1303px;
-  height: 59px;
-  position: relative;
-  margin-top: 19px;
-  margin-right: 1px;
-`;
-
-const OverlapGroup2 = styled.div`
-  position: absolute;
-  height: 60px;
-  top: 0;
-  left: 0;
-  display: flex;
-  padding: 16px 7px;
-  justify-content: flex-end;
-  align-items: center;
-  min-width: 1303px;
-  background-color: var(--titan-white);
-`;
-
-const Number = styled.div`
-  ${UrbanistMediumBlack172px}
-  min-height: 21px;
-  margin-top: 0.72px;
-  min-width: 20px;
-  letter-spacing: 0;
-`;
-
-const TitleValue = styled.div`
-  ${UrbanistNormalNewCar172px}
-  min-height: 21px;
-  margin-left: 59px;
-  margin-top: 0.72px;
-  min-width: 408px;
-  letter-spacing: 0;
-`;
-
-const OverlapGroup3 = styled.div`
-  height: 28px;
-  align-self: flex-start;
-  margin-left: 30px;
-  display: flex;
-  padding: 1.7px 16.5px;
-  justify-content: flex-end;
-  align-items: flex-start;
-  min-width: 106px;
-  background-color: var(--forest-green);
-  border-radius: 12.52px;
-`;
-
-const SatusValue = styled.div`
-  ${UrbanistBoldWhite20px}
-  min-height: 24px;
-  letter-spacing: 0;
-`;
-
-const VotingStartValue = styled.div`
-  ${UrbanistMediumBlack172px}
-  min-height: 21px;
-  margin-left: 94px;
-  margin-top: 0.72px;
-  min-width: 142px;
-  letter-spacing: 0;
-`;
-
-const VotingEndvalue = styled.div`
-  ${UrbanistMediumBlack172px}
-  min-height: 21px;
-  margin-left: 87px;
-  margin-top: 0.72px;
-  min-width: 142px;
-  letter-spacing: 0;
-`;
-
-const TotalDepositValue = styled.div`
-  ${UrbanistMediumBlack172px}
-  min-height: 21px;
-  margin-left: 90px;
-  margin-top: 0.72px;
-  min-width: 89px;
   letter-spacing: 0;
 `;
 

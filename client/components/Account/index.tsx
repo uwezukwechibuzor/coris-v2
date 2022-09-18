@@ -97,7 +97,10 @@ function AccountContents(props) {
                     <Card className={darkMode ? 'dark-mode w-100 h-100 py-3' : 'w-100 h-100 py-3'}>
                         <Flex className='block-sm align-items-center' style={{flexDirection: 'column'}}>
                             <Flex className='w-40 w-100-sm justify-content-center align-items-center'>
+                                <div>
                                 <Doughnut/>
+                                </div>
+                                
                             </Flex>
                             <Flex className='pt-3 w-100' style={{ flexDirection: "column" }}>
                                 <div className="px-3">
@@ -152,7 +155,9 @@ function AccountContents(props) {
                     </Card>
                 </Container>
             </Grid1>
-            <Container className="my-3">
+
+
+            {/*<Container className="my-3">
                 <h5>Tokens</h5>
                 <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "10px" }}>
                     <Responsive>
@@ -204,7 +209,7 @@ function AccountContents(props) {
                     />
                 </Card>
             </Container>
-
+    */}
 
             <Container className="my-3">
                 <h5>Delegations</h5>
@@ -238,8 +243,8 @@ function AccountContents(props) {
                 </Card>
             </Container>
 
-
-            <Container>
+          
+          {/*  <Container>
                 <h5>Total Vesting</h5>
                 <Grid style={{ marginBottom: "30px" }}>
                     <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
@@ -274,6 +279,7 @@ function AccountContents(props) {
                     </Card>
                 </Grid>
             </Container>
+
             <Container className="my-3">
                 <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px" }}>
                     <Responsive>
@@ -319,6 +325,8 @@ function AccountContents(props) {
                     />
                 </Card>
             </Container>
+                    */}
+
             <Container className="my-3">
                 <h4>Transactions</h4>
                 <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px" }}>
@@ -492,7 +500,7 @@ const Title = styled.h1`
   min-height: 48px;
   min-width: 112px;
   letter-spacing: 0;
-  margin-top: 30px
+  margin-top: 60px
 `;
 
 

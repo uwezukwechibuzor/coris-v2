@@ -9,7 +9,7 @@ import {
   UrbanistBoldBlack40px,
   ValignTextMiddle,
 } from "../../../styledMixins";
-import { formatHash, formatTimeDateYear } from '../../../lib/Util/format';
+import { abbrMessage, formatHash, formatTimeDateYear, toDay } from '../../../lib/Util/format';
 import YesVoteOptions from './Votes/yes';
 import NoVoteOptions from './Votes/No';
 import VoteVoteOptions from './Votes/Veto';
@@ -17,6 +17,7 @@ import AbstainVoteOptions from './Votes/Abstain';
 import Link from 'next/link';
 import VetoVoteOptions from './Votes/Veto';
 import { useAppSelector } from '../../../lib/hooks';
+import { COIN, DENOM } from '../../../lib/Util/constants';
 
 function ProposalDetailsContents(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
@@ -27,10 +28,10 @@ function ProposalDetailsContents(props) {
     proposalsVotingOptions,
     deposits
   } = props;
-
+  
   const [selectedVoteView, setVoteView] = useState('yes')
 
- const proposal = proposalDetails.isLoading === false? proposalDetails?.data : null
+ const proposal = proposalDetails !== undefined? proposalDetails : null
 
 
   const finalTallyResultSum = Number(proposal?.proposal?.final_tally_result?.yes) + Number(proposal?.proposal?.final_tally_result?.no) + Number(proposal?.proposal?.final_tally_result?.no_with_veto) + Number(proposal?.proposal?.final_tally_result?.abstain)
@@ -40,10 +41,10 @@ function ProposalDetailsContents(props) {
   const proposalDescription = proposal?.proposal?.content?.description.split('\\n\\n').map(str => <p>{str}</p>)
   
  //get depositors dedtails
- const depositDetails = deposits.isLoading === false? deposits?.data?.deposits : null
+ const depositDetails = deposits !== undefined? deposits?.deposits : null
 
   //proposals voting options
-  const getVotingOptions = proposalsVotingOptions.isLoading === false? proposalsVotingOptions?.data : null
+  const getVotingOptions = proposalsVotingOptions !== undefined? proposalsVotingOptions : null
 
   let voteOptionYes = []
   let voteOptionNo = []
@@ -51,7 +52,6 @@ function ProposalDetailsContents(props) {
   let voteOptionAbstain = []
   getVotingOptions?.votes?.map(data => data.option === 'VOTE_OPTION_YES' ? voteOptionYes.push(data): data.option === 'VOTE_OPTION_NO' ? voteOptionNo.push(data) : data.option === 'VOTE_OPTION_NO_WITH_VETO' ? voteOptionVeto.push(data) : voteOptionAbstain.push(data)
   ) 
- 
 
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
@@ -67,18 +67,18 @@ function ProposalDetailsContents(props) {
           <Flex style={{ marginTop: '10px' }}>
             <span>{type}</span>
             <Container style={{ marginLeft: '40px' }}><strong>
-              {proposal?.proposal.content['@type']}
+              {abbrMessage(proposal?.proposal?.content)}
             </strong></Container>
           </Flex>
           <Flex style={{ marginTop: '10px' }}>
             <span>{total}</span>
-            <Container style={{ marginLeft: '40px' }}><strong>{finalTallyResultSum? finalTallyResultSum : ''} {proposal?.proposal?.total_deposit ? proposal?.proposal?.total_deposit[0].denom : ''}</strong></Container>
+            <Container style={{ marginLeft: '40px' }}><strong>{finalTallyResultSum? (finalTallyResultSum/DENOM).toFixed(2) : ''} {COIN}</strong></Container>
           </Flex>
           <ProgressBar style={{ height: "30px" }}>
             <ProgressBar striped variant="success" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes) : 0} key={1} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} />
             <ProgressBar variant="danger" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no): 0} key={2} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no).toFixed(2) + '%': 0} />
             <ProgressBar striped variant="warning" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto): 0} key={3} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} />
-            <ProgressBar striped variant="info" now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain): 0} key={4} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} />
+            <ProgressBar striped style={{background: 'gray'}} now={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain): 0} key={4} label={proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} />
           </ProgressBar>
         </Container>
         <Container style={{ marginTop: "20px" }}>
@@ -88,28 +88,28 @@ function ProposalDetailsContents(props) {
                 <Color className="first" />
                 <strong style={{ marginLeft: "10px" }}>Yes</strong>
               </Flex>
-              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.yes ? proposal?.proposal.final_tally_result.yes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0}  {proposal?.proposal?.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.yes).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.yes ? (proposal?.proposal.final_tally_result.yes/DENOM).toFixed(2) : 0}  {COIN})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="second" />
                 <strong style={{ marginLeft: "10px" }}>No</strong>
               </Flex>
-              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.no ? proposal?.proposal.final_tally_result.no.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no).toFixed(2) + '%' : 0} ({proposal?.proposal?.final_tally_result?.no ? (proposal?.proposal.final_tally_result.no/DENOM).toFixed(2) : 0} {COIN})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="third" />
                 <strong style={{ marginLeft: "10px" }}>Veto</strong>
               </Flex>
-              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.no_with_veto ? proposal?.proposal.final_tally_result.no_with_veto.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal?.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.no_with_veto).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.no_with_veto ? (proposal?.proposal.final_tally_result.no_with_veto/DENOM).toFixed(2) : 0} {COIN})</div>
             </Container>
             <Container>
               <Flex>
                 <Color className="fourth" />
                 <strong style={{ marginLeft: "10px" }}>Abstain</strong>
               </Flex>
-              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.abstain ? proposal?.proposal.final_tally_result.abstain.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : 0} {proposal?.proposal.total_deposit ? proposal?.proposal.total_deposit[0].denom : ''})</div>
+              <div>{proposal?.proposal? tallyPercentage(proposal?.proposal?.final_tally_result?.abstain).toFixed(2) + '%': 0} ({proposal?.proposal?.final_tally_result?.abstain ? (proposal?.proposal.final_tally_result.abstain/DENOM).toFixed(2) : 0} {COIN})</div>
             </Container>
           </Grid>
         </Container>
@@ -126,23 +126,23 @@ function ProposalDetailsContents(props) {
         </FlexBetween>
         <FlexBetween>
           <Container>Total Deposit:</Container>
-          <Container><strong>{proposal?.proposal.total_deposit ? proposal.proposal.total_deposit[0].amount.toLocaleString() : null} {proposal?.proposal.total_deposit ? proposal.proposal.total_deposit[0].denom : null}</strong></Container>
+          <Container><strong>{proposal?.proposal.total_deposit ? (proposal.proposal.total_deposit[0].amount/DENOM).toFixed(2) : null} {COIN}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Voting Start</Container>
-          <Container><strong>{proposal?.proposal?.voting_start_time ? formatTimeDateYear(proposal.proposal.voting_start_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.voting_start_time ? toDay(proposal.proposal.voting_start_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Voting End</Container>
-          <Container><strong>{proposal?.proposal?.voting_end_time ? formatTimeDateYear(proposal.proposal.voting_end_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.voting_end_time ? toDay(proposal.proposal.voting_end_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Submit Time</Container>
-          <Container><strong>{proposal?.proposal?.submit_time ? formatTimeDateYear(proposal?.proposal.submit_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.submit_time ? toDay(proposal?.proposal.submit_time) : null}</strong></Container>
         </FlexBetween>
         <FlexBetween>
           <Container>Deposit End Time</Container>
-          <Container><strong>{proposal?.proposal?.deposit_end_time ? formatTimeDateYear(proposal?.proposal.deposit_end_time) : null}</strong></Container>
+          <Container><strong>{proposal?.proposal?.deposit_end_time ? toDay(proposal?.proposal.deposit_end_time) : null}</strong></Container>
         </FlexBetween>
       </Box>
 
@@ -371,7 +371,7 @@ const Color = styled.div`
     background: #ffc107
   }
   &.fourth{
-    background: #0d6efd;
+    background: gray;
   }
 `
 

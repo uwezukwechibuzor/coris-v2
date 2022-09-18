@@ -1,17 +1,30 @@
 import Link from "next/link";
+import router from "next/router";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
-import { formatHash, formatTimeDateYear, sortUnDelegationsByBalance } from "../../../lib/Util/format";
+import { COIN, DENOM } from "../../../lib/Util/constants";
+import { formatHash, formatTimeDateYear, sortUnDelegationsByBalance, toDay } from "../../../lib/Util/format";
 
 function UndelegationsContent(props) {
+   
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const denom = 'uatom'
-
-  const unDelegationsData = props.isLoading === false ? props?.data?.unbonding_responses?.map((delegator) => {
+  const unDelegationsData = props?.unbonding_responses !== undefined ? props?.unbonding_responses?.map((delegator) => {
     return delegator
   }) : null
   sortUnDelegationsByBalance(unDelegationsData)
+
+
+   //add pagination to signatures
+   const PER_PAGE = 10;
+   const offset = currentPage * PER_PAGE;
+   const currentunDelegationsData = unDelegationsData?.slice(offset, offset + PER_PAGE) 
+   const pageCount = Math.ceil(unDelegationsData?.length / PER_PAGE);
+   function handlePageClick({ selected: selectedPage }) {
+     setCurrentPage(selectedPage);
+   }
+ 
 
   return (
     <>
@@ -37,12 +50,10 @@ function UndelegationsContent(props) {
                 </th>
               </tr>
             </thead>
-
-            {unDelegationsData?.map(data =>
-              <tbody>
+            <tbody>
+            {currentunDelegationsData.length !== 0 ?  currentunDelegationsData?.map(data =>
                 <tr className="striped">
-                  <Link href='/account[address]' as={`/account/${data.delegator_address}`} ><a>
-                    <td>
+                    <td onClick={() => router.push(`/account/${data?.delegator_address}`)}>
                       <Flex style={{ alignItems: 'center' }}>
                         <div>
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
@@ -52,9 +63,8 @@ function UndelegationsContent(props) {
                         <div className="ml-3">{data ? formatHash(data.delegator_address, 10, '...') : null}</div>
                       </Flex>
                     </td>
-                  </a></Link>
                   <td>
-                    {data?.entries ? data.entries[data.entries.length - 1].balance + ' ' + denom : null}
+                    {data?.entries ? ((data.entries[data.entries.length - 1].balance)/DENOM).toFixed(2) : null} {COIN}
                   </td>
                   <td>
                     {data?.entries ? data.entries[data.entries.length - 1].creation_height : null}
@@ -63,24 +73,31 @@ function UndelegationsContent(props) {
                     {data ? data.entries.length : null}
                   </td>
                   <td>
-                    {data?.entries ? formatTimeDateYear(data.entries[data.entries.length - 1].completion_time) : null}
+                    {data?.entries ? toDay(data.entries[data.entries.length - 1].completion_time, 'from') : null}
                   </td>
-                </tr>
+                </tr> ):   <tr>
+                <td></td>
+                <td></td>
+                <td>NO Undelegation(s)</td>
+                <td></td>
+                <td></td>
+               </tr>  }
               </tbody>
-            )}
           </table>
         </Responsive>
       </Underdelegation>
-      <ReactPaginate
-        breakLabel="..."
-        nextLabel="next >>"
-        onPageChange={() => { }}
-        pageRangeDisplayed={2}
-        pageCount={20}
-        previousLabel="<< previous"
-        renderOnZeroPageCount={null}
-        className="pagination"
-      />
+      {currentunDelegationsData.length !== 0 ? 
+          <ReactPaginate
+            previousLabel={"←"}
+            nextLabel={"→"}
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          /> : null }
     </>
   )
 }

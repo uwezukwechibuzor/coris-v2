@@ -1,124 +1,80 @@
 import React from 'react'
 import styled from "styled-components";
-import {
-  UrbanistNormalBlack24px,
-  UrbanistSemiBoldBlack24px,
-  ValignTextMiddle,
-} from "../../../styledMixins";
 import { periodsInMinutes } from '../../../lib/Util/format';
+import { useAppSelector } from '../../../lib/hooks';
 
 function SlashingParams(props) {
-    const {
-        signedBlockWindow,
-        minSignedPerWindow,
-        downtimeJailDuration,
-        slashFractionDoubleSign,
-        slashFractionDowntime,
-        slashingParamsData
-      } = props;
+   
+  const darkMode = useAppSelector(state => state.general.darkMode)
+
+    const slashingParamsData = props;
  
     return (
         <>
-         <FlexRow3>
-              <FlexCol7>
-                <MintDenom>{signedBlockWindow}</MintDenom>
-                <InflationRateChange>{minSignedPerWindow}</InflationRateChange>
-                <InflationRateChange>{downtimeJailDuration}</InflationRateChange>
-                <InflationRateChange>{slashFractionDoubleSign}</InflationRateChange>
-                <InflationRateChange>{slashFractionDowntime}</InflationRateChange>
-              </FlexCol7>
-              <FlexCol8>
-                <Address3>{slashingParamsData?.data?.params?.signed_blocks_window ? slashingParamsData.data.params.signed_blocks_window : null}</Address3>
-                <Percent>{slashingParamsData?.data?.params?.min_signed_per_window ? slashingParamsData.data.params.min_signed_per_window*100+'%' : null }</Percent>
-                <Address4>{slashingParamsData?.data?.params?.downtime_jail_duration ? periodsInMinutes(slashingParamsData.data.params.downtime_jail_duration) : null }</Address4>
-                <Percent2>{slashingParamsData?.data?.params?.slash_fraction_double_sign ? slashingParamsData.data.params.slash_fraction_double_sign*100+'%' : null}</Percent2>
-                <Percent1>{slashingParamsData?.data?.params?.slash_fraction_downtime ? slashingParamsData.data.params.slash_fraction_downtime*100+'%' : null}</Percent1>
-              </FlexCol8>
-            </FlexRow3>
+          <GridItem>
+          <FlexColumn>
+            <span>Slashing Parameters</span>
+            <Card className={darkMode ? 'dark-mode w-100' : 'w-100'}>
+              <FlexBetween>
+                <span>Signed Block Window</span>
+                <strong>{slashingParamsData?.params?.signed_blocks_window ? slashingParamsData.params.signed_blocks_window : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Min signed Per Window</span>
+                <strong>{slashingParamsData?.params?.min_signed_per_window ? slashingParamsData.params.min_signed_per_window * 100 + '%' : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Downtime Jail Duration</span>
+                <strong>{slashingParamsData?.params?.downtime_jail_duration ? periodsInMinutes(slashingParamsData.params.downtime_jail_duration) : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Slash Fraction Double Sign</span>
+                <strong>{slashingParamsData?.params?.slash_fraction_double_sign ? slashingParamsData.params.slash_fraction_double_sign * 100 + '%' : null}</strong>
+              </FlexBetween>
+              <FlexBetween>
+                <span>Slash Fraction Downtime</span>
+                <strong>{slashingParamsData?.params?.slash_fraction_downtime ? slashingParamsData.params.slash_fraction_downtime * 100 + '%' : null}</strong>
+              </FlexBetween>
+            </Card>
+          </FlexColumn>
+        </GridItem>
         </>
     )
 }
 
-const MintDenom = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  letter-spacing: 0;
-`;
-
-const InflationRateChange = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  letter-spacing: 0;
-`;
-
-const Percent = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 37px;
-  letter-spacing: 0;
-`;
-
-const Percent1 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 44px;
-  letter-spacing: 0;
-`;
-
-const Percent2 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 43px;
-  letter-spacing: 0;
-`;
-
-const FlexRow3 = styled.div`
-  height: 273px;
-  display: flex;
-  padding: 31px 16px;
-  align-items: flex-start;
-  min-width: 660px;
-  background-color: var(--white);
-  border-radius: 20px;
+const Grid = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+  margin-bottom: 40px;
+  @media screen and (max-width: 700px){
+    grid-template-columns: repeat(1, 1fr);
+  }
+`
+const GridItem = styled.div`
+  display:block;
+`
+const Card = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const FlexCol7 = styled.div`
-  ${UrbanistNormalBlack24px}
-  width: 278px;
+  border-radius: 20px;
+  height: 100%;
+  margin-top: 10px;
+  padding: 20px 10px;
+  &.dark-mode{
+    background-color:#19172d !important;
+    box-shadow: 0px -1px 20px 0px #23232329 !important;
+  }
+`
+const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  min-height: 209px;
-`;
-
-const FlexCol8 = styled.div`
-  ${UrbanistSemiBoldBlack24px}
-  width: 104px;
-  margin-left: 246px;
+  height: 100%;
+`
+const FlexBetween = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-height: 209px;
-`;
-
-const Address3 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  min-width: 62px;
-  letter-spacing: 0;
-`;
-
-const Address4 = styled.div`
-  ${ValignTextMiddle}
-  height: 29px;
-  margin-top: 16px;
-  min-width: 104px;
-  letter-spacing: 0;
-`;
+  justify-content:space-between;
+  padding: 5px 0px;
+`
 
 export default SlashingParams

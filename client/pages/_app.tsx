@@ -7,6 +7,11 @@ const { default: fetch, Headers, Request, Response } = require("node-fetch");
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { SSRProvider } from 'react-bootstrap';
 import { wrapper } from "../lib/store";
+import Error from "next/error";
+import ErrorBoundary from "../components/ErrorBoundary";
+import { ErrorFallback } from "../components/ErrorFallback";
+import { allChainValidatorsEndpoint } from "../lib/chainApiEndpoints";
+
 
 Object.assign(globalThis, {
   fetch,
@@ -22,19 +27,52 @@ type NextPageWithLayout = NextPage & {
 }
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
+  Component: NextPageWithLayout,
 }
 
 export function App({ Component, pageProps }: AppPropsWithLayout) {
- 
+  //error handling
+  if (pageProps?.error) {
+    return <Error statusCode={pageProps.error.statusCode} title={pageProps.error.message} />;
+  }
+
+  
     const getLayout = Component.getLayout ?? ((page) => page);
+  
     return getLayout(
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
       <SSRProvider>
-        <Component {...pageProps} />
+        <Component {...pageProps}  />
     </SSRProvider>
+    </ErrorBoundary>
     );
    
 }
+
+/*
+App.getInitialProps = async (res, ctx) => {
+  
+  try {
+  //this is needed  so the search button can function in all pages
+  //get all validators on the chain
+  if(!ctx.req) {
+    return {chainAllValidators: []}
+  }
+  const getAllChainValidators =  await fetch(`https:${allChainValidatorsEndpoint}`)
+  const chainAllValidators = await getAllChainValidators.json();
+ 
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=600, stale-while-revalidate=900'
+  )
+ return {props: chainAllValidators }
+
+} catch (error) {
+   
+}
+
+} 
+  */
 
 export default wrapper.withRedux(App);
 

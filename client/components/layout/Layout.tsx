@@ -10,6 +10,11 @@ import { useAppSelector } from "../../lib/hooks";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { darkMode } = useAppSelector(state => state.general)
+
+  //get validators data
+  //const getAllValidators =  children?.props?.children?.props?.children?.props 
+  const getAllValidators =  [] 
+
   return (
     <MainParent className={darkMode && 'dark-mode'}>
       <Head>
@@ -19,7 +24,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <FlexCol2>
         <div className="d-table w-100" style={{height: "100vh"}}>
           <div className={`${darkMode && 'dark-mode'} d-table-row w-100 main-header`}>
-            <Header />
+            <Header getAllValidators={getAllValidators} />
           </div>
           <div className="d-table-row w-100 h-100">
             <div className="d-table w-100 h-100">

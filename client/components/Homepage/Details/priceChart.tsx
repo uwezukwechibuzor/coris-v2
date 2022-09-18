@@ -54,7 +54,7 @@ const PriceChart = (props) => {
       title: {
         text: 'Exchange rate',
       },
-      visible: false
+      visible: false,
     },
     legend: {
       enabled: false
@@ -102,7 +102,7 @@ const PriceChart = (props) => {
     <HighchartsReact
       highcharts={Highcharts}
       ref={chartRef}
-      containerProps={{ style: { width: "100%", height: "100%" } }}
+      containerProps={{ style: { width: "100%", height: "300px" } }}
       options={config}
     // highcharts={Highcharts}
     />

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from "styled-components";
-import { abbrMessage, formatHash, formatTime, formatTimeDateYear, getValidatorsLogoFromWebsites } from '../../../lib/Util/format';
+import { abbrMessage, formatHash, formatTime, formatTimeDateYear, getValidatorsLogoFromWebsites, toDay } from '../../../lib/Util/format';
 import {
   UrbanistBoldBlack26px,
   UrbanistNormalBlack24px,
@@ -8,28 +8,34 @@ import {
 } from "../../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery } from '../../../lib/chainApi';
 import Link from "next/link";
 import { useAppSelector } from '../../../lib/hooks';
 import ReactPaginate from 'react-paginate';
+import { COIN, DENOM } from '../../../lib/Util/constants';
+import router from 'next/router';
 
 function BlockHeightContent(props: any) {
   const darkMode = useAppSelector(state => state.general.darkMode)
   const {
     title,
     blockData,
-    txs
+    txs,
+    activeValidators
   } = props;
+  //console.log(txs)
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentTxsPage, setCurrentTxsPage] = useState(0);
+
 
   //convert single proposer address
   const proposerToBech32FromBlockQuery = blockData?.block?.header != undefined ? blockData?.block?.header?.proposer_address : null
 
   //get the proposer adddress from signatures
-  const getChainValidators = useGetChainActiveValidatorsQuery()
   const validatorsSignaturesDetails = blockData?.block?.last_commit?.signatures.map((validatorSignatureData) => {
     //convert proposer address from signatures to cosmosvalcons
     const proposerToBech32 = toBech32("cosmosvalcons", fromHex(validatorSignatureData.validator_address))
-    const getActiveChainValidators = getChainValidators?.data?.validators.map((validator) => {
+    const getActiveChainValidators = activeValidators?.validators.map((validator) => {
       //fetch just the active validators
       //get the consensus pubkey
       const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
@@ -47,6 +53,15 @@ function BlockHeightContent(props: any) {
   let proposerName
   validatorsSignaturesDetails?.map((details) => details?.map((data) => data?.validatorSignatureData?.validator_address === proposerToBech32FromBlockQuery ? proposerName = data : null))
 
+  //add pagination to signatures
+  const PER_PAGE = 10;
+  const offset = currentPage * PER_PAGE;
+  const currentValidatorSignatureData = validatorsSignaturesDetails?.slice(offset, offset + PER_PAGE) 
+  const pageCount = Math.ceil(validatorsSignaturesDetails?.length / PER_PAGE);
+  function handlePageClick({ selected: selectedPage }) {
+    setCurrentPage(selectedPage);
+  }
+
   //get total transactions fee
   let totalTxsFee = 0
   let denom
@@ -54,6 +69,15 @@ function BlockHeightContent(props: any) {
     totalTxsFee += Number(tx?.tx?.auth_info?.fee?.amount[0]?.amount)
     denom = tx?.tx?.auth_info?.fee?.amount[0]?.denom
   }) : null
+
+    //add pagination to TXS 
+    const txsPER_PAGE = 5;
+    const offsetTxs = currentTxsPage * txsPER_PAGE;
+    const currentTxsData = txs?.tx_responses.slice(offsetTxs, offsetTxs + PER_PAGE) 
+    const txspageCount = Math.ceil(txs?.tx_responses?.length / txsPER_PAGE);
+    function handleTxsPageClick({ selected: selectedPage }) {
+      setCurrentTxsPage(selectedPage);
+    }
 
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
@@ -71,7 +95,7 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{blockData?.block?.header ? formatTime(blockData?.block?.header?.time) : null}</h4>
+                <h4>{blockData?.block?.header ? toDay(blockData?.block?.header?.time, 'from') : null}</h4>
                 <h6 className="text-center">Time</h6>
               </div>
             </FlexCenter>
@@ -92,7 +116,7 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{proposerName?.validatorSignatureData ? formatTimeDateYear(proposerName?.validatorSignatureData?.timestamp) : null}</h4>
+                <h4>{proposerName?.validatorSignatureData ? toDay(proposerName?.validatorSignatureData?.timestamp) : null}</h4>
                 <h6 className="text-center">Time</h6>
               </div>
             </FlexCenter>
@@ -108,7 +132,7 @@ function BlockHeightContent(props: any) {
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>
               <div>
-                <h4>{totalTxsFee} {denom}</h4>
+                <h4>{totalTxsFee} {COIN}</h4>
                 <h6 className="text-center">Txs Total Fee</h6>
               </div>
             </FlexCenter>
@@ -182,20 +206,20 @@ function BlockHeightContent(props: any) {
                   <th>Time</th>
                 </tr>
               </thead>
-              {validatorsSignaturesDetails?.map((details) => {
+              {currentValidatorSignatureData?.map((details) => {
                 return details?.map((data) => {
                   if (data !== undefined) {
                     return (
+                      <tbody>
                       <tr>
-                        <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
-                          <td>
+                          <td onClick={() => router.push(`/validators/${data.validator.operator_address}`)}> 
                             <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
                             <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description ? data?.validator?.description?.moniker : null}</p>
                           </td>
-                        </a></Link>
-                        <td>{data?.validatorSignatureData ? formatTimeDateYear(data?.validatorSignatureData?.timestamp) : null}
+                        <td>{data?.validatorSignatureData ? toDay(data?.validatorSignatureData?.timestamp, 'from') : null}
                         </td>
                       </tr>
+                      </tbody>
                     )
                   }
                 })
@@ -203,16 +227,18 @@ function BlockHeightContent(props: any) {
               }
             </table>
           </Responsive>
+          { currentValidatorSignatureData.length !== 0 ? 
           <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >>"
-            onPageChange={() => { }}
-            pageRangeDisplayed={2}
-            pageCount={20}
-            previousLabel="<< previous"
-            renderOnZeroPageCount={null}
-            className="pagination"
-          />
+            previousLabel={"←"}
+            nextLabel={"→"}
+            pageCount={pageCount}
+            onPageChange={handlePageClick}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          /> : null }
         </Card>
       </Container>
 
@@ -231,32 +257,43 @@ function BlockHeightContent(props: any) {
                   <th>Time</th>
                 </tr>
               </thead>
-              {txs?.tx_responses !== null ? txs?.tx_responses?.map(tx =>
+              {currentTxsData.length !== 0 ? currentTxsData?.map(tx =>
                 <tbody>
                   <tr>
-                    <Link href='/transaction[hash]' as={`/transaction/${tx.txhash}`} ><a>
-                      <td>{formatHash(tx?.txhash, 20, '..')}</td>
-                    </a></Link>
+                      <td onClick={() => router.push(`/transaction/${tx.txhash}`)}>
+                        {formatHash(tx?.txhash, 20, '..')}
+                      </td>
                     <td>{tx?.height}</td>
                     <td className={tx.code === 0 ? "text-success" : 'text-danger'}>{tx.code === 0 ? 'Success' : 'failed'}</td>
-                    <td>{tx?.tx?.auth_info?.fee?.amount[0]?.amount + ' ' + tx?.tx?.auth_info?.fee?.amount[0]?.denom}</td>
+                    <td>{tx?.tx?.auth_info?.fee?.amount[0]?.amount/DENOM} {COIN}</td>
                     <td>{abbrMessage(tx.tx.body.messages)}</td>
-                    <td>{formatTimeDateYear(tx?.timestamp)}</td>
+                    <td>{toDay(tx?.timestamp, 'from')}</td>
                   </tr>
                 </tbody>
-              ) : null}
+              ) : <tbody>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>No Txs</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                </tbody>}
             </table>
           </Responsive>
+          { currentTxsData.length !== 0 ? 
           <ReactPaginate
-            breakLabel="..."
-            nextLabel="next >>"
-            onPageChange={() => { }}
-            pageRangeDisplayed={2}
-            pageCount={20}
-            previousLabel="<< previous"
-            renderOnZeroPageCount={null}
-            className="pagination"
-          />
+            previousLabel={"←"}
+            nextLabel={"→"}
+            pageCount={txspageCount}
+            onPageChange={handleTxsPageClick}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          /> : null }
         </Card>
       </Container>
       {/* <OverlapGroupContainer>

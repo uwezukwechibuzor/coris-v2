@@ -20,6 +20,10 @@ import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 import { useAppSelector } from "../../lib/hooks";
 import ReactPaginate from "react-paginate";
+import { Card, Col, Row } from "react-bootstrap";
+import TxsData from "../Blocks/Txs";
+import { DENOM } from "../../lib/Util/constants";
+import router from "next/router";
 
 
 
@@ -32,8 +36,7 @@ const PoolChart = dynamic(() => import('./Details/poolChart'), {
   ssr: false
 })
 
-let coinID = 'juno-network'
-const denom = 1000000;
+let coinID = 'umee'
 
 function HomePageContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
@@ -49,14 +52,18 @@ function HomePageContent(props) {
     latestBlocks,
     viewAll,
     getBlocks,
+    getAllTxs,
+    activeValidators,
+    poolData,
+    chainAllValidators
+    
   } = props;
-
+ 
   //function that receieves proposer address and returns the validators details
-  const getChainValidators = useGetChainActiveValidatorsQuery()
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
     //convert proposer address to cosmosvalcons
     const proposerToBech32 = toBech32("cosmosvalcons", fromHex(block.proposer))
-    const getActiveChainValidators = getChainValidators?.data?.validators.map((validator) => {
+    const getActiveChainValidators = activeValidators.validators.map((validator) => {
       //fetch just the active validators
       //get the consensus pubkey
       const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
@@ -95,36 +102,33 @@ function HomePageContent(props) {
   //console.log(priceChart)
 
   //get Bonded Token and Not bonded Token
-  const getPool = useGetChainPoolQuery()
-  const bondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.bonded_tokens / denom).toFixed(2) : null
-  const notBondedTokens = getPool.isLoading == false ? (getPool?.data?.pool?.not_bonded_tokens / denom).toFixed(2) : null
+  const bondedTokens =  poolData !== undefined ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2) : null
+  const notBondedTokens = poolData !== undefined ? (poolData?.pool?.not_bonded_tokens / DENOM).toFixed(2) : null
 
   //get voting power and the active validators
-  const getAllValidators = useGetChainValidatorsQuery()
-  const getAllActiveValidators = useGetChainActiveValidatorsQuery()
-  const totalValidators = getAllValidators.isLoading == false ? getAllValidators?.data?.validators?.length : null
-  const totalActiveValidators = getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators?.length : null
+  const totalValidators = chainAllValidators !== undefined ?  chainAllValidators?.length : null
+  const totalActiveValidators = activeValidators.validators?.length
 
   //percentage of active Validators
   const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined ? Math.round(Number(totalActiveValidators / totalValidators) * 100) : null
 
   //get the validators total voting power
   let totalVotingPower = 0
-  getAllValidators.isLoading == false ? getAllValidators?.data?.validators.map(validatorsDetails => {
-    totalVotingPower += Number(validatorsDetails.tokens / denom)
+  chainAllValidators !== undefined ?  chainAllValidators?.map(validatorsDetails => {
+    totalVotingPower += Number(validatorsDetails.tokens / DENOM)
     return totalVotingPower
   }) : null
 
   //get the validators total active voting power
   let totalActiveVotingPower = 0
-  getAllActiveValidators.isLoading == false ? getAllActiveValidators?.data?.validators.map(validatorsDetails => {
-    totalActiveVotingPower += Number(validatorsDetails.tokens / denom)
+  activeValidators !== undefined ? activeValidators?.validators.map(validatorsDetails => {
+    totalActiveVotingPower += Number(validatorsDetails.tokens/DENOM)
     return totalActiveVotingPower
   }) : null
 
   //percentage of online Voting Power
-  const percentageOfVotingPower = getAllValidators.isLoading == false && getAllActiveValidators.isLoading == false ? Math.round(Number(totalActiveVotingPower / totalVotingPower) * 100) : null
- 
+  const percentageOfVotingPower = ((totalActiveVotingPower / totalVotingPower) * 100).toFixed()
+
 
   const detailsData = {
     onlineVotingPower: "Online Voting power",
@@ -309,7 +313,7 @@ function HomePageContent(props) {
         <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
       </Flex>
       <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
-        <Responsive>
+      <Responsive>
           <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
             <thead>
               <tr>
@@ -327,15 +331,12 @@ function HomePageContent(props) {
                   //console.log(data)
                   return (
                     <tr>
-                      <Link href='/blocks[height]' as={`/blocks/${data.block.height}`} ><a>
-                        <td>{data.block?.height ? data.block.height : null}</td> </a></Link>
+                        <td onClick={() => router.push(`/blocks/${data.block.height}`)} >{data.block?.height ? data.block.height : null}</td>
                       <td>{data.block?.hash ? formatHash(data.block.hash, 15, '....') : null}</td>
-                      <Link href='/validators[address]' as={`/validators/${data.validator.operator_address}`} ><a>
-                        <td>
+                        <td onClick={() => router.push(`/validators/${data.validator.operator_address}`)}>
                           <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
                           <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
                         </td>
-                      </a></Link>
                       <td>{data?.block?.noTxs}</td>
                       <td>{data?.block?.time ? toDay(data?.block.time, 'from') : null}</td>
                     </tr>
@@ -346,6 +347,14 @@ function HomePageContent(props) {
             }
           </table>
         </Responsive>
+      </Container>
+      
+      <Flex className="align-items-center justify-content-between">
+        <LatestBlocks className={darkMode ? 'dark-mode' : ''}>Latest Transactions</LatestBlocks>
+        <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
+      </Flex>
+      <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
+       <TxsData  getAllTxs={getAllTxs} />
       </Container>
     </Wrapper>
   )

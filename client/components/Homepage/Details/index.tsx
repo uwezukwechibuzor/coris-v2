@@ -19,7 +19,7 @@ function Details(props) {
             style={{
               color: darkMode ? 'white' : 'black'
             }}
-          >From</Place>
+          >{place}</Place>
         </div>
         <X36516m1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M2)}</X36516m1>
       </Group7328>
@@ -58,9 +58,6 @@ const X36516m = styled.div`
   font-size: 14px;
   width: 100px;
   letter-spacing: 1.28px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   &.darkMode{
     color: white;
   }
@@ -82,10 +79,6 @@ const X36516m1 = styled.div`
   min-height: 19px;
   font-size: 14px;
   width: 100px;
-  letter-spacing: 1.28px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   &.darkMode{
     color: white;
   }
