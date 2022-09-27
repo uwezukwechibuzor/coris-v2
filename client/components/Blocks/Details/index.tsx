@@ -83,6 +83,69 @@ function BlockHeightContent(props: any) {
     <div className={darkMode ? 'dark-mode' : ''}>
       <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
       <Container>
+        <Card className={darkMode ? 'dark-mode last-grid-item' : 'last-grid-item'} style={{ height: "fit-content", padding: "20px", marginBottom: "20px"}}>
+          <div>Header</div>
+          <hr />
+          <table style={{width: "100%"}}>
+            <tr>
+              <td style={{fontWeight: "bold", width: "150px"}}>
+                Chain Id
+              </td>
+              <td>
+                cosmoshub-4
+              </td>
+            </tr>
+            <tr>
+              <td style={{ fontWeight: "bold" }}>
+                Height
+              </td>
+              <td>
+                12172283
+              </td>
+            </tr>
+            <tr>
+              <td>Block Time</td>
+              <td>
+                2 days ago
+                ( 2022-09-23 19:59:20 )</td>
+            </tr>
+            <tr>
+              <td>Block Hash</td>
+              <td>862AA0290D70A100BC59C9C90DDA99B37084A9EE8187C6160953F0B31C1CDEAA</td>
+            </tr>
+            <tr>
+              <td>Number of Tx</td>
+              <td>8</td>
+            </tr>
+            <tr>
+              <td>Gas (used / wanted)</td>
+              <td>881052 / 1680021</td>
+            </tr>
+            <tr>
+              <td>Block Round</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Proposer</td>
+              <td>Simply Staking</td>
+            </tr>
+          </table>
+        </Card>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <Grid>
           <Card className={darkMode ? 'dark-mode' : ''} style={{ height: "100px" }}>
             <FlexCenter>

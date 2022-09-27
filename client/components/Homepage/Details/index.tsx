@@ -13,15 +13,18 @@ function Details(props) {
     <Details1>
       <OnlineVotingPower className={darkMode ? 'dark-mode' : ''}>{onlineVotingPower}</OnlineVotingPower>
       <Group7328>
-        <X36516m className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M1)}</X36516m>
         <div>
-          <Place
-            style={{
-              color: darkMode ? 'white' : 'black'
-            }}
-          >{place}</Place>
+          <X36516m className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M1)}</X36516m>
+          <div>
+            <Place
+              style={{
+                color: darkMode ? 'white' : 'black'
+              }}
+            >{place}</Place>
+          </div>
+          <X36516m1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M2)}</X36516m1>
         </div>
-        <X36516m1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M2)}</X36516m1>
+
       </Group7328>
     </Details1>
   );
@@ -66,7 +69,6 @@ const X36516m = styled.div`
 const Place = styled.div`
   ${UrbanistNormalBlack16px}
   min-height: 19px;
-  margin-left: -40px;
   min-width: 34px;
   letter-spacing: 0;
   font-size: 14px;

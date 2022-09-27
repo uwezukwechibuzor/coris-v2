@@ -30,11 +30,9 @@ const TxsData = (props) => {
  //const pageCount = Math.ceil(allTxs.length / PER_PAGE);
 //console.log(currentPageData, pageCount)
 
-    return (
-        <Container className="w-100">
-        <Responsive>
-      <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
-        <thead>
+  return (
+    <table className={darkMode ? 'mt-3 dark-mode w-100' : 'w-100 mt-3'} style={{tableLayout: "fixed"}}>
+        <thead className="w-100">
           <tr>
             <th>Tx Hash</th>
             <th>Type</th>
@@ -55,8 +53,6 @@ const TxsData = (props) => {
                 </tr> 
                 )}
       </table>
-    </Responsive>
-        </Container>
     )
 }
 
@@ -66,10 +62,6 @@ const Container = styled.div`
 
 const Responsive = styled.div`
   width: 100%;
-  overflow-x: auto;
-  @media screen and (max-width: 700px){
-    width: calc(100vw - 40px)
-  }
   `;
 
   export default TxsData

@@ -60,7 +60,7 @@ export async function getServerSideProps({ query, res, req }) {
    }
 
  } catch (error) {
-   
+    return {}
  }
 } 
 

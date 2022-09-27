@@ -58,12 +58,12 @@ function ValidatorsContent(props) {
               <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
                 <thead>
                   <tr style={{ fontWeight: "bold" }}>
-                    <th>Rank</th>
+                    <th style={{ width: "60px"}}>Rank</th>
                     <th>Validator</th>
                     <th>Voting Power</th>
-                    <th>Cummulative Share</th>
-                    <th>Commission</th>
-                    <th>Uptime</th>
+                    <th style={{ width: "60px"}}>Cummulative Share</th>
+                    <th style={{ width: "60px" }}>Commission</th>
+                    <th style={{ width: "60px" }}>Uptime</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -89,7 +89,7 @@ function ValidatorsContent(props) {
                               <FlexMiddle>
                                 <img className="img" src={getValidatorsLogoFromWebsites(data?.description?.website)} alt="" />
                               </FlexMiddle>
-                              <FlexMiddle>
+                              <FlexMiddle className="ellipsis" style={{width: "120px"}}>
                                 {data?.description?.moniker}
                               </FlexMiddle>
                             </Flex>
@@ -98,7 +98,24 @@ function ValidatorsContent(props) {
                             {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
                             <div style={{color: 'red'}} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
                           </td>
-                          <td>{activeValidatorsCumulativeShare.toFixed(2) + '%'}</td>
+                          <td style={{position: "relative"}}>
+                            <div style={{
+                              position: "absolute",
+                              top: "0px",
+                              left: "0px",
+                              height: "100%",
+                              width: "100%",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent:"flex-end"
+                            }}>
+                              {activeValidatorsCumulativeShare.toFixed(2) + '%'}
+                            </div>
+                            <div className="w-100 d-flex h-100 position-absolute" style={{top: "0px", left:"0px"}}>
+                              <div className="h-100" style={{ width: `${activeValidatorsCumulativeShare.toFixed(2)}%`, background: "#ecf8f447" }}></div>
+                              <div className="h-100" style={{ width: "5px", background: "#c5f1de" }}></div>
+                            </div>
+                          </td>
                           <td>{commission.toFixed(2) + '%'}</td>
                           <td>100%</td>
                         </tr>
