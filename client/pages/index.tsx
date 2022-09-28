@@ -132,7 +132,15 @@ export async function getServerSideProps({ res, req }) {
     }
 
   } catch (error) {
-    
+       return {
+         props: {
+           inflationData: {},
+           commuintyPoolData: {},
+           chainActiveValidatorsData: {},
+           poolData: {},
+           chainAllValidators: {}
+         },
+       }
   }
 } 
      

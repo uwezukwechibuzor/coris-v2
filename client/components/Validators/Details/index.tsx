@@ -17,7 +17,6 @@ import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import router from "next/router";
 
-
 function ValidatorsDetailsContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
   const {
@@ -99,10 +98,63 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
   } catch(error) {
 
   }
-  
+
   return (
     <div className={darkMode ? 'dark-mode' : ''}>
       <Title className={darkMode ? 'dark-mode' : ''}>Validator Details</Title>
+      <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "20px" }}>
+        <div className="img-container"></div>
+        <h4 className="my-3">Coinbase Custody</h4>
+        <div className="my-3">
+          <div><strong>Operator Address</strong></div>
+          <small>cosmosvaloper1c4k24jzduc365kywrsvf5ujz4ya6mwympnc4en</small>
+        </div>
+        <div className="my-3">
+          <div><strong>Address</strong></div>
+          <small>cosmosvaloper1c4k24jzduc365kywrsvf5ujz4ya6mwympnc4en</small>
+        </div>
+        <hr />
+        <div className="my-3">
+          <div><strong>Website</strong></div>
+          <small>custody.coinbase.com</small>
+        </div>
+        <div className="my-3">
+        
+          <div><strong>Commission</strong></div>
+          <small>20.00%</small>
+        </div>
+        <div className="my-3">
+          <div><strong>Uptime</strong></div>
+          <small>98%</small>
+        </div>
+        <div className="my-3">
+          <div><strong>Vooting Power</strong></div>
+          <small>
+            6.8%(14,095,533.091516ATOM)
+          </small>
+        </div>
+        <div className="my-3">
+          <div><strong>Bonded Height</strong></div>
+          <small>
+            10,908,133
+          </small>
+        </div>
+        <div className="my-3">
+          <div><strong>Self Bonded</strong></div>
+          <small>
+            2,000000 ATOM(0.00%)
+          </small>
+        </div>
+        <div className="my-3">
+          <div><strong>Details</strong></div>
+          <small>
+
+            Coinbase Custody Cosmos Validator
+          </small>
+        </div>
+        
+
+      </Card>
       <Grid>
         <GridItemOne className={darkMode ? 'dark-mode' : ''}>
           <div className="d-table w-100">
@@ -135,16 +187,16 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
         <GridItemTwo className={darkMode ? 'dark-mode' : ''}>
           <FlexXCenter className="h-100 w-100" style={{ alignItems: "center" }}>
             <FlexColumn style={{ width: '25%' }}>
-              <h5>{validatorsDetails?.status === undefined ? null : validatorsDetails?.status === 'BOND_STATUS_BONDED' ?  <p className="active">Active</p> : <p className="inActive">InActive</p>}
+              <h5>{validatorsDetails?.status === undefined ? null : validatorsDetails?.status === 'BOND_STATUS_BONDED' ? <p className="active">Active</p> : <p className="inActive">InActive</p>}
               </h5>
               <span>Status</span>
             </FlexColumn>
             <FlexColumn style={{ width: '25%' }}>
-              <h5>{validatorsDetails?.jailed === undefined ? null: validatorsDetails?.jailed === false ?  <p className="active">No</p> : <p className="inActive">Yes</p>}</h5>
+              <h5>{validatorsDetails?.jailed === undefined ? null : validatorsDetails?.jailed === false ? <p className="active">No</p> : <p className="inActive">Yes</p>}</h5>
               <span>In Jail</span>
             </FlexColumn>
             <FlexColumn >
-              <h5>{percentageOfValidatorUptime+'%'}</h5>
+              <h5>{percentageOfValidatorUptime + '%'}</h5>
               <span>Uptime</span>
             </FlexColumn>
           </FlexXCenter>
@@ -152,34 +204,34 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
         <GridItemThree className={darkMode ? 'dark-mode' : ''}>
           <Flex className="w-100 h-100">
             <FlexCenter className="w-50">
-            <div style={{ width: 100, height: 100 }} className={darkMode ? 'dark-mode' : ''}>
-            <CircularProgressbar 
-              value={percentageofVotingPower} 
-              text={`${percentageofVotingPower.toFixed(2)}%`} 
-              backgroundPadding={6}
-              styles={buildStyles({
-                backgroundColor: "yellow",
-                textColor: "#3a428a",
-                pathColor: "#3a428a",
-                trailColor: ""
-              })}
-            />
-          </div>
+              <div style={{ width: 100, height: 100 }} className={darkMode ? 'dark-mode' : ''}>
+                <CircularProgressbar
+                  value={percentageofVotingPower}
+                  text={`${percentageofVotingPower.toFixed(2)}%`}
+                  backgroundPadding={6}
+                  styles={buildStyles({
+                    backgroundColor: "yellow",
+                    textColor: "#3a428a",
+                    pathColor: "#3a428a",
+                    trailColor: ""
+                  })}
+                />
+              </div>
             </FlexCenter>
             <FlexCenter className="w-50">
               <FlexColumn>
                 <span>Voting Power</span>
-                <h5>
-   
-                  {validatorsDetails?.tokens? roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens) : null}</h5>
+                <h5 style={{ wordBreak: "break-all" }}>
+
+                  {validatorsDetails?.tokens ? roundValidatorsVotingPowerToWholeNumber(validatorsDetails?.tokens) : null}</h5>
                 {/*<OverlayTrigger  overlay={<Tooltip id="tooltip-disabled">{percentageofVotingPower.toFixed(2)+'%'}</Tooltip>}>
                   <ProgressBar animated   now={percentageofVotingPower} />
   </OverlayTrigger> */}
-   
+
               </FlexColumn>
             </FlexCenter>
           </Flex>
-      
+
         </GridItemThree>
         <GridItemFour className={darkMode ? 'dark-mode' : ''}>
           <FlexColumn>
@@ -189,19 +241,19 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             <div>
               <FlexBetween className="px-3 pt-3">
                 <div>Commission</div>
-                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.rate *100+'%' : null}</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates ? validatorsDetails?.commission?.commission_rates?.rate * 100 + '%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Max Rate</div>
-                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.max_rate*100+'%' : null}</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates ? validatorsDetails?.commission?.commission_rates?.max_rate * 100 + '%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Max Change Rate</div>
-                <strong>{validatorsDetails?.commission?.commission_rates? validatorsDetails?.commission?.commission_rates?.max_change_rate*100+'%' : null}</strong>
+                <strong>{validatorsDetails?.commission?.commission_rates ? validatorsDetails?.commission?.commission_rates?.max_change_rate * 100 + '%' : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Updated</div>
-                <strong>{validatorsDetails?.commission? toDay(validatorsDetails?.commission?.update_time, 'from'): null}</strong>
+                <strong>{validatorsDetails?.commission ? toDay(validatorsDetails?.commission?.update_time, 'from') : null}</strong>
               </FlexBetween>
             </div>
           </FlexColumn>
@@ -214,15 +266,15 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             <div>
               <FlexBetween className="px-3 pt-3">
                 <div>Bonded</div>
-                <strong>{validatorsDetails? validatorsDetails?.min_self_delegation : null}</strong>
+                <strong>{validatorsDetails ? validatorsDetails?.min_self_delegation : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Delegator Shares</div>
-                <strong>{validatorsDetails? delegatorsShares : null}</strong>
+                <strong>{validatorsDetails ? delegatorsShares : null}</strong>
               </FlexBetween>
               <FlexBetween className="px-3 pt-3">
                 <div>Bonded Height</div>
-                <strong>{validatorsDetails? validatorsDetails?.unbonding_height : null}</strong>
+                <strong>{validatorsDetails ? validatorsDetails?.unbonding_height : null}</strong>
               </FlexBetween>
             </div>
           </FlexColumn>
@@ -235,28 +287,28 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
             <FlexColumn className='p-3'>
               <FlexColumn>
                 <strong>Account</strong>
-                <Flex>
+                <Flex style={{ wordBreak: "break-all" }}>
                   <span onClick={() => router.push(`/account/${accountAddress}`)} >{accountAddress}</span>
                   <CopyClip value={accountAddress} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Operator</strong>
-                <Flex>
+                <Flex style={{ wordBreak: "break-all" }}>
                   <span>{operatorAddress}</span>
                   <CopyClip value={operatorAddress} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Consensus</strong>
-                <Flex>
+                <Flex style={{ wordBreak: "break-all" }}>
                   <span>{bech32Address}</span>
                   <CopyClip value={bech32Address} />
                 </Flex>
               </FlexColumn>
               <FlexColumn>
                 <strong>Hex</strong>
-                <Flex>
+                <Flex style={{ wordBreak: "break-all" }}>
                   <span>{hexAddress}</span>
                   <CopyClip value={hexAddress} />
                 </Flex>
@@ -268,24 +320,24 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
           <FlexColumn>
             <Flex className="p-3">
               <div>Uptime by 100 latest blocks</div>
-              <div style={{marginLeft: '20px'}}>Missed Blocks <Badge  bg="danger">{missedBlocks}</Badge></div>
+              <div style={{ marginLeft: '20px' }}>Missed Blocks <Badge bg="danger">{missedBlocks}</Badge></div>
             </Flex>
             <BlockGrid>
-               {getUptime.map(data =>
-               <Link href='/blocks[height]' as={`/blocks/${data.upTime?.height || data.noUpTime?.height}`} ><a>
-              <Block className={data.upTime?.height? 'bg-success' : data.noUpTime?.height?  'bg-danger': null} >
-                <Tooltip>
-                  <strong>Height:</strong>
-                  <br />
-                  <strong>{data.upTime?.height || data.noUpTime?.height }</strong>
-                  <br />
-                  <strong style={{ color: "#50df50" }}>Signed: </strong>
-                  <br />
-                  <strong>{data.upTime?.height? 'Success' : data.noUpTime?.height? <p className="text-danger" >Failed</p> : null}</strong>
-                </Tooltip>
-              </Block>
-              </a></Link>
-           )}
+              {getUptime.map(data =>
+                <Link href='/blocks[height]' as={`/blocks/${data.upTime?.height || data.noUpTime?.height}`} ><a>
+                  <Block className={data.upTime?.height ? 'bg-success' : data.noUpTime?.height ? 'bg-danger' : null} >
+                    <Tooltip>
+                      <strong>Height:</strong>
+                      <br />
+                      <strong>{data.upTime?.height || data.noUpTime?.height}</strong>
+                      <br />
+                      <strong style={{ color: "#50df50" }}>Signed: </strong>
+                      <br />
+                      <strong>{data.upTime?.height ? 'Success' : data.noUpTime?.height ? <p className="text-danger" >Failed</p> : null}</strong>
+                    </Tooltip>
+                  </Block>
+                </a></Link>
+              )}
             </BlockGrid>
           </FlexColumn>
         </GridItemSeven>
@@ -296,23 +348,23 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
         <div className="w-100 p-3">
           <TabToggler className={darkMode ? 'dark-mode' : ''}>
             <TabTogglerItem
-              className={`${selectedDelegations === 'delegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
+              className={`${selectedDelegations === 'delegations' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
               onClick={() => setDelegationPage('delegations')}
             >Delegations</TabTogglerItem>
             <TabTogglerItem
               onClick={() => setDelegationPage('underdelegations')}
-              className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode': '' }`}
+              className={`${selectedDelegations === 'underdelegations' ? "active" : ''} ${darkMode ? 'dark-mode' : ''}`}
             >Undelegations</TabTogglerItem>
-           </TabToggler>
+          </TabToggler>
           {
             selectedDelegations === 'delegations' ? (
 
-            <DelegationsContent {...validatorsDelegations} />
+              <DelegationsContent {...validatorsDelegations} />
 
-            )  : (
+            ) : (
               <UndelegationsContent {...unDelegations} />
-                          
-              )
+
+            )
           }
         </div>
       </Card>
@@ -328,6 +380,11 @@ const percentageOfValidatorUptime = totalBlocks != 0 && totalSignedBlocks != 0? 
            }
            .noUptime {
             background: red
+           }
+           @media screen and (max-width:120px){
+            .block-sm {
+              display: block
+            }
            }
          `}</style>
     </div>

@@ -56,9 +56,9 @@ function HomePageContent(props) {
     activeValidators,
     poolData,
     chainAllValidators
-    
+
   } = props;
- 
+
   //function that receieves proposer address and returns the validators details
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
     //convert proposer address to cosmosvalcons
@@ -94,7 +94,7 @@ function HomePageContent(props) {
   useEffect(() => {
     axios.get(API_PriceData).then((response) => {
       const getPrice = response.data.prices
-        setPriceChart(getPrice)
+      setPriceChart(getPrice)
     }).catch((error) => {
       console.log(error)
     })
@@ -102,11 +102,11 @@ function HomePageContent(props) {
   //console.log(priceChart)
 
   //get Bonded Token and Not bonded Token
-  const bondedTokens =  poolData !== undefined ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2) : null
+  const bondedTokens = poolData !== undefined ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2) : null
   const notBondedTokens = poolData !== undefined ? (poolData?.pool?.not_bonded_tokens / DENOM).toFixed(2) : null
 
   //get voting power and the active validators
-  const totalValidators = chainAllValidators !== undefined ?  chainAllValidators?.length : null
+  const totalValidators = chainAllValidators !== undefined ? chainAllValidators?.length : null
   const totalActiveValidators = activeValidators.validators?.length
 
   //percentage of active Validators
@@ -114,7 +114,7 @@ function HomePageContent(props) {
 
   //get the validators total voting power
   let totalVotingPower = 0
-  chainAllValidators !== undefined ?  chainAllValidators?.map(validatorsDetails => {
+  chainAllValidators !== undefined ? chainAllValidators?.map(validatorsDetails => {
     totalVotingPower += Number(validatorsDetails.tokens / DENOM)
     return totalVotingPower
   }) : null
@@ -122,7 +122,7 @@ function HomePageContent(props) {
   //get the validators total active voting power
   let totalActiveVotingPower = 0
   activeValidators !== undefined ? activeValidators?.validators.map(validatorsDetails => {
-    totalActiveVotingPower += Number(validatorsDetails.tokens/DENOM)
+    totalActiveVotingPower += Number(validatorsDetails.tokens / DENOM)
     return totalActiveVotingPower
   }) : null
 
@@ -159,21 +159,16 @@ function HomePageContent(props) {
             }
           </Icon>
           <Stat>
-            {Math.sign(coinData?.market_data?.current_price?.usd) === 1? <Amount>${coinData?.market_data?.current_price?.usd}</Amount>: Math.sign(coinData?.market_data?.current_price?.usd) === -1? <Amount style={{color: 'red'}}>${coinData?.market_data?.current_price?.usd}</Amount> : null }
+            {Math.sign(coinData?.market_data?.current_price?.usd) === 1 ? <Amount>${coinData?.market_data?.current_price?.usd}</Amount> : Math.sign(coinData?.market_data?.current_price?.usd) === -1 ? <Amount style={{ color: 'red' }}>${coinData?.market_data?.current_price?.usd}</Amount> : null}
             <Flex>
               <FlexCol>
-                {/* <Increase>
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 10L7 0L14 10H0Z" fill="#59B17D" />
-                  </svg>
-                </Increase> */}
                 <Decrease>
                   <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 10L7 0L14 10H0Z" fill={Math.sign(coinData?.market_data?.price_change_percentage_24h) === 1? '#2ec169' : Math.sign(coinData?.market_data?.price_change_percentage_24h) === -1? 'red' : null} />
+                    <path d="M0 10L7 0L14 10H0Z" fill={Math.sign(coinData?.market_data?.price_change_percentage_24h) === 1 ? '#2ec169' : Math.sign(coinData?.market_data?.price_change_percentage_24h) === -1 ? 'red' : null} />
                   </svg>
                 </Decrease>
               </FlexCol>
-              <p style={{marginTop: '-12px'}}>{coinData?.market_data?.price_change_percentage_24h? coinData?.market_data?.price_change_percentage_24h.toFixed(2)+'%': null} (24h)</p>
+              <p style={{ marginTop: '-12px' }}>{coinData?.market_data?.price_change_percentage_24h ? coinData?.market_data?.price_change_percentage_24h.toFixed(2) + '%' : null} (24h)</p>
             </Flex>
           </Stat>
           <br />
@@ -219,7 +214,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <div className="p-3">
               <APR1 className={darkMode ? 'dark-mode' : ''}>
-              Coingecko Rank
+                Coingecko Rank
                 {/* {apr} */}
               </APR1>
               <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{coinData?.coingecko_rank}</Text1>
@@ -230,7 +225,7 @@ function HomePageContent(props) {
           <FlexCenter className="h-100">
             <OverlapGroup13>
               <Place className={darkMode ? 'dark-mode' : ''}>{place1}</Place>
-              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null? formatNumbers(coinData?.market_data?.total_supply) +' '+ coinData?.symbol?.toUpperCase() : 'Null'} </Address>
+              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null ? formatNumbers(coinData?.market_data?.total_supply) + ' ' + coinData?.symbol?.toUpperCase() : 'Null'} </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
@@ -257,9 +252,9 @@ function HomePageContent(props) {
               outOf={details2Data.outOf}
               number2={details2Data.number2}
             />
-            <OverlapGroup3 style={{ position: 'relative'}}>
-              <Percent1 style={{position: 'absolute', right: '10px;'}}>
-                 <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
+            <OverlapGroup3 style={{ position: 'relative' }}>
+              <Percent1 style={{ position: 'absolute', right: '10px;' }}>
+                <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
               </Percent1>
             </OverlapGroup3>
           </ActiveValidators>
@@ -282,24 +277,30 @@ function HomePageContent(props) {
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 style={{height: 'fit-content'}} className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
-          <Flex className="h-100 w-100 align-items-center" style={{ padding: "20px" }}>
+        <GridItem1 style={{ height: 'fit-content' }} className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
+          <Flex className="position-relative h-100 w-100 align-items-center" style={{ padding: "20px" }}>
             <FlexCol className="w-100">
               <APR1 className={darkMode ? 'dark-mode' : ''}>Pool</APR1>
               <Flex>
-                <FlexCol><Bullet /></FlexCol>
-                <FlexCol style={{ margin: '0px 20px' }}>
-                  <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
-                  <Phone className={darkMode ? 'dark-mode' : ''}>{formatNumbers(bondedTokens)}</Phone>
-                </FlexCol>
-                <FlexCol><Bullet className="light" /></FlexCol>
-                <FlexCol style={{ margin: '0px 20px' }}>
-                  <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
-                  <Phone1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(notBondedTokens)}</Phone1>
-                </FlexCol>
+                <div>
+                  <div className="d-flex align-items-center">
+                    <FlexCol><Bullet /></FlexCol>
+                    <FlexCol style={{ margin: '0px 20px' }}>
+                      <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
+                      <Phone className={darkMode ? 'dark-mode' : ''}>{formatNumbers(bondedTokens)}</Phone>
+                    </FlexCol>
+                  </div>
+                  <div className="d-flex align-items-center mt-3">
+                    <FlexCol><Bullet className="light" /></FlexCol>
+                    <FlexCol style={{ margin: '0px 20px' }}>
+                      <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
+                      <Phone1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(notBondedTokens)}</Phone1>
+                    </FlexCol>
+                  </div>
+                </div>
               </Flex>
             </FlexCol>
-            <Flex className="h-100 p-3">
+            <Flex style={{top: "0", right: "10px"}} className="h-100 p-3 position-absolute">
               <OverlapGroup2>
                 <PoolChart bondedTokens={bondedTokens} notBondedTokens={notBondedTokens} />
               </OverlapGroup2>
@@ -312,9 +313,9 @@ function HomePageContent(props) {
         <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
         <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
       </Flex>
-      <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
-      <Responsive>
-          <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
+      <Container className={darkMode ? 'dark-mode' : ''}>
+        <Responsive>
+          <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'} style={{ tableLayout: "fixed" }}>
             <thead>
               <tr>
                 <th>Height</th>
@@ -331,12 +332,12 @@ function HomePageContent(props) {
                   //console.log(data)
                   return (
                     <tr>
-                        <td onClick={() => router.push(`/blocks/${data.block.height}`)} >{data.block?.height ? data.block.height : null}</td>
+                      <td onClick={() => router.push(`/blocks/${data.block.height}`)} >{data.block?.height ? data.block.height : null}</td>
                       <td>{data.block?.hash ? formatHash(data.block.hash, 15, '....') : null}</td>
-                        <td onClick={() => router.push(`/validators/${data.validator.operator_address}`)}>
-                          <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                          <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
-                        </td>
+                      <td onClick={() => router.push(`/validators/${data.validator.operator_address}`)}>
+                        <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
+                        <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
+                      </td>
                       <td>{data?.block?.noTxs}</td>
                       <td>{data?.block?.time ? toDay(data?.block.time, 'from') : null}</td>
                     </tr>
@@ -348,13 +349,13 @@ function HomePageContent(props) {
           </table>
         </Responsive>
       </Container>
-      
+
       <Flex className="align-items-center justify-content-between">
         <LatestBlocks className={darkMode ? 'dark-mode' : ''}>Latest Transactions</LatestBlocks>
         <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
       </Flex>
-      <Container className={darkMode ? 'dark-mode w-100' : 'w-100'}>
-       <TxsData  getAllTxs={getAllTxs} />
+      <Container className={darkMode ? 'dark-mode' : ''}>
+        <TxsData getAllTxs={getAllTxs} />
       </Container>
     </Wrapper>
   )
@@ -528,6 +529,7 @@ const GridItem1 = styled.div`
 `;
 
 const Container = styled.div`
+  overflow-x: auto;
   display: block;
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
@@ -536,6 +538,9 @@ const Container = styled.div`
   &.dark-mode{
     background-color:#19172d !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
+  };
+  @media screen and (max-width: 400px){
+    width: calc(100vw - 20px)
   }
 `;
 
@@ -670,7 +675,6 @@ const OnlineVotingPower = styled.div`
 const OverlapGroup2 = styled.div`
   position: relative;
   align-items: center;
-  margin-left: 8px;
   border-radius: 47.5px;
 `;
 
