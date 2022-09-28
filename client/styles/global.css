@@ -660,6 +660,7 @@ tr.validator-item-row{
 td, th{
   padding: 10px 10px;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 th{
@@ -912,5 +913,9 @@ td{
 
  .relayers > .accordion-button:not(.collapsed) {
   color: black !important;
+}
+
+input:focus{
+  background-color: transparent !important;
 }
 

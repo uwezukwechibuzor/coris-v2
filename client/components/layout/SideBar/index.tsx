@@ -56,7 +56,6 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/validators")} title="Validators">
           <a className="m-24">
             <FlexRow>
@@ -66,7 +65,6 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/blocks")} title="Blocks">
           <a className="m-24">
             <FlexRow>
@@ -76,7 +74,6 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/proposals")} title="Proposals">
           <a className="m-24">
             <FlexRow>
@@ -86,7 +83,6 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/params")} title="Parameters">
           <a className="m-24">
             <FlexRow>
@@ -96,7 +92,6 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/validators/consensus_state")} title="Consensus">
           <a className="m-24">
             <FlexRow>
@@ -106,12 +101,20 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
-        <br className='hidden-sm' />
         <Clicker onClick={() => navigate("/assets")} title="Assets">
           <a className="m-24">
             <FlexRow>
               <FlexCell><Icon1 src={assetIcon} /></FlexCell>
               <FlexCell><Assets style={{ color: selectedPage === "/assets" && 'white' }}>{assets}</Assets></FlexCell>
+            </FlexRow>
+          </a>
+        </Clicker>
+        <br />
+        <Clicker onClick={() => navigate("/relayers")} title="Assets">
+          <a className="m-24">
+            <FlexRow>
+              <FlexCell><Icon1 src={assetIcon} /></FlexCell>
+              <FlexCell><Assets style={{ color: selectedPage === "/assets" && 'white' }}>Relayers</Assets></FlexCell>
             </FlexRow>
           </a>
         </Clicker>
