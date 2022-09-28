@@ -20,38 +20,38 @@ export default class PoolChart extends React.Component {
     ]
   }
     return (
-      <div className='pie'>
+      <div className="pie">
         <Pie
           data={state}
           options={{
-            title:{
-              display:true,
-              text:'Pool',
-              fontSize:20
+            title: {
+              display: true,
+              text: "Pool",
+              fontSize: 20,
             },
-            legend:{
-              display:true,
-              position:'left',
-              align: 'start'
+            legend: {
+              display: true,
+              position: "left",
+              align: "start",
             },
-            responsive: true
+            responsive: true,
           }}
         />
-          <style jsx>{`
+        <style jsx>{`
           .pie {
-             width: 100px
-           }
-           @media (max-width: 768px) {
+            width: 100px;
+          }
+          @media (max-width: 768px) {
             .pie {
               width: 70px;
-              margin-left: -150px;
-
             }
-          }  
-      
-      `}</style>
+          }
+          td {
+            width: 200px;
+            white-space: break-spaces;
+          }
+        `}</style>
       </div>
-      
     );
   }
 }

@@ -17,19 +17,24 @@ function TransactionContents(props) {
 
     return (
         <div className={darkMode ? 'dark-mode' : ''} style={{
-            paddingTop: '40px'
+            paddingTop: '40px',
+            padding: "20px"
         }}>
             <Flex style={{ justifyContent: "space-between", alignItems: 'center' }} className="w-100 block-sm">
                 <Flex style={{ alignItems: "center", marginTop: "20px" }}>
-                    <Title style={{ marginTop: '0' }} className={darkMode ? 'dark-mode' : ''}>Transaction Details</Title>
-                    <div className='ml-3'>
-                        <button
-                            className={`${isFormattedView ? 'selected' : ''} formatted`}
-                            onClick={() => toggleView(true)}
-                        >Formatted</button>
-                        <button className={`${!isFormattedView ? 'selected' : ''} formatted`}
-                            onClick={() => toggleView(false)}
-                        >Raw</button>
+                    <div>
+                        <div>
+                            <Title style={{ marginTop: '0' }} className={darkMode ? 'dark-mode' : ''}>Transaction Details</Title>
+                        </div>
+                        <div className='my-3'>
+                            <button
+                                className={`${isFormattedView ? 'selected' : ''} formatted`}
+                                onClick={() => toggleView(true)}
+                            >Formatted</button>
+                            <button className={`${!isFormattedView ? 'selected' : ''} formatted`}
+                                onClick={() => toggleView(false)}
+                            >Raw</button>
+                        </div>
                     </div>
                 </Flex>
                 <div className="version">beta v.0.319.293</div>
@@ -39,6 +44,59 @@ function TransactionContents(props) {
                     <Formatted className={darkMode ? 'dark-mode' : ''}>
                         <SubTitle>Overview</SubTitle>
                         <Container>
+
+                            <Card style={{ padding: "20px", marginBottom: "20px" }} className={darkMode ? 'dark-mode' : ''}>
+                                <table style={{width: "100%"}}>
+                                    <tr>
+                                        <td>
+                                            Height
+                                        </td>
+                                        <td>{txDetails?.txDetails ? txDetails.txDetails.tx_response.height : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Time
+                                        </td>
+                                        <td>{txDetails?.txDetails ? toDay(txDetails.txDetails?.tx_response?.timestamp, 'from') : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td><span className={txDetails?.txDetails?.tx_response.code === 0 ? "text-success" : txDetails?.txDetails?.tx_response.code === undefined ? null : "text-danger"} >{txDetails?.txDetails?.tx_response.code === 0 ? "Success" : txDetails?.txDetails?.tx_response.code === undefined ? null : "Failed"}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gas</td>
+                                        <td>{txDetails?.txDetails ? txDetails.txDetails.tx_response.gas_used : null}/{txDetails?.txDetails ? txDetails.txDetails.tx_response.gas_wanted : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fee</td>
+                                        <td>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount / DENOM : null} {COIN}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Activity</td>
+                                        <td>{txDetails?.txDetails?.tx_response.tx ? abbrMessage(txDetails?.txDetails?.tx_response?.tx?.body?.messages) : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Memo</td>
+                                        <td>{txDetails?.txDetails?.tx_response.tx.body ? txDetails?.txDetails?.tx_response.tx.body.memo : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{wordBreak: "break-word"}}>Time out height</td>
+                                        <td>{txDetails?.txDetails?.tx_response.tx.body ? txDetails?.txDetails?.tx_response.tx.body.timeout_height : null}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hash</td>
+                                        <td>{txDetails?.txDetails?.tx_response ? txDetails?.txDetails?.tx_response.txhash : null}</td>
+                                    </tr>
+                                </table>
+                            </Card>
+
+
+
+
+
+
                             <Grid>
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
@@ -77,7 +135,7 @@ function TransactionContents(props) {
                                 <Card style={{ height: "100px" }} className={darkMode ? 'dark-mode' : ''}>
                                     <FlexCenter>
                                         <div>
-                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount/DENOM : null } {COIN}</h4>
+                                            <h4>{txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0] ? txDetails?.txDetails?.tx_response.tx.auth_info.fee.amount[0].amount / DENOM : null} {COIN}</h4>
                                             <h6 className="text-center">Fee</h6>
                                         </div>
                                     </FlexCenter>
