@@ -8,15 +8,15 @@ const isServerReq = req => !req.url.startsWith('/_next');
 function ValidatorsConsensusState(props) {
   
   //get all validators data for bonded, unbonded and unbounding
-  const ValidatorsData = props?.chainAllValidators !== undefined ? props?.chainAllValidators?.validators?.map((validator: any) => {
+  const ValidatorsData = !props?.chainAllValidators ? null : props?.chainAllValidators?.validators?.map((validator: any) => {
    return  validator
-  }): null
+  })
 
   //get total bonded tokens
-  const bondedTokensFromPool = props?.poolData !== undefined?  props?.poolData?.pool?.bonded_tokens : null
+  const bondedTokensFromPool = !props?.poolData ? null : props?.poolData?.pool?.bonded_tokens
 
   //consensus state for the validators
-  const consensusState = props?.consensusState !== undefined ? props?.consensusState : null
+  const consensusState = !props?.consensusState ? null : props?.consensusState 
  
   const validatorsDetails = {
     validators: ValidatorsData,
@@ -49,6 +49,8 @@ export async function getServerSideProps({res, req}) {
    'Cache-Control',
    'public, s-maxage=600, stale-while-revalidate=900'
  )
+
+  if(!consensusState || !poolData || !chainAllValidators)
 
  return {
    props: {

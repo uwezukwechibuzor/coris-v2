@@ -9,9 +9,9 @@ const isServerReq = req => !req.url.startsWith('/_next');
 function Validators(props) {
 
   //get total bonded tokens
-  const bondedTokensFromPool = props?.poolData !== undefined?  props?.poolData?.pool?.bonded_tokens : null
+  const bondedTokensFromPool = props?.poolData !== null?  props?.poolData?.pool?.bonded_tokens : null
   
-  const chainAllValidators  = props?.chainAllValidators  !== undefined?  props?.chainAllValidators.validators  : null
+  const chainAllValidators  = props?.chainAllValidators  !== null?  props?.chainAllValidators.validators  : null
 
       //get uptime by blocks
     //get blocks
@@ -43,33 +43,42 @@ function Validators(props) {
 
 export async function getServerSideProps({res, req}) {
   
+  var poolData, chainAllValidators;
+
   try {
-     // Fetch data from external API
+  // Fetch data from external API
   //get Pool
   const getPool =  isServerReq(req) ? await fetch(`https:${chainPoolEndpoint}`) : null
-  const poolData = await getPool.json()
+  poolData = await getPool.json()
 
   const getAllChainValidators =  isServerReq(req) ? await fetch(`https:${allChainValidatorsEndpoint}`) : null
-  const chainAllValidators = await getAllChainValidators.json();
+  chainAllValidators = await getAllChainValidators.json();
    
- 
   res.setHeader(
    'Cache-Control',
    'public, s-maxage=600, stale-while-revalidate=900'
  )
-
- return {
-   props: {
-     poolData: Object.assign({}, poolData),
-     chainAllValidators: Object.assign({}, chainAllValidators),
-   },
+ 
+ if (!poolData || !chainAllValidators) {
+  return {
+    props: {
+      poolData: Object.assign({}, null),
+      chainAllValidators: Object.assign({}, null),
+    },
+  }
+ } else {
+  return {
+    props: {
+      poolData: Object.assign({}, poolData),
+      chainAllValidators: Object.assign({}, chainAllValidators),
+    },
+  }
  }
 
 } catch (error) {
-  
-  }
-} 
-
+   console.log("Error" + error)
+  } 
+}
 
 export default Validators
 

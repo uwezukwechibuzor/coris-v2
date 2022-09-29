@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Layout from "../../components/layout/Layout";
 import ValidatorsDetailsContent from '../../components/Validators/Details'
-import {
-  useGetChainValidatorDetailsQuery,
-} from '../../lib/chainApi';
 import { useRouter } from 'next/router'
 import axios from 'axios';
 import { chainPoolEndpoint, chainValidatorDelegationsEndpoint, chainValidatorsDetailsEndpoint, chainValidatorsSlashingSigningInfosDetailsEndpoint, chainValidatorUnDelegationsEndpoint } from '../../lib/chainApiEndpoints';
@@ -16,13 +13,11 @@ const isServerReq = req => !req.url.startsWith('/_next');
 
 function ValidatorsDetails(props) {
     
-    const getValidatorDetails =  props?.validatorDetails
-    const chainValidatorsSlashingInfo = props?.chainValidatorsSlashingInfo
-    const chainValidatorDelegations = props?.chainValidatorDelegations;
-    const  chainValidatorUnDelegations  = props?.chainValidatorUnDelegations
-    const poolData = props?.poolData !== undefined?  props?.poolData : null; 
-
-    
+    const getValidatorDetails =  !props?.validatorDetails? null : props?.validatorDetails 
+    const chainValidatorsSlashingInfo = !props?.chainValidatorsSlashingInfo ? null :  props?.chainValidatorsSlashingInfo
+    const chainValidatorDelegations = !props?.chainValidatorDelegations ? null : props?.chainValidatorDelegations;
+    const  chainValidatorUnDelegations  = !props?.chainValidatorUnDelegations ? null : props?.chainValidatorUnDelegations
+    const poolData = !props?.poolData ? null : props?.poolData; 
 
     //get uptime by blocks
     //get blocks
@@ -88,17 +83,29 @@ export async function getServerSideProps({ctx, query, res, req }) {
    'Cache-Control',
    'public, s-maxage=600, stale-while-revalidate=900'
  )
-
-
- return {
-   props: {
-     validatorDetails: Object.assign({}, validatorDetails),
-     chainValidatorsSlashingInfo: Object.assign({}, chainValidatorsSlashingInfo),
-     chainValidatorDelegations: Object.assign({}, chainValidatorDelegations),
-     chainValidatorUnDelegations: Object.assign({}, chainValidatorUnDelegations),
-     poolData: Object.assign({}, poolData),
-   }
+ 
+ if (!validatorDetails || !chainValidatorsSlashingInfo || !chainValidatorDelegations ||  !chainValidatorUnDelegations || !poolData) {
+  return {
+    props: {
+      validatorDetails: Object.assign({}, null),
+      chainValidatorsSlashingInfo: Object.assign({}, null),
+      chainValidatorDelegations: Object.assign({}, null),
+      chainValidatorUnDelegations: Object.assign({}, null),
+      poolData: Object.assign({}, null),
+    }
+  }
+ } else {
+  return {
+    props: {
+      validatorDetails: Object.assign({}, validatorDetails),
+      chainValidatorsSlashingInfo: Object.assign({}, chainValidatorsSlashingInfo),
+      chainValidatorDelegations: Object.assign({}, chainValidatorDelegations),
+      chainValidatorUnDelegations: Object.assign({}, chainValidatorUnDelegations),
+      poolData: Object.assign({}, poolData),
+    }
+  }
  }
+
 
 } catch (error) {
   
