@@ -1,5 +1,4 @@
 import Layout from "../../../components/layout/Layout";
-import ValidatorsContent from "../../../components/Validators";
 import ConsensusDetails from "../../../components/Validators/Consensus";
 import { allChainValidatorsEndpoint, chainPoolEndpoint, consensusStateEndpoint } from "../../../lib/chainApiEndpoints";
 
@@ -34,15 +33,36 @@ function ValidatorsConsensusState(props) {
 export async function getServerSideProps({res, req}) {
   
   try {
-     // Fetch data from external API
+  // Fetch data from external API
   //get Pool
-  const getConsensusState =  isServerReq(req) ? await fetch(`https:${consensusStateEndpoint}`) : null
+  const getConsensusState =  isServerReq(req) ? await fetch(consensusStateEndpoint) : null
+        if (!getConsensusState.ok) {
+                return {
+                  props: {
+                    consensusState: Object.assign({}, null),
+                  },
+                }
+        }
   const consensusState = await  getConsensusState.json()
   
-  const getPool =  isServerReq(req) ? await fetch(`https:${chainPoolEndpoint}`) : null
+  const getPool =  isServerReq(req) ? await fetch(chainPoolEndpoint) : null
+      if(!getPool.ok) {
+            return {
+              props: {
+                poolData: Object.assign({}, null),
+              },
+            }
+      }
   const poolData = await getPool.json()
 
-  const getAllChainValidators =  isServerReq(req) ? await fetch(`https:${allChainValidatorsEndpoint}`) : null
+  const getAllChainValidators =  isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
+        if(!getAllChainValidators.ok) {
+                return {
+                  props: {
+                    chainAllValidators: Object.assign({}, null) 
+                  },
+                }
+        }
   const chainAllValidators = await getAllChainValidators.json();
  
   res.setHeader(
@@ -50,18 +70,26 @@ export async function getServerSideProps({res, req}) {
    'public, s-maxage=600, stale-while-revalidate=900'
  )
 
-  if(!consensusState || !poolData || !chainAllValidators)
-
- return {
-   props: {
-     consensusState: Object.assign({}, consensusState),
-     poolData: Object.assign({}, poolData),
-     chainAllValidators: Object.assign({}, chainAllValidators) 
-   },
- }
+  if(!consensusState || !poolData || !chainAllValidators){
+      return {
+        props: {
+          consensusState: Object.assign({}, null),
+          poolData: Object.assign({}, null),
+          chainAllValidators: Object.assign({}, null) 
+        },
+      }
+  } else {
+      return {
+        props: {
+          consensusState: Object.assign({}, consensusState),
+          poolData: Object.assign({}, poolData),
+          chainAllValidators: Object.assign({}, chainAllValidators) 
+        },
+      }
+  }
 
 } catch (error) {
-    
+     console.log("Error" + error)
     }
   } 
 

@@ -54,28 +54,63 @@ export async function getServerSideProps({ctx, query, res, req }) {
   try {
      // Fetch data from external API
    //get inflation data
-   const getChainValidatorsDetails = isServerReq(req) ? await fetch(`https:${chainValidatorsDetailsEndpoint(query.address)}`) : null
+   const getChainValidatorsDetails = isServerReq(req) ? await fetch(chainValidatorsDetailsEndpoint(query.address)) : null
+          if(!getChainValidatorsDetails.ok) {
+                  return {
+                    props: {
+                      validatorDetails: Object.assign({}, null),
+                    }
+                  }
+          }
    const validatorDetails = await getChainValidatorsDetails.json();
 
-   const validatorsDetails =  validatorDetails?.validator !== undefined?  validatorDetails?.validator: null
+   const validatorsDetails =  !validatorDetails?.validator? null : validatorDetails?.validator
 
    const consensusPubkey = validatorsDetails?.consensus_pubkey?.key !== undefined ?  validatorsDetails?.consensus_pubkey?.key : ''
    const ed25519PubkeyRaw = fromBase64(consensusPubkey);
    const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
    const bech32Address = Bech32.encode("umeevalcons", addressData);
    
-   const getChainValidatorsSlashingInfo  = isServerReq(req) ? await fetch(`https:${chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)}`) : null
+   const getChainValidatorsSlashingInfo  = isServerReq(req) ? await fetch(chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)) : null
+            if(!getChainValidatorsSlashingInfo.ok) {
+                        return {
+                          props: {
+                            chainValidatorsSlashingInfo: Object.assign({}, null),
+                          }
+                        }
+            }
    const chainValidatorsSlashingInfo = await getChainValidatorsSlashingInfo.json();
   
-   const getChainValidatorDelegations = isServerReq(req) ? await fetch(`https:${chainValidatorDelegationsEndpoint(query.address)}`) : null
+   const getChainValidatorDelegations = isServerReq(req) ? await fetch(chainValidatorDelegationsEndpoint(query.address)) : null
+     if(!getChainValidatorDelegations.ok) {
+              return {
+                          props: {
+                            chainValidatorDelegations: Object.assign({}, null),
+                          }
+                        }
+            }
    const chainValidatorDelegations = await getChainValidatorDelegations.json();
   
-   const getChainValidatorUnDelegations = isServerReq(req) ? await fetch(`https:${chainValidatorUnDelegationsEndpoint(query.address)}`) : null
+   const getChainValidatorUnDelegations = isServerReq(req) ? await fetch(chainValidatorUnDelegationsEndpoint(query.address)) : null
+     if(!getChainValidatorUnDelegations.ok) {
+                return {
+                            props: {
+                              chainValidatorUnDelegations: Object.assign({}, null),
+                            }
+                          }
+              }
    const chainValidatorUnDelegations = await getChainValidatorUnDelegations.json();
 
 
   //get Pool
-  const getPool = isServerReq(req) ?  await fetch(`https:${chainPoolEndpoint}`) : null
+  const getPool = isServerReq(req) ?  await fetch(chainPoolEndpoint) : null
+          if(!getPool.ok) {
+                    return {
+                                props: {
+                                  poolData: Object.assign({}, null),
+                                }
+                    }
+          }
   const poolData = await getPool.json()
    
 
