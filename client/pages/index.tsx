@@ -93,54 +93,59 @@ function Home (props) {
 
 export async function getServerSideProps({ res, req }) {
 
+    let inflationData, commuintyPoolData,  chainActiveValidatorsData,  poolData, chainAllValidators
+
      try {
         // Fetch data from external API
       //get inflation data
       const inflationEndPoint = inflationEndpoint
-      const getInflationData = isServerReq(req) ? await fetch(`https:${inflationEndPoint}`) : null
-      const inflationData = await getInflationData.json()
+      const getInflationData = isServerReq(req) ? await fetch(inflationEndPoint) : null
+      !getInflationData.ok ? { props: { inflationData: Object.assign({}, null) }} : inflationData = await getInflationData.json()
     
-     //get community pool
-     const getCommunityPool = isServerReq(req) ? await fetch(`https:${communityPoolEndpoint}`) : null
-     const commuintyPoolData = await getCommunityPool.json();
+      //get community pool
+      const getCommunityPool = isServerReq(req) ? await fetch(communityPoolEndpoint) : null
+      !getCommunityPool.ok ? { props: {commuintyPoolData : Object.assign({}, null) }} : commuintyPoolData = await getCommunityPool.json();
     
      //get chain active validators
-     const getChainActiveValidators = isServerReq(req) ? await fetch(`https:${chainActiveValidatorsEndpoint}`) : null
-     const chainActiveValidatorsData = await getChainActiveValidators.json()
+     const getChainActiveValidators = isServerReq(req) ? await fetch(chainActiveValidatorsEndpoint) : null
+     !getChainActiveValidators.ok ? { props: {chainActiveValidatorsData : Object.assign({}, null) }} : chainActiveValidatorsData = await getChainActiveValidators.json()
     
      //get Pool
-     const getPool = isServerReq(req) ? await fetch(`https:${chainPoolEndpoint}`) : null
-     const poolData = await getPool.json() 
+     const getPool =  isServerReq(req) ? await fetch(chainPoolEndpoint) : null
+     !getPool.ok ? { props: { poolData: Object.assign({}, null) }} : poolData = await getPool.json()
     
-     const getAllChainValidators = isServerReq(req) ? await fetch(`https:${allChainValidatorsEndpoint}`) : null
-     const chainAllValidators = await getAllChainValidators.json();
+     const getAllChainValidators = isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
+     !getAllChainValidators.ok ? { props: {chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
 
      res.setHeader(
       'Cache-Control',
       'public, s-maxage=600, stale-while-revalidate=900'
     )
-    //res.writeHead(307, { Location: '/_error' }).end()
-  
-    return {
-      props: {
-        inflationData: Object.assign({}, inflationData),
-        commuintyPoolData: Object.assign({}, commuintyPoolData),
-        chainActiveValidatorsData: Object.assign({}, chainActiveValidatorsData),
-        poolData: Object.assign({}, poolData),
-        chainAllValidators: Object.assign({}, chainAllValidators)
-      },
+   
+    if(!inflationData || !commuintyPoolData || !chainActiveValidatorsData || !poolData || !chainAllValidators) {
+      return {
+        props: {
+          inflationData: Object.assign({}, null),
+          commuintyPoolData: Object.assign({}, null),
+          chainActiveValidatorsData: Object.assign({}, null),
+          poolData: Object.assign({}, poolData),
+          chainAllValidators: Object.assign({}, null)
+        }
+      }
+    } else {
+      return {
+        props: {
+          inflationData: Object.assign({}, inflationData),
+          commuintyPoolData: Object.assign({}, commuintyPoolData),
+          chainActiveValidatorsData: Object.assign({}, chainActiveValidatorsData),
+          poolData: Object.assign({}, poolData),
+          chainAllValidators: Object.assign({}, chainAllValidators)
+        }
+      }
     }
 
   } catch (error) {
-       return {
-         props: {
-           inflationData: {},
-           commuintyPoolData: {},
-           chainActiveValidatorsData: {},
-           poolData: {},
-           chainAllValidators: {}
-         },
-       }
+      console.log("Error" + error)
   }
 } 
      

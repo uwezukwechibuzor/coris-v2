@@ -49,24 +49,10 @@ export async function getServerSideProps({res, req}) {
   // Fetch data from external API
   //get Pool
   const getPool =  isServerReq(req) ? await fetch(chainPoolEndpoint) : null
-    if(!getPool.ok) {
-            return {
-                    props: {
-                      poolData: Object.assign({}, null),
-                    },
-            }
-    }
-  poolData = await getPool.json()
+  !getPool.ok ? { props: { poolData: Object.assign({}, null) }} : poolData = await getPool.json()
 
   const getAllChainValidators =  isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
-     if(!getAllChainValidators.ok) {
-      return {
-        props: {
-          chainAllValidators: Object.assign({}, null),
-        },
-      }
-     }
-  chainAllValidators = await getAllChainValidators.json();
+  !getAllChainValidators.ok ? { props: { chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
    
   res.setHeader(
    'Cache-Control',

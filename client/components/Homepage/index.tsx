@@ -121,7 +121,7 @@ function HomePageContent(props) {
 
   //get the validators total active voting power
   let totalActiveVotingPower = 0
-  activeValidators !== undefined ? activeValidators?.validators.map(validatorsDetails => {
+  activeValidators !== undefined ? activeValidators?.validators?.map(validatorsDetails => {
     totalActiveVotingPower += Number(validatorsDetails.tokens / DENOM)
     return totalActiveVotingPower
   }) : null
