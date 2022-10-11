@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.0",
     "@cosmjs/encoding": "^0.28.0",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
@@ -30,6 +31,7 @@
     "ioredis": "^5.0.4",
     "json-colorizer": "^2.2.2",
     "next": "^12.1.5",
+    "next-connect": "^0.13.0",
     "next-redux-wrapper": "^7.0.5",
     "node-fetch": "^2.6.7",
     "nodemon": "^2.0.16",

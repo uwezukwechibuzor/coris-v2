@@ -32,8 +32,8 @@ services:
     restart: unless-stopped
     environment:
       MONGOOSE_URL: mongodb://admin:12345@db:27017
-      COSMOS_REST: https://api.aphrodite.main.network.umee.cc
-      PORT: 5100
+      COSMOS_REST: https://api.cosmos.network
+      PORT: 5000
     command: npm run dev
     depends_on:
       - db
@@ -41,32 +41,27 @@ services:
       - ./backend:/usr/app/backend
       - backend-ignore:/usr/app/backend/node_modules
     expose:
-      - "5100"
+      - "5000"
     ports:
-      - "5100:5100"
+      - "5000:5000"
     networks:
       - coris
 
   client:
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     image: coris-client
     container_name: coris-client
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_CosmosChain_RESTAPI: https://api.aphrodite.main.network.umee.cc
-      NEXT_PUBLIC_GetBlocksLatest: http://backend:5100/blocks/latest
-      NEXT_PUBLIC_GetBlocks: http://backend:5100/blocks
+      NEXT_PUBLIC_CosmosChain_RESTAPI: //api.cosmos.network
+      NEXT_PUBLIC_GetBlocksLatest: //localhost:5000
+      NEXT_PUBLIC_GetBlocks: //localhost:5000
       NEXT_PUBLIC_COIN_ID: umee
     volumes:
-      - ./client:/usr/app/client
-      - client-ignore:/usr/app/client/node_modules
-    expose:
-      - "3000"
-    ports:
-      - "3000:3000"
-    command: npm run dev
+      - ./client:/app/client
+      - client-ignore:/app/client/node_modules
     depends_on:
       - db
       - backend
@@ -86,3 +81,15 @@ services:
       - db
     networks:
       - coris
+
+  nginx:
+    depends_on:
+      - backend
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - "3050:80"   
+

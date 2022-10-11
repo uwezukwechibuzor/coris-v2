@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
 import HomePageContent from "../components/Homepage";
-import Head from "next/head";
-import Link from "next/link";
 import axios from 'axios'
 import { GetServerSideProps } from "next";
 import { allChainValidatorsEndpoint, chainActiveValidatorsEndpoint, chainPoolEndpoint, communityPoolEndpoint, inflationEndpoint } from "../lib/chainApiEndpoints";
 import { DENOM } from "../lib/Util/constants";
 
-
-
 const isServerReq = req => !req.url.startsWith('/_next');
 
 function Home (props) {
+  
 
   const [blocks, setBlocks] = useState([]);
   const [getAllTxs, setGetAllTxs] = useState([])
@@ -53,6 +50,8 @@ function Home (props) {
   
   //get Pool
   const poolData = props?.poolData
+   
+  console.log(poolData)
 
   const homePageData = {
     title: "Overview",

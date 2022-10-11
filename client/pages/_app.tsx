@@ -12,6 +12,7 @@ import ErrorBoundary from "../components/ErrorBoundary";
 import { ErrorFallback } from "../components/ErrorFallback";
 import { allChainValidatorsEndpoint } from "../lib/chainApiEndpoints";
 
+const isServerReq = req => !req.url.startsWith('/_next');
 
 Object.assign(globalThis, {
   fetch,
@@ -35,7 +36,6 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
   if (pageProps?.error) {
     return <Error statusCode={pageProps.error.statusCode} title={pageProps.error.message} />;
   }
-
   
     const getLayout = Component.getLayout ?? ((page) => page);
   
@@ -49,30 +49,40 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
    
 }
 
-/*
-App.getInitialProps = async (res, ctx) => {
+
+/*App.getInitialProps = async (res, req) => {
   
+  let chainAllValidators
+
   try {
-  //this is needed  so the search button can function in all pages
-  //get all validators on the chain
-  if(!ctx.req) {
-    return {chainAllValidators: []}
-  }
-  const getAllChainValidators =  await fetch(`https:${allChainValidatorsEndpoint}`)
-  const chainAllValidators = await getAllChainValidators.json();
- 
+     // Fetch data from external API
+  const getAllChainValidators = isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
+  !getAllChainValidators.ok ? { props: {chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
+
   res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=600, stale-while-revalidate=900'
-  )
- return {props: chainAllValidators }
+   'Cache-Control',
+   'public, s-maxage=600, stale-while-revalidate=900'
+ )
+
+ if(!chainAllValidators || chainAllValidators == undefined) {
+   return {
+     props: {
+       chainAllValidators: Object.assign({}, null)
+     }
+   }
+ } else {
+   return {
+     props: {
+       chainAllValidators: Object.assign({}, chainAllValidators)
+     }
+   }
+ }
 
 } catch (error) {
-   
+   console.log("Error" + error)
 }
-
 } 
-  */
+*/
 
 export default wrapper.withRedux(App);
 
