@@ -78,13 +78,13 @@ app.use(cors({
 //return blocks by specifying the limit
 app.get('/umee/blocks/latest', async function(req, res) {
     try{  
-       const limit = req.query.limit
-      const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).limit(limit)
-       res.json(blocks) 
+       const limit = req.query.limit;
+      const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).limit(limit);
+       res.json(blocks);
       //console.log(blocks)
 }
 catch(error){
-    res.status(500).json({message: error.message})
+    res.status(500).json({message: error.message});
 }
 
 });
@@ -93,9 +93,9 @@ catch(error){
 //get all transactions
 app.get('/umee/txs', async function(req, res) {
     try{  
-       const limit = req.query.limit
-      const blocks = await txsModel.find({}, {}, { sort: {'_id': -1}}).limit(limit)
-       res.json(blocks) 
+       const limit = req.query.limit;
+      const blocks = await txsModel.find({}, {}, { sort: {'_id': -1}}).limit(limit);
+       res.json(blocks); 
       //console.log(blocks)
 }
 catch(error){
@@ -119,11 +119,234 @@ catch(error){
 });
 */
 
-//get all umee chain validators
-app.get('/umee/validators', async (req, res) => {
-    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.allChainValidators}`)
+//Reverse Proxy For all the chain endpoints
+//get all chain validators
+app.get('/umee/all_validators', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.allChainValidators}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get active validators
+app.get('/umee/active_validators', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.activeChainValidators}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain inflation
+app.get('/umee/chain_inflation', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainInflation}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+
+//get chain community pool
+app.get('/umee/chain_community_pool', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainCommunityPool}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain pool
+app.get('/umee/chain_pool', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainPool}`)
     const data = await response.json()
     res.json(data)
+})
+
+//get chain block height details
+app.get('/umee/block_height_details', async (req, res) => {
+    const height = req.query.height;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainBlockHeightDetails(height)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain block height Txs
+app.get('/umee/block_height_txs', async (req, res) => {
+    const height = req.query.height;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainBlockHeightTxs(height)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain Txs by Hash
+app.get('/umee/chain_txs_hash', async (req, res) => {
+    const hash = req.query.hash;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainTxsByHash(hash)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators details
+app.get('/umee/chain_validator_details', async (req, res) => {
+    const adddress = req.query.adddress;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainValidatorsDetails(adddress)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators Slashing Signing Info Details
+app.get('/umee/chain_validator_slashing_signing_info_details', async (req, res) => {
+    const cons_adddress = req.query.cons_adddress;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainValidatorsSlashingSigningInfosDetails(cons_adddress)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators delegations
+app.get('/umee/chain_validator_delegations', async (req, res) => {
+    const validator_adddress = req.query.validator_adddress;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainValidatorDelegations(validator_adddress)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators undelegations
+app.get('/umee/chain_validator_undelegations', async (req, res) => {
+    const validator_adddress = req.query.validator_adddress;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainValidatorUnDelegations(validator_adddress)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators redelegations
+app.get('/umee/chain_validator_undelegations', async (req, res) => {
+    const delegator_adddress = req.query.delegator_adddress;
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.chainValidatorReDelegations(delegator_adddress)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain validators consensus state
+app.get('/umee/chain_consensus', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_RPC_API}${endPoints.consensusState}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain minting params
+app.get('/umee/chain_minting_params', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.mintingParams}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain governance params
+app.get('/umee/chain_gov_params', async (req, res) => {
+    const params_type = req.query.params_type
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.govParams(params_type)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain slashing params
+app.get('/umee/chain_slashing_params', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.slashingParams}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain staking params
+app.get('/umee/chain_staking_params', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.stakingParams}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain distribution params
+app.get('/umee/chain_distribution_params', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.distributionParams}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain node info
+app.get('/umee/chain_node_info', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.nodeInfo}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain proposals
+app.get('/umee/chain_proposals', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.proposals}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain proposal details
+app.get('/umee/chain_proposal_details', async (req, res) => {
+    const proposal_id = req.query.proposal_id
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.proposalDetails(proposal_id)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain proposal voting options
+app.get('/umee/chain_proposal_voting_options', async (req, res) => {
+    const id = req.query.id
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.proposalVotingOptions(id)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain proposal deposits
+app.get('/umee/chain_proposal_deposits', async (req, res) => {
+    const id = req.query.id
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.proposalDeposits(id)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain auth account
+app.get('/umee/chain_auth_account', async (req, res) => {
+    const address = req.query.adddress
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.authAccount(address)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain account balance
+app.get('/umee/chain_account_balance', async (req, res) => {
+    const address = req.query.adddress
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.accountBalance(address)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain account delegation rewards
+app.get('/umee/chain_account_delegation_rewaards', async (req, res) => {
+    const delegator_address = req.query.delegator_address
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.accountDelegationRewards(delegator_address)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain account delegations
+app.get('/umee/chain_account_delegations', async (req, res) => {
+    const delegator_address = req.query.delegator_address
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.accountDelegations(delegator_address)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain account redelegations 
+app.get('/umee/chain_account_redelegations', async (req, res) => {
+    const delegator_address = req.query.delegator_address
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.accountReDelegations(delegator_address)}`);
+    const data = await response.json();
+    res.json(data);
+})
+
+//get chain account undelegations
+app.get('/umee/chain_account_undelegations', async (req, res) => {
+    const delegator_address = req.query.delegator_address
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.accountUnDelegations(delegator_address)}`);
+    const data = await response.json();
+    res.json(data);
 })
 
 
