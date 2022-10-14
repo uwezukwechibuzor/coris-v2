@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Router = require("./routes")
+const umeeRouter = require("./Routes/Chains/umee/routes")
 require("dotenv").config();
 
 const app = express();
@@ -18,7 +18,7 @@ db.once("open", function () {
   console.log("Connected successfully");
 });
 
-app.use(Router);
+app.use(umeeRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);

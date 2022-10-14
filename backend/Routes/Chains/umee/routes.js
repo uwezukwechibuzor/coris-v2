@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require('cors');
-const {blockModel, txsModel } = require("./models");
+const {blockModel, txsModel } = require("./../../../models");
 const app = express();
 const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
+var endPoints = require('./../../../data/endpoints')
 
-const fetchURL = process.env.COSMOS_REST
 
 cron.schedule('*/3 * * * * *', function(){
     //cron to run at every 5sec to get latest blocks
@@ -16,11 +16,11 @@ cron.schedule('*/3 * * * * *', function(){
 
 async function getBlocksAsync() {
     try{
-      let response = await fetch(`${fetchURL}/blocks/latest`);
+      let response = await fetch(`${process.env.UMEE_REST_API}${endPoints.latestBlocks}`);
       const block = await response.json();
     
       //get transactions data in each blocks
-     const getTxs = await fetch(`${fetchURL}/cosmos/tx/v1beta1/txs?events=tx.height=${block.block.header.height}`)
+     const getTxs = await fetch(`${process.env.UMEE_REST_API}/${endPoints.chainTxs(block.block.header.height)}`)
      const txData = await getTxs.json();
     txData.tx_responses.map(tx => {
         const transactionsData = new txsModel({
@@ -76,7 +76,7 @@ app.use(cors({
 }));
 
 //return blocks by specifying the limit
-app.get('/blocks/latest', async function(req, res) {
+app.get('/umee/blocks/latest', async function(req, res) {
     try{  
        const limit = req.query.limit
       const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).limit(limit)
@@ -91,7 +91,7 @@ catch(error){
 
 
 //get all transactions
-app.get('/txs', async function(req, res) {
+app.get('/umee/txs', async function(req, res) {
     try{  
        const limit = req.query.limit
       const blocks = await txsModel.find({}, {}, { sort: {'_id': -1}}).limit(limit)
@@ -118,5 +118,13 @@ catch(error){
 
 });
 */
+
+//get all umee chain validators
+app.get('/umee/validators', async (req, res) => {
+    const response = await fetch(`${process.env.UMEE_REST_API}${endPoints.allChainValidators}`)
+    const data = await response.json()
+    res.json(data)
+})
+
 
 module.exports = app;
