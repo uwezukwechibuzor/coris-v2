@@ -20,7 +20,7 @@ async function getBlocksAsync() {
       const block = await response.json();
     
       //get transactions data in each blocks
-     const getTxs = await fetch(`${process.env.UMEE_REST_API}/${endPoints.chainTxs(block.block.header.height)}`)
+     const getTxs = await fetch(`${process.env.UMEE_REST_API}/${endPoints. chainBlockHeightTxs(block.block.header.height)}`)
      const txData = await getTxs.json();
     txData.tx_responses.map(tx => {
         const transactionsData = new txsModel({
@@ -140,7 +140,6 @@ app.get('/umee/chain_inflation', async (req, res) => {
     const data = await response.json();
     res.json(data);
 })
-
 
 //get chain community pool
 app.get('/umee/chain_community_pool', async (req, res) => {
@@ -348,6 +347,5 @@ app.get('/umee/chain_account_undelegations', async (req, res) => {
     const data = await response.json();
     res.json(data);
 })
-
 
 module.exports = app;
