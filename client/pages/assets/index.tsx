@@ -4,16 +4,6 @@ import Layout from "../../components/layout/Layout";
 import axios from 'axios'
 
 function Assets() {
-  
-    console.log("POWER")
-   
-        const request =  axios("http://66.206.5.26:1317/cosmos/staking/v1beta1/validators?pagination.limit=500", {
-          
-        })
-        request.then(data => console.log(data))
-
-
-
 
     const [coinsData, setCoins] = useState([])
     let coinsAPi = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=cosmos-ecosystem&order=market_cap_desc&per_page=50&page=1&sparkline=false'

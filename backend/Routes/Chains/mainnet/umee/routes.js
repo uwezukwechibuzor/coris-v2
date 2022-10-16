@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const Model = require("../../../Model/Models.jsx");
+const Model = require("../../../../Model/Models.jsx");
 const app = express();
 const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
-var endPoints = require("../../../data/endpoints.jsx");
+var endPoints = require("../../../../data/endpoints.jsx");
 
 cron.schedule("*/3 * * * * *", function () {
   //cron to run at every 5sec to get latest blocks
@@ -17,9 +17,8 @@ async function getBlocksAsync() {
     let response = await fetch(
       `${process.env.UMEE_REST_API}${endPoints.latestBlocks}`
     );
-    if (!response.OK) {
-      throw "UMEE Chain Api is not fetching the latest Blocks";
-    }
+    if (!response.ok) throw new Error("unexpected response");
+
     const block = await response.json();
 
     //get transactions data in each blocks
@@ -28,9 +27,8 @@ async function getBlocksAsync() {
         block?.block?.header?.height
       )}`
     );
-    if (!getTxs.OK) {
-      throw "UMEE Chain Api not fetching Txs";
-    }
+    if (!getTxs.ok) throw new Error("unexpected response");
+
     const txData = await getTxs.json();
     txData?.tx_responses?.map((tx) => {
       const transactionsData = new Model.umeeTxsModel({

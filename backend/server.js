@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const umeeRouter = require("./Routes/Chains/umee/routes");
+const umeeRouter = require("./Routes/Chains/mainnet/umee/routes");
 //const cosmosRouter = require("./Routes/Chains/cosmos/routes");
 require("dotenv").config();
 
