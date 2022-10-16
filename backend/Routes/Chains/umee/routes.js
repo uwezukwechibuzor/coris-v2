@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const Model = require("../../../Model/Models.tsx");
+const Model = require("../../../Model/Models.jsx");
 const app = express();
 const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
-var endPoints = require("./../../../data/endpoints");
+var endPoints = require("../../../data/endpoints.jsx");
 
 cron.schedule("*/3 * * * * *", function () {
   //cron to run at every 5sec to get latest blocks

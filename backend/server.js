@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const umeeRouter = require("./Routes/Chains/umee/routes");
-const cosmosRouter = require("./Routes/Chains/cosmos/routes");
+//const cosmosRouter = require("./Routes/Chains/cosmos/routes");
 require("dotenv").config();
 
 const app = express();
