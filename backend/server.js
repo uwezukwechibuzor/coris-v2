@@ -1,17 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const umeeRouter = require("./Routes/Chains/umee/routes")
+const umeeRouter = require("./Routes/Chains/umee/routes");
+const cosmosRouter = require("./Routes/Chains/cosmos/routes");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 
-mongoose.connect(process.env.MONGOOSE_URL,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-);
+mongoose.connect(process.env.MONGOOSE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
@@ -19,6 +18,7 @@ db.once("open", function () {
 });
 
 app.use(umeeRouter);
+//app.use(cosmosRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);

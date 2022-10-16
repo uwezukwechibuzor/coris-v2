@@ -1,12 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const { blockModel, txsModel } = require("./../../../models");
+const Model = require("../../../Model/Models.tsx");
 const app = express();
 const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("./../../../data/endpoints");
-const axios = require("axios");
 
 cron.schedule("*/3 * * * * *", function () {
   //cron to run at every 5sec to get latest blocks
@@ -28,7 +27,7 @@ async function getBlocksAsync() {
     );
     const txData = await getTxs.json();
     txData.tx_responses.map((tx) => {
-      const transactionsData = new txsModel({
+      const transactionsData = new Model.umeeTxsModel({
         txHash: tx.txhash,
         messages: tx.tx.body.messages,
         result: tx.code,
@@ -50,7 +49,7 @@ async function getBlocksAsync() {
     });
 
     //saving latest blocks
-    const blockData = new blockModel({
+    const blockData = new Model.umeeBlockModel({
       height: block.block.header.height,
       hash: block.block_id.hash,
       proposer: block.block.header.proposer_address,
@@ -86,7 +85,7 @@ app.use(
 app.get("/umee/blocks/latest", async function (req, res) {
   try {
     const limit = req.query.limit;
-    const blocks = await blockModel
+    const blocks = await Model.umeeBlockModel
       .find({}, {}, { sort: { _id: -1 } })
       .limit(limit);
     res.json(blocks);
@@ -100,7 +99,7 @@ app.get("/umee/blocks/latest", async function (req, res) {
 app.get("/umee/txs", async function (req, res) {
   try {
     const limit = req.query.limit;
-    const blocks = await txsModel
+    const blocks = await Model.umeeTxsModel
       .find({}, {}, { sort: { _id: -1 } })
       .limit(limit);
     res.json(blocks);
