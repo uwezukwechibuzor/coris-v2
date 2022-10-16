@@ -17,16 +17,22 @@ async function getBlocksAsync() {
     let response = await fetch(
       `${process.env.UMEE_REST_API}${endPoints.latestBlocks}`
     );
+    if (!response.OK) {
+      throw "UMEE Chain Api is not fetching the latest Blocks";
+    }
     const block = await response.json();
 
     //get transactions data in each blocks
     const getTxs = await fetch(
       `${process.env.UMEE_REST_API}/${endPoints.chainBlockHeightTxs(
-        block.block.header.height
+        block?.block?.header?.height
       )}`
     );
+    if (!getTxs.OK) {
+      throw "UMEE Chain Api not fetching Txs";
+    }
     const txData = await getTxs.json();
-    txData.tx_responses.map((tx) => {
+    txData?.tx_responses?.map((tx) => {
       const transactionsData = new Model.umeeTxsModel({
         txHash: tx.txhash,
         messages: tx.tx.body.messages,
