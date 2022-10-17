@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import BlocksContent from "../../components/Blocks";
 import axios from 'axios'
-import { useGetChainTxsQuery } from "../../lib/chainApi";
 import { chainActiveValidatorsEndpoint } from "../../lib/chainApiEndpoints";
 
 const isServerReq = req => !req.url.startsWith('/_next');

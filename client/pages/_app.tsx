@@ -49,40 +49,5 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
    
 }
 
-
-/*App.getInitialProps = async (res, req) => {
-  
-  let chainAllValidators
-
-  try {
-     // Fetch data from external API
-  const getAllChainValidators = isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
-  !getAllChainValidators.ok ? { props: {chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
-
-  res.setHeader(
-   'Cache-Control',
-   'public, s-maxage=600, stale-while-revalidate=900'
- )
-
- if(!chainAllValidators || chainAllValidators == undefined) {
-   return {
-     props: {
-       chainAllValidators: Object.assign({}, null)
-     }
-   }
- } else {
-   return {
-     props: {
-       chainAllValidators: Object.assign({}, chainAllValidators)
-     }
-   }
- }
-
-} catch (error) {
-   console.log("Error" + error)
-}
-} 
-*/
-
 export default wrapper.withRedux(App);
 

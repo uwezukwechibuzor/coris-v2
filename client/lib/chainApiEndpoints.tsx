@@ -1,61 +1,83 @@
-import { chainURL } from "./interfaces/chainsURL";
 
-export const inflationEndpoint = `${chainURL.cosmosChainREST}/cosmos/mint/v1beta1/inflation`;
+export const latestBlocksEndpoint = (limit) => `/blocks/latest?limit=${limit}`;
 
-export const communityPoolEndpoint = `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/community_pool`;
+export const allTxsEndpoint = (limit) => `/txs?limit=${limit}`;
 
-export const chainActiveValidatorsEndpoint =  `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500`;
+export const inflationEndpoint = `/chain_inflation`;
 
-export const allChainValidatorsEndpoint = `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators?pagination.limit=500`;
+export const communityPoolEndpoint = `/chain_community_pool`;
 
-export const chainPoolEndpoint = `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/pool`;
+export const chainActiveValidatorsEndpoint = `/active_validators`;
 
-export const chainBlockHeightDetailsEndpont = (height) => `${chainURL.cosmosChainREST}/blocks/${height}`;
+export const allChainValidatorsEndpoint = `/all_validators`;
 
-export const chainBlockHeightTxsEndpoint = (height) =>  `${chainURL.cosmosChainREST}/cosmos/tx/v1beta1/txs?events=tx.height=${height}`;
+export const chainPoolEndpoint = `/chain_pool`;
 
-export const chainTxsByHashEndpoint = (hash) =>  `${chainURL.cosmosChainREST}/cosmos/tx/v1beta1/txs/${hash}`
+export const chainBlockHeightDetailsEndpont = (height) =>
+  `/block_height_details?height=${height}`;
 
-export const chainValidatorsDetailsEndpoint = (address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${address}`;
+export const chainBlockHeightTxsEndpoint = (height) =>
+  `/block_height_txs?height=${height}`;
 
-export const chainValidatorsSlashingSigningInfosDetailsEndpoint = (cons_address) => `${chainURL.cosmosChainREST}/cosmos/slashing/v1beta1/signing_infos/${cons_address}`;
+export const chainTxsByHashEndpoint = (hash) => `/chain_txs_hash?hash=${hash}`;
 
-export const chainValidatorDelegationsEndpoint = (validator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`;
+export const chainValidatorsDetailsEndpoint = (address) =>
+  `/chain_validator_details?address=${address}`;
 
-export const chainValidatorUnDelegationsEndpoint = (validator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`;
+export const chainValidatorsSlashingSigningInfosDetailsEndpoint = (
+  cons_address
+) =>
+  `/chain_validator_slashing_signing_info_details?cons_address=${cons_address}`;
 
-export const chainValidatorReDelegationsEndpoint = (delegator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`;
+export const chainValidatorDelegationsEndpoint = (validator_addr) =>
+  `/chain_validator_delegations?validator_addr=${validator_addr}`;
 
-export const consensusStateEndpoint = `${chainURL.cosmosChainRPC}/consensus_state?`;
+export const chainValidatorUnDelegationsEndpoint = (validator_addr) =>
+  `/chain_validator_undelegations?validator_addr=${validator_addr}`;
 
-export const mintingParamsEndpoint = `${chainURL.cosmosChainREST}/cosmos/mint/v1beta1/params`;
+export const chainValidatorReDelegationsEndpoint = (delegator_addr) =>
+  `/chain_validator_undelegations?delegator_addr=${delegator_addr}`;
 
-export const govParamsEndpoint = (params_type) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/params/${params_type}`;
+export const consensusStateEndpoint = `/chain_consensus`;
 
-export const slashingParamsEndpoint = `${chainURL.cosmosChainREST}/cosmos/slashing/v1beta1/params`;
+export const mintingParamsEndpoint = `/chain_minting_params`;
 
-export  const stakingParamsEndpoint = `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/params`;
+export const govParamsEndpoint = (params_type) =>
+  `/chain_gov_params?params_type=${params_type}`;
 
-export const distributionParamsEndpoint = `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/params`;
+export const slashingParamsEndpoint = `/chain_slashing_params`;
 
-export const nodeInfoEndpoint = `${chainURL.cosmosChainREST}/node_info`;
+export const stakingParamsEndpoint = `/chain_staking_params`;
 
-export const proposalsEndpoint = `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals?pagination.limit=500&pagination.reverse=true`;
+export const distributionParamsEndpoint = `/chain_distribution_params`;
 
-export const proposalDetailsEndpoint = (proposal_id) =>  `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${proposal_id}`
+export const nodeInfoEndpoint = `/chain_node_info`;
 
-export const proposalVotingOptionsEndpoint = (id) =>  `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${id}/votes`;
+export const proposalsEndpoint = `/chain_proposals`;
 
-export const proposalDepositsEndpoint = (id) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${id}/deposits`;
+export const proposalDetailsEndpoint = (proposal_id) =>
+  `/chain_proposal_details?proposal_id=${proposal_id}`;
 
-export const authAccountEndpoint = (address) => `${chainURL.cosmosChainREST}/cosmos/auth/v1beta1/accounts/${address}`;
+export const proposalVotingOptionsEndpoint = (id) =>
+  `/chain_proposal_voting_options?id=${id}`;
 
-export const accountBalanceEndpoint = (address) => `${chainURL.cosmosChainREST}/cosmos/bank/v1beta1/balances/${address}`
+export const proposalDepositsEndpoint = (id) =>
+  `/chain_proposal_deposits?id=${id}`;
 
-export const accountDelegationRewardsEndpoint = (delegator_address) =>  `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/delegators/${delegator_address}/rewards`;
+export const authAccountEndpoint = (address) =>
+  `/chain_auth_account?address=${address}`;
 
-export const accountDelegationsEndpoint = (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegations/${delegator_address}`;
+export const accountBalanceEndpoint = (address) =>
+  `/chain_account_balance?address=${address}`;
 
-export const accountReDelegationsEndpoint = (delegator_address) =>  `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/redelegations`;
+export const accountDelegationRewardsEndpoint = (delegator_address) =>
+  `/chain_account_delegation_rewaards?delegator_address=${delegator_address}`;
 
-export const accountUnDelegationsEndpoint = (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/unbonding_delegations`;
+export const accountDelegationsEndpoint = (delegator_address) =>
+  `/chain_account_delegations?delegator_address=${delegator_address}`;
+
+export const accountReDelegationsEndpoint = (delegator_address) =>
+  `/umee/chain_account_redelegations?delegator_address=${delegator_address}`;
+
+export const accountUnDelegationsEndpoint = (delegator_address) =>
+  `/chain_account_undelegations?delegator_address=${delegator_address}`;

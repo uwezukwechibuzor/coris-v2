@@ -1,11 +1,14 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
 import { HYDRATE } from "next-redux-wrapper";
+import { allChainValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
 import { chainURL } from "./interfaces/chainsURL";
+
+
+const baseChainAPI =  process.env.NEXT_PUBLIC_UMEE_API
 
 export const chainApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: "https:",
+    baseUrl: baseChainAPI,
      mode: 'cors',  
      prepareHeaders: (headers) => {
       //headers.set('Access-Control-Allow-Origin', '*')
@@ -19,14 +22,22 @@ export const chainApi = createApi({
       return action.payload[reducerPath];
     }
   },
-  tagTypes: ['Height', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails', 'ProposalsVotingOptions', 'ProposalsDeposits', 'ConsensusState', 'AuthAccountAddress', 'AccountBalance', 'DelegatorRewards', 'AccountDelegations', 'AccountReledelgations', 'AccountUnbondingDelegations'],
+  tagTypes: ['Blocks','Height', 'AllTxs', 'Validators','ActiveValidators', 'ValidatorDetails', 'Pool', 'Delegations', 'UnDelegations', 'Redelegations', 'MintingParameters', 'GovParameters', 'SlashingParameters', 'StakingParameters', 'DistributionParameters', 'NodeInfo', 'Proposals', 'ProposalDetails', 'AnnualProvisions', 'Inflation', 'CommunityPool', 'Transactions', 'TransactionDetails', 'SlashingSigningInfosDetails', 'ProposalsVotingOptions', 'ProposalsDeposits', 'ConsensusState', 'AuthAccountAddress', 'AccountBalance', 'DelegatorRewards', 'AccountDelegations', 'AccountReledelgations', 'AccountUnbondingDelegations'],
   endpoints: (builder) => ({
-     getChainBlockHeight: builder.query<any, any>({
-      query: (height) => `${chainURL.cosmosChainREST}/blocks/${height}`,
+     getChainLatestBlocks: builder.query<any, any>({
+      query: (limit) => latestBlocksEndpoint(limit),
+      providesTags:  ['Blocks'],
+    }),  
+    getChainBlockHeight: builder.query<any, any>({
+      query: (height) => chainBlockHeightDetailsEndpont(height),
       providesTags:  ['Height'],
     }),   
+     getChainAllTxs: builder.query<any, any>({
+      query: (limit) => allTxsEndpoint(limit),
+      providesTags:  ['AllTxs'],
+    }),   
     getChainValidators: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators?pagination.limit=500`,
+      query: () => allChainValidatorsEndpoint,
       providesTags:  ['Validators'],
     }),  
     getChainActiveValidators: builder.query<any, void>({
@@ -150,7 +161,9 @@ export const chainApi = createApi({
 
 // Export hooks for usage in functional components
 export const {
+  useGetChainLatestBlocksQuery,
   useGetChainBlockHeightQuery,
+  useGetChainAllTxsQuery,
   useGetChainValidatorsQuery,
   useGetChainActiveValidatorsQuery,
   useGetChainValidatorDetailsQuery,
