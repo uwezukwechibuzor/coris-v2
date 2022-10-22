@@ -36,8 +36,6 @@ const PoolChart = dynamic(() => import('./Details/poolChart'), {
   ssr: false
 })
 
-let coinID = 'umee'
-
 function HomePageContent(props) {
   const darkMode = useAppSelector(state => state.general.darkMode)
   const {
@@ -55,15 +53,16 @@ function HomePageContent(props) {
     getAllTxs,
     activeValidators,
     poolData,
-    chainAllValidators
-
+    chainAllValidators,
+    coinData,
+    priceChart
   } = props;
 
   //function that receieves proposer address and returns the validators details
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
     //convert proposer address to cosmosvalcons
     const proposerToBech32 = toBech32("umeevalcons", fromHex(block.proposer))
-    const getActiveChainValidators = activeValidators.validators.map((validator) => {
+    const getActiveChainValidators = activeValidators?.validators?.map((validator) => {
       //fetch just the active validators
       //get the consensus pubkey
       const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
@@ -76,30 +75,6 @@ function HomePageContent(props) {
     })
     return getActiveChainValidators
   })
-
-  //function to get coin details
-  const [coinData, setCoin]: any = useState([])
-  let API_Call = `https://api.coingecko.com/api/v3/coins/${coinID}`
-  useEffect(() => {
-    axios.get(API_Call).then((response) => {
-      setCoin(response.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }, []);
-
-  //get price data and pass to price chart component
-  const [priceChart, setPriceChart]: any = useState([])
-  let API_PriceData = `https://api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=1`
-  useEffect(() => {
-    axios.get(API_PriceData).then((response) => {
-      const getPrice = response.data.prices
-      setPriceChart(getPrice)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }, [])
-  //console.log(priceChart)
 
   //get Bonded Token and Not bonded Token
   const bondedTokens = poolData !== undefined ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2) : null
@@ -361,10 +336,6 @@ function HomePageContent(props) {
   )
 }
 
-const Increase = styled.div`
-  margin-top: -3px;
-`
-
 const Decrease = styled.div`
   transform: rotate(180deg);
   margin-top: 3px;
@@ -592,33 +563,6 @@ const Title = styled.h1`
   margin-top: 40px;
 `;
 
-const Rectangle32 = styled.div`
-  position: absolute;
-  width: 5px;
-  height: 174px;
-  top: 0;
-  left: 314px;
-  background: radial-gradient(
-    50% 50% at 50% 50%,
-    rgba(57.9999965429306, 66.00001126527786, 138.00000697374344, 0.2199999988079071) 0%,
-    rgba(93.00000205636024, 83.00000265240669, 213.00000250339508, 0) 100%
-  );
-`;
-
-const FlexRow2 = styled.div`
-  margin-top: 16px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 1334px;
-`;
-
-const APR = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 20px;
-`;
-
 const APR1 = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
@@ -686,16 +630,6 @@ const Percent = styled.div`
   letter-spacing: 1.68px;
 `;
 
-const Ellipse9 = styled.div`
-  position: absolute;
-  width: 95px;
-  height: 95px;
-  top: 0;
-  left: -21px;
-  border-radius: 47.5px;
-  border: 10px solid var(--chambray);
-`;
-
 const ActiveValidators = styled.div`
   height: 174px;
   position: relative;
@@ -715,27 +649,12 @@ const OverlapGroup3 = styled.div`
   border: 10px solid var(--fog);
 `;
 
-const Vector = styled.img`
-  position: absolute;
-  width: 56px;
-  height: 55px;
-  top: -10px;
-  left: 29px;
-`;
-
 const Percent1 = styled.div`
   ${UrbanistBoldChambray21px}
   position: absolute;
   top: 25px;
   left: 16px;
   letter-spacing: 1.68px;
-`;
-
-const FlexRow3 = styled.div`
-  margin-top: 16px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 1346px;
 `;
 
 const Inflation = styled.div`
@@ -751,45 +670,6 @@ const OverlapGroup14 = styled.div`
   display: flex;
   flex-direction: column;
   padding: 26px 18px;
-`;
-
-const OverlapGroup15 = styled.div`
-  height: 174px;
-  margin-left: 16px;
-  display: flex;
-  padding: 0 15px;
-  align-items: center;
-  min-width: 720px;
-  background-color: var(--white);
-  border-radius: 20px;
-  box-shadow: 0px 7px 30px #0015da29;
-`;
-
-const FlexCol5 = styled.div`
-  width: 347px;
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-height: 100px;
-`;
-
-const FlexRow4 = styled.div`
-  ${UrbanistLightBlack24px}
-  height: 34px;
-  margin-top: 15px;
-  margin-left: 1px;
-  display: flex;
-  align-items: flex-start;
-  min-width: 314px;
-`;
-
-const Rectangle28 = styled.div`
-  width: 29px;
-  height: 29px;
-  align-self: flex-end;
-  background-color: var(--chambray);
-  border-radius: 10px;
 `;
 
 const Place1 = styled.div`

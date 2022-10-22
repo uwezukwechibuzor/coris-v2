@@ -1,0 +1,2 @@
+export const coinsAPI = (coinID) =>  `https://api.coingecko.com/api/v3/coins/${coinID}`;
+export const coinsPriceChart = (coinID) => `https://api.coingecko.com/api/v3/coins/${coinID}/market_chart?vs_currency=usd&days=1`;

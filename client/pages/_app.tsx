@@ -10,7 +10,7 @@ import { wrapper } from "../lib/store";
 import Error from "next/error";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { ErrorFallback } from "../components/ErrorFallback";
-import { allChainValidatorsEndpoint } from "../lib/chainApiEndpoints";
+import { ChainAllValidatorsEndpoint } from "../lib/chainApiEndpoints";
 
 const isServerReq = req => !req.url.startsWith('/_next');
 

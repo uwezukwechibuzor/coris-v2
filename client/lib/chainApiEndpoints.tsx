@@ -9,7 +9,7 @@ export const communityPoolEndpoint = `/chain_community_pool`;
 
 export const chainActiveValidatorsEndpoint = `/active_validators`;
 
-export const allChainValidatorsEndpoint = `/all_validators`;
+export const ChainAllValidatorsEndpoint = `/all_validators`;
 
 export const chainPoolEndpoint = `/chain_pool`;
 

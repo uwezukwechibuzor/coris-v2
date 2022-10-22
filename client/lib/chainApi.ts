@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
-import { allChainValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
+import { ChainAllValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
 import { chainURL } from "./interfaces/chainsURL";
-
 
 const baseChainAPI =  process.env.NEXT_PUBLIC_UMEE_API
 
@@ -37,7 +36,7 @@ export const chainApi = createApi({
       providesTags:  ['AllTxs'],
     }),   
     getChainValidators: builder.query<any, void>({
-      query: () => allChainValidatorsEndpoint,
+      query: () => ChainAllValidatorsEndpoint,
       providesTags:  ['Validators'],
     }),  
     getChainActiveValidators: builder.query<any, void>({
@@ -129,7 +128,7 @@ export const chainApi = createApi({
       providesTags:  ['ProposalsDeposits'],
     }),
     getChainValidatorsConsensusState: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainRPC}/consensus_state?`,
+      query: () => `${chainURL.UMEE_API}/consensus_state?`,
       providesTags:  ['ConsensusState'],
     }),
     getChainAuthAccountAddress: builder.query<any, any>({
@@ -199,6 +198,7 @@ export const {
 
 //can be used in SSR
 export const {
+  getChainLatestBlocks,
    getChainValidators,
    getChainPool,
    getChainDelegations,
