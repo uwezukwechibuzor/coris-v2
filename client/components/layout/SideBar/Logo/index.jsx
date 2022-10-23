@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-
 function Logo(props) {
   const { className } = props;
 
@@ -63,36 +62,6 @@ const Asset51 = styled.img`
   margin-top: 5px;
   margin-right: 0.5px;
   object-fit: cover;
-`;
-
-const Logo3 = styled.img`
-  .logo.logo-2 & {
-    width: 51.8291015625px;
-    margin-left: -0.1px;
-  }
-`;
-
-const CorisName1 = styled.div`
-  .logo.logo-2 & {
-    height: 50px;
-    margin-left: 16.1px;
-    align-items: unset;
-    min-height: unset;
-  }
-`;
-
-const Asset411 = styled.img`
-  .logo.logo-2 & {
-    margin-left: -0.2px;
-    margin-right: unset;
-  }
-`;
-
-const Asset511 = styled.img`
-  .logo.logo-2 & {
-    margin-left: 17.8px;
-    margin-right: unset;
-  }
 `;
 
 export default Logo;

@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import AssetsContent from "../../components/Assets";
 import Layout from "../../components/layout/Layout";
 import axios from "axios";
+import { cosmosEcoSystem_API } from "../../lib/coingeckoAPI";
 
 function Assets() {
   const [coinsData, setCoins] = useState([]);
 
-  let coinsAPi =
-    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=cosmos-ecosystem&order=market_cap_desc&per_page=50&page=1&sparkline=false";
   useEffect(() => {
     axios
-      .get(coinsAPi)
+      .get(cosmosEcoSystem_API)
       .then((response) => {
         setCoins(response.data);
       })

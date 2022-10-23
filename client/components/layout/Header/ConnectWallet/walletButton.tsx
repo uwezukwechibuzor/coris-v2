@@ -1,20 +1,20 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import Button from 'react-bootstrap/Button'
+import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useAppSelector } from '../../../../lib/hooks';
+import { useAppSelector } from "../../../../lib/hooks";
 
 function WalletButton({ className }) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
-  const router = useRouter()
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+  const router = useRouter();
 
   return (
-    <Wallet className={`${className} ${darkMode ? 'dark-mode' : ''} connect-wallet`} onClick={() => router.push('https://wallet.keplr.app/')} >
-    Connect Wallet
+    <Wallet
+      className={`${className} ${darkMode ? "dark-mode" : ""} connect-wallet`}
+      onClick={() => router.push("https://wallet.keplr.app/")}
+    >
+      Connect Wallet
     </Wallet>
-  )
+  );
 }
-
 
 const Wallet = styled.button`
   width: 150px;
@@ -31,16 +31,15 @@ const Wallet = styled.button`
   margin-left: 20px;
   font-weight: bold;
   background: none;
-  &:hover{
+  &:hover {
     background: #37458d;
     color: white;
   }
-  &.dark-mode{
+  &.dark-mode {
     border-color: #fff !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
     color: white;
   }
 `;
 
-
-export default WalletButton
+export default WalletButton;

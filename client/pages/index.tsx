@@ -3,7 +3,6 @@ import Layout from "../components/layout/Layout";
 import HomePageContent from "../components/Homepage";
 import axios from "axios";
 import {
-  ChainAllValidatorsEndpoint,
   chainActiveValidatorsEndpoint,
   chainPoolEndpoint,
   communityPoolEndpoint,
@@ -15,16 +14,18 @@ import { DENOM } from "../lib/Util/constants";
 import { BaseChainApi } from "../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../lib/coingeckoAPI";
 
-function Home() {
+function Home(props) {
   const [getBlocks, setBlocks] = useState([]);
   const [getAllTxs, setAllTxs] = useState([]);
   const [getInflation, setInflation] = useState(null);
   const [getCommunityPool, setCommunityPool] = useState(null);
   const [getActiveValidators, setActiveValidators] = useState([]);
-  const [getAllValidators, setAllValidators] = useState([]);
   const [getChainPool, setChainPool] = useState(null);
   const [coinData, setCoin]: any = useState([]);
   const [priceChart, setPriceChart]: any = useState([]);
+
+  //get all chain validators from props
+  const getAllValidators = props?.getAllValidators;
 
   const queryTotalBlocks = 7;
   const queryTotalTxs = 7;
@@ -96,20 +97,6 @@ function Home() {
     }
   };
 
-  //get all validators
-  const fetchAllValidators = async () => {
-    try {
-      const response = await axios.get(
-        BaseChainApi() + ChainAllValidatorsEndpoint
-      );
-      if (response.status === 200) {
-        setAllValidators(await response.data.validators);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   //get Pool
   const fetchChainPoolData = async () => {
     try {
@@ -129,7 +116,6 @@ function Home() {
     fetchInflationData();
     fetchCommunityPoolData();
     fetchActiveValidators();
-    fetchAllValidators();
     fetchChainPoolData();
   }, [getBlocks, getAllTxs]);
 
