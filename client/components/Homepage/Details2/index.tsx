@@ -1,20 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../lib/hooks";
-import { UrbanistBoldBlack16px, UrbanistNormalBlack24px, UrbanistNormalBlack16px } from "../../../styledMixins";
-
+import {
+  UrbanistBoldBlack16px,
+  UrbanistNormalBlack24px,
+  UrbanistNormalBlack16px,
+} from "../../../styledMixins";
 
 function Details2(props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
+  const darkMode = useAppSelector((state) => state.general.darkMode);
   const { activeValidators, number1, outOf, number2 } = props;
 
   return (
     <Details>
-      <ActiveValidators className={darkMode ? 'dark-mode' : ''}>{activeValidators}</ActiveValidators>
+      <ActiveValidators className={darkMode ? "dark-mode" : ""}>
+        {activeValidators}
+      </ActiveValidators>
       <Group7328>
-        <Number className={darkMode ? 'dark-mode' : ''}>{number1}</Number>
-        <OutOf className={darkMode ? 'dark-mode' : ''}>{outOf}</OutOf>
-        <Number1 className={darkMode ? 'dark-mode' : ''}>{number2}</Number1>
+        <Number className={darkMode ? "dark-mode" : ""}>{number1}</Number>
+        <OutOf className={darkMode ? "dark-mode" : ""}>{outOf}</OutOf>
+        <Number1 className={darkMode ? "dark-mode" : ""}>{number2}</Number1>
       </Group7328>
     </Details>
   );

@@ -209,9 +209,5 @@ function Home() {
 export default Home;
 
 Home.getLayout = function getLayout(page: any) {
-  return (
-    <Layout>
-      {page}
-    </Layout>
-  );
+  return <Layout>{page}</Layout>;
 };

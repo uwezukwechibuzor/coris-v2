@@ -1,46 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { formatTime, formatHash, getValidatorsLogoFromWebsites, numberWithSpaces, formatNumbers, toDay } from "../../lib/Util/format"
+import {
+  formatHash,
+  getValidatorsLogoFromWebsites,
+  numberWithSpaces,
+  formatNumbers,
+  toDay,
+} from "../../lib/Util/format";
 import styled from "styled-components";
-import Details from './Details'
-import Details2 from './Details2'
+import Details from "./Details";
+import Details2 from "./Details2";
 import {
   UrbanistBoldBlack26px,
   UrbanistNormalBlack24px,
   UrbanistBoldChambray21px,
-  UrbanistLightBlack24px,
   UrbanistBoldBlack40px,
 } from "../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
-import { useGetChainActiveValidatorsQuery, useGetChainPoolQuery, useGetChainValidatorsQuery } from "../../lib/chainApi";
-import dynamic from 'next/dynamic'
-import axios from "axios";
+import dynamic from "next/dynamic";
 import OnlineVotingPowerChart from "./Details/votingPowerChart";
 import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 import { useAppSelector } from "../../lib/hooks";
-import ReactPaginate from "react-paginate";
-import { Card, Col, Row } from "react-bootstrap";
 import TxsData from "../Blocks/Txs";
 import { DENOM } from "../../lib/Util/constants";
 import router from "next/router";
 
-
-
 //importing dynamically
-const PriceChart = dynamic(() => import('./Details/priceChart'), {
-  ssr: false
-})
+const PriceChart = dynamic(() => import("./Details/priceChart"), {
+  ssr: false,
+});
 
-const PoolChart = dynamic(() => import('./Details/poolChart'), {
-  ssr: false
-})
+const PoolChart = dynamic(() => import("./Details/poolChart"), {
+  ssr: false,
+});
 
 function HomePageContent(props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
+  const darkMode = useAppSelector((state) => state.general.darkMode);
   const {
     title,
-    apr,
     aprValue,
     place1,
     inflation,
@@ -55,55 +53,73 @@ function HomePageContent(props) {
     poolData,
     chainAllValidators,
     coinData,
-    priceChart
+    priceChart,
   } = props;
 
   //function that receieves proposer address and returns the validators details
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
     //convert proposer address to cosmosvalcons
-    const proposerToBech32 = toBech32("umeevalcons", fromHex(block.proposer))
-    const getActiveChainValidators = activeValidators?.validators?.map((validator) => {
-      //fetch just the active validators
-      //get the consensus pubkey
-      const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
-      const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-      const bech32Address = Bech32.encode("umeevalcons", addressData);
+    const proposerToBech32 = toBech32("umeevalcons", fromHex(block.proposer));
+    const getActiveChainValidators = activeValidators?.validators?.map(
+      (validator) => {
+        //fetch just the active validators
+        //get the consensus pubkey
+        const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
+        const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+        const bech32Address = Bech32.encode("umeevalcons", addressData);
 
-      if (bech32Address === proposerToBech32) {
-        return { validator, block }
+        if (bech32Address === proposerToBech32) {
+          return { validator, block };
+        }
       }
-    })
-    return getActiveChainValidators
-  })
+    );
+    return getActiveChainValidators;
+  });
 
   //get Bonded Token and Not bonded Token
-  const bondedTokens = poolData !== undefined ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2) : null
-  const notBondedTokens = poolData !== undefined ? (poolData?.pool?.not_bonded_tokens / DENOM).toFixed(2) : null
+  const bondedTokens =
+    poolData !== undefined
+      ? (poolData?.pool?.bonded_tokens / DENOM).toFixed(2)
+      : null;
+  const notBondedTokens =
+    poolData !== undefined
+      ? (poolData?.pool?.not_bonded_tokens / DENOM).toFixed(2)
+      : null;
 
   //get voting power and the active validators
-  const totalValidators = chainAllValidators !== undefined ? chainAllValidators?.length : null
-  const totalActiveValidators = activeValidators.validators?.length
+  const totalValidators =
+    chainAllValidators !== undefined ? chainAllValidators?.length : null;
+  const totalActiveValidators = activeValidators?.validators?.length;
 
   //percentage of active Validators
-  const percentageOfActiveValidators = totalActiveValidators != undefined && totalValidators != undefined ? Math.round(Number(totalActiveValidators / totalValidators) * 100) : null
+  const percentageOfActiveValidators =
+    totalActiveValidators && totalValidators
+      ? Math.round(Number(totalActiveValidators / totalValidators) * 100)
+      : null;
 
   //get the validators total voting power
-  let totalVotingPower = 0
-  chainAllValidators !== undefined ? chainAllValidators?.map(validatorsDetails => {
-    totalVotingPower += Number(validatorsDetails.tokens / DENOM)
-    return totalVotingPower
-  }) : null
+  let totalVotingPower = 0;
+  chainAllValidators !== undefined
+    ? chainAllValidators?.map((validatorsDetails) => {
+        totalVotingPower += Number(validatorsDetails.tokens / DENOM);
+        return totalVotingPower;
+      })
+    : null;
 
   //get the validators total active voting power
-  let totalActiveVotingPower = 0
-  activeValidators !== undefined ? activeValidators?.validators?.map(validatorsDetails => {
-    totalActiveVotingPower += Number(validatorsDetails.tokens / DENOM)
-    return totalActiveVotingPower
-  }) : null
+  let totalActiveVotingPower = 0;
+  activeValidators !== undefined
+    ? activeValidators?.validators?.map((validatorsDetails) => {
+        totalActiveVotingPower += Number(validatorsDetails.tokens / DENOM);
+        return totalActiveVotingPower;
+      })
+    : null;
 
   //percentage of online Voting Power
-  const percentageOfVotingPower = ((totalActiveVotingPower / totalVotingPower) * 100).toFixed()
-
+  const percentageOfVotingPower =
+    totalActiveValidators && totalValidators
+      ? ((totalActiveVotingPower / totalVotingPower) * 100).toFixed()
+      : null;
 
   const detailsData = {
     onlineVotingPower: "Online Voting power",
@@ -120,91 +136,173 @@ function HomePageContent(props) {
   };
 
   return (
-    <Wrapper className={darkMode ? 'dark-mode' : ''}>
-      <Title className={darkMode ? 'dark-mode' : ''}>{title}</Title>
+    <Wrapper className={darkMode ? "dark-mode" : ""}>
+      <Title className={darkMode ? "dark-mode" : ""}>{title}</Title>
       <Grid>
-        <GridItem className={darkMode ? 'dark-mode first-item chart' : 'first-item chart'}>
+        <GridItem
+          className={
+            darkMode ? "dark-mode first-item chart" : "first-item chart"
+          }
+        >
           <Icon>
-            {
-              darkMode ? (
-                <><img className="asset-6-2" src={coinData?.image?.large} height="40" /> {coinData?.symbol?.toUpperCase()}</>
-              ) : (
-                <><img className="asset-6-2" src={coinData?.image?.large} height="40" />   {coinData?.symbol?.toUpperCase()}</>
-              )
-            }
+            {darkMode ? (
+              <>
+                <img
+                  className="asset-6-2"
+                  src={coinData?.image?.large}
+                  height="40"
+                />{" "}
+                {coinData?.symbol?.toUpperCase()}
+              </>
+            ) : (
+              <>
+                <img
+                  className="asset-6-2"
+                  src={coinData?.image?.large}
+                  height="40"
+                />{" "}
+                {coinData?.symbol?.toUpperCase()}
+              </>
+            )}
           </Icon>
           <Stat>
-            {Math.sign(coinData?.market_data?.current_price?.usd) === 1 ? <Amount>${coinData?.market_data?.current_price?.usd}</Amount> : Math.sign(coinData?.market_data?.current_price?.usd) === -1 ? <Amount style={{ color: 'red' }}>${coinData?.market_data?.current_price?.usd}</Amount> : null}
+            {Math.sign(coinData?.market_data?.current_price?.usd) === 1 ? (
+              <Amount>${coinData?.market_data?.current_price?.usd}</Amount>
+            ) : Math.sign(coinData?.market_data?.current_price?.usd) === -1 ? (
+              <Amount style={{ color: "red" }}>
+                ${coinData?.market_data?.current_price?.usd}
+              </Amount>
+            ) : null}
             <Flex>
               <FlexCol>
                 <Decrease>
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 10L7 0L14 10H0Z" fill={Math.sign(coinData?.market_data?.price_change_percentage_24h) === 1 ? '#2ec169' : Math.sign(coinData?.market_data?.price_change_percentage_24h) === -1 ? 'red' : null} />
+                  <svg
+                    width="14"
+                    height="10"
+                    viewBox="0 0 14 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 10L7 0L14 10H0Z"
+                      fill={
+                        Math.sign(
+                          coinData?.market_data?.price_change_percentage_24h
+                        ) === 1
+                          ? "#2ec169"
+                          : Math.sign(
+                              coinData?.market_data?.price_change_percentage_24h
+                            ) === -1
+                          ? "red"
+                          : null
+                      }
+                    />
                   </svg>
                 </Decrease>
               </FlexCol>
-              <p style={{ marginTop: '-12px' }}>{coinData?.market_data?.price_change_percentage_24h ? coinData?.market_data?.price_change_percentage_24h.toFixed(2) + '%' : null} (24h)</p>
+              <p style={{ marginTop: "-12px" }}>
+                {coinData?.market_data?.price_change_percentage_24h
+                  ? coinData?.market_data?.price_change_percentage_24h.toFixed(
+                      2
+                    ) + "%"
+                  : null}{" "}
+                (24h)
+              </p>
             </Flex>
           </Stat>
           <br />
           <PriceChart {...priceChart} />
         </GridItem>
-        <GridItem className={darkMode ? 'dark-mode second-item p-3' : 'second-item p-3'}>
+        <GridItem
+          className={darkMode ? "dark-mode second-item p-3" : "second-item p-3"}
+        >
           <FlexCol className="h-100">
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCap</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.market_cap ? numberWithSpaces(coinData.market_data.market_cap.usd) : null}</MarketCapVal>
+              <MarketCapVal className="w-50">
+                $
+                {coinData?.market_data?.market_cap
+                  ? numberWithSpaces(coinData.market_data.market_cap.usd)
+                  : null}
+              </MarketCapVal>
             </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">marketCapRank</MarketCapDef>
-              <MarketCapVal className="w-50">{coinData?.market_cap_rank ? coinData.market_cap_rank : null}</MarketCapVal>
+              <MarketCapVal className="w-50">
+                {coinData?.market_cap_rank ? coinData.market_cap_rank : null}
+              </MarketCapVal>
             </Flex>
             <Flex className="h-50 align-items-center">
               <MarketCapDef className="w-50">24h Vol</MarketCapDef>
-              <MarketCapVal className="w-50">${coinData?.market_data?.total_volume ? numberWithSpaces(coinData?.market_data?.total_volume?.usd) : null}</MarketCapVal>
+              <MarketCapVal className="w-50">
+                $
+                {coinData?.market_data?.total_volume
+                  ? numberWithSpaces(coinData?.market_data?.total_volume?.usd)
+                  : null}
+              </MarketCapVal>
             </Flex>
           </FlexCol>
         </GridItem>
-        <GridItem className={darkMode ? 'dark-mode third-item' : 'third-item'}>
+        <GridItem className={darkMode ? "dark-mode third-item" : "third-item"}>
           <Flex className="h-100">
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <LatestBlock className={darkMode ? 'dark-mode' : ''}>latest Block</LatestBlock>
-              <Phone00 className={darkMode ? 'dark-mode' : ''}>{getBlocks ? numberWithSpaces(getBlocks[0]?.height) : null}</Phone00>
+              <LatestBlock className={darkMode ? "dark-mode" : ""}>
+                latest Block
+              </LatestBlock>
+              <Phone00 className={darkMode ? "dark-mode" : ""}>
+                {getBlocks ? numberWithSpaces(getBlocks[0]?.height) : null}
+              </Phone00>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <BlockTime className={darkMode ? 'dark-mode' : ''}>Block Time</BlockTime>
-              <X602s className={darkMode ? 'dark-mode' : ''}>{getBlocks ? toDay(getBlocks[0]?.time, 'from') : null}</X602s>
+              <BlockTime className={darkMode ? "dark-mode" : ""}>
+                Block Time
+              </BlockTime>
+              <X602s className={darkMode ? "dark-mode" : ""}>
+                {getBlocks ? toDay(getBlocks[0]?.time, "from") : null}
+              </X602s>
             </FlexCol>
             <Divider></Divider>
             <FlexCol className="w-50 align-items-center justify-content-center">
-              <Chain className={darkMode ? 'dark-mode' : ''}>chain</Chain>
-              <Corichain1 className={darkMode ? 'dark-mode' : ''}>{coinData ? coinData?.symbol?.toUpperCase() : null}</Corichain1>
+              <Chain className={darkMode ? "dark-mode" : ""}>chain</Chain>
+              <Corichain1 className={darkMode ? "dark-mode" : ""}>
+                {coinData ? coinData?.symbol?.toUpperCase() : null}
+              </Corichain1>
             </FlexCol>
           </Flex>
         </GridItem>
       </Grid>
       <Grid1>
-        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
+        <GridItem1 className={darkMode ? "dark-mode first-item" : "first-item"}>
           <FlexCenter className="h-100">
             <div className="p-3">
-              <APR1 className={darkMode ? 'dark-mode' : ''}>
+              <APR1 className={darkMode ? "dark-mode" : ""}>
                 Coingecko Rank
                 {/* {apr} */}
               </APR1>
-              <Text1 className={darkMode ? 'dark-mode' : ''} title={aprValue}>{coinData?.coingecko_rank}</Text1>
+              <Text1 className={darkMode ? "dark-mode" : ""} title={aprValue}>
+                {coinData?.coingecko_rank}
+              </Text1>
             </div>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
+        <GridItem1
+          className={darkMode ? "dark-mode second-item" : "second-item"}
+        >
           <FlexCenter className="h-100">
             <OverlapGroup13>
-              <Place className={darkMode ? 'dark-mode' : ''}>{place1}</Place>
-              <Address className={darkMode ? 'dark-mode' : ''}>{coinData?.market_data?.total_supply !== null ? formatNumbers(coinData?.market_data?.total_supply) + ' ' + coinData?.symbol?.toUpperCase() : 'Null'} </Address>
+              <Place className={darkMode ? "dark-mode" : ""}>{place1}</Place>
+              <Address className={darkMode ? "dark-mode" : ""}>
+                {coinData?.market_data?.total_supply !== null
+                  ? formatNumbers(coinData?.market_data?.total_supply) +
+                    " " +
+                    coinData?.symbol?.toUpperCase()
+                  : "Null"}{" "}
+              </Address>
             </OverlapGroup13>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className={darkMode ? 'dark-mode third-item' : 'third-item'}>
+        <GridItem1 className={darkMode ? "dark-mode third-item" : "third-item"}>
           <OnlineVotingPower>
             <Details
               onlineVotingPower={detailsData.onlineVotingPower}
@@ -212,14 +310,18 @@ function HomePageContent(props) {
               place={detailsData.place}
               x36516M2={detailsData.x36516M2}
             />
-            <OverlapGroup2 style={{ position: 'relative' }}>
-              <Percent style={{ position: 'absolute', right: '10px;' }}>
-                <OnlineVotingPowerChart percentageOfVotingPower={percentageOfVotingPower} />
+            <OverlapGroup2 style={{ position: "relative" }}>
+              <Percent style={{ position: "absolute", right: "10px;" }}>
+                <OnlineVotingPowerChart
+                  percentageOfVotingPower={percentageOfVotingPower}
+                />
               </Percent>
             </OverlapGroup2>
           </OnlineVotingPower>
         </GridItem1>
-        <GridItem1 className={darkMode ? 'dark-mode fourth-item' : 'fourth-item'}>
+        <GridItem1
+          className={darkMode ? "dark-mode fourth-item" : "fourth-item"}
+        >
           <ActiveValidators>
             <Details2
               activeValidators={details2Data.activeValidators}
@@ -227,57 +329,95 @@ function HomePageContent(props) {
               outOf={details2Data.outOf}
               number2={details2Data.number2}
             />
-            <OverlapGroup3 style={{ position: 'relative' }}>
-              <Percent1 style={{ position: 'absolute', right: '10px;' }}>
-                <ActiveValidatorsChart percentageOfActiveValidators={percentageOfActiveValidators} />
+            <OverlapGroup3 style={{ position: "relative" }}>
+              <Percent1 style={{ position: "absolute", right: "10px;" }}>
+                <ActiveValidatorsChart
+                  percentageOfActiveValidators={percentageOfActiveValidators}
+                />
               </Percent1>
             </OverlapGroup3>
           </ActiveValidators>
         </GridItem1>
       </Grid1>
       <Grid1>
-        <GridItem1 className={darkMode ? 'dark-mode first-item' : 'first-item'}>
+        <GridItem1 className={darkMode ? "dark-mode first-item" : "first-item"}>
           <FlexCenter className="h-100">
             <Inflation>
-              <APR1 className={darkMode ? 'dark-mode' : ''}>{inflation}</APR1>
-              <Text1 className={darkMode ? 'dark-mode' : ''}>{inflationValue}</Text1>
+              <APR1 className={darkMode ? "dark-mode" : ""}>{inflation}</APR1>
+              <Text1 className={darkMode ? "dark-mode" : ""}>
+                {inflationValue}
+              </Text1>
             </Inflation>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 className={darkMode ? 'dark-mode second-item' : 'second-item'}>
+        <GridItem1
+          className={darkMode ? "dark-mode second-item" : "second-item"}
+        >
           <FlexCenter className="h-100">
             <OverlapGroup14>
-              <Place className={darkMode ? 'dark-mode' : ''}>{communityPool}</Place>
-              <Address className={darkMode ? 'dark-mode' : ''}>{communityPoolValue}</Address>
+              <Place className={darkMode ? "dark-mode" : ""}>
+                {communityPool}
+              </Place>
+              <Address className={darkMode ? "dark-mode" : ""}>
+                {communityPoolValue}
+              </Address>
             </OverlapGroup14>
           </FlexCenter>
         </GridItem1>
-        <GridItem1 style={{ height: 'fit-content' }} className={darkMode ? 'dark-mode third-item span-last-ends' : 'third-item span-last-ends'}>
-          <Flex className="position-relative h-100 w-100 align-items-center" style={{ padding: "20px" }}>
+        <GridItem1
+          style={{ height: "fit-content" }}
+          className={
+            darkMode
+              ? "dark-mode third-item span-last-ends"
+              : "third-item span-last-ends"
+          }
+        >
+          <Flex
+            className="position-relative h-100 w-100 align-items-center"
+            style={{ padding: "20px" }}
+          >
             <FlexCol className="w-100">
-              <APR1 className={darkMode ? 'dark-mode' : ''}>Pool</APR1>
+              <APR1 className={darkMode ? "dark-mode" : ""}>Pool</APR1>
               <Flex>
                 <div>
                   <div className="d-flex align-items-center">
-                    <FlexCol><Bullet /></FlexCol>
-                    <FlexCol style={{ margin: '0px 20px' }}>
-                      <Place1 className={darkMode ? 'dark-mode' : ''}>Bonded</Place1>
-                      <Phone className={darkMode ? 'dark-mode' : ''}>{formatNumbers(bondedTokens)}</Phone>
+                    <FlexCol>
+                      <Bullet />
+                    </FlexCol>
+                    <FlexCol style={{ margin: "0px 20px" }}>
+                      <Place1 className={darkMode ? "dark-mode" : ""}>
+                        Bonded
+                      </Place1>
+                      <Phone className={darkMode ? "dark-mode" : ""}>
+                        {formatNumbers(bondedTokens)}
+                      </Phone>
                     </FlexCol>
                   </div>
                   <div className="d-flex align-items-center mt-3">
-                    <FlexCol><Bullet className="light" /></FlexCol>
-                    <FlexCol style={{ margin: '0px 20px' }}>
-                      <Bonded className={darkMode ? 'dark-mode' : ''}>Not Bonded</Bonded>
-                      <Phone1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(notBondedTokens)}</Phone1>
+                    <FlexCol>
+                      <Bullet className="light" />
+                    </FlexCol>
+                    <FlexCol style={{ margin: "0px 20px" }}>
+                      <Bonded className={darkMode ? "dark-mode" : ""}>
+                        Not Bonded
+                      </Bonded>
+                      <Phone1 className={darkMode ? "dark-mode" : ""}>
+                        {formatNumbers(notBondedTokens)}
+                      </Phone1>
                     </FlexCol>
                   </div>
                 </div>
               </Flex>
             </FlexCol>
-            <Flex style={{top: "0", right: "10px"}} className="h-100 p-3 position-absolute">
+            <Flex
+              style={{ top: "0", right: "10px" }}
+              className="h-100 p-3 position-absolute"
+            >
               <OverlapGroup2>
-                <PoolChart bondedTokens={bondedTokens} notBondedTokens={notBondedTokens} />
+                <PoolChart
+                  bondedTokens={bondedTokens}
+                  notBondedTokens={notBondedTokens}
+                />
               </OverlapGroup2>
             </Flex>
           </Flex>
@@ -285,12 +425,21 @@ function HomePageContent(props) {
       </Grid1>
 
       <Flex className="align-items-center justify-content-between">
-        <LatestBlocks className={darkMode ? 'dark-mode' : ''}>{latestBlocks}</LatestBlocks>
-        <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
+        <LatestBlocks className={darkMode ? "dark-mode" : ""}>
+          {latestBlocks}
+        </LatestBlocks>
+        <Link href="/blocks">
+          <a>
+            <ViewAll className={darkMode ? "dark-mode" : ""}>{viewAll}</ViewAll>
+          </a>
+        </Link>
       </Flex>
-      <Container className={darkMode ? 'dark-mode' : ''}>
+      <Container className={darkMode ? "dark-mode" : ""}>
         <Responsive>
-          <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'} style={{ tableLayout: "fixed" }}>
+          <table
+            className={darkMode ? "w-100 mt-3 dark-mode" : "w-100 mt-3"}
+            style={{ tableLayout: "fixed" }}
+          >
             <thead>
               <tr>
                 <th>Height</th>
@@ -307,45 +456,79 @@ function HomePageContent(props) {
                   //console.log(data)
                   return (
                     <tr>
-                      <td onClick={() => router.push(`/blocks/${data.block.height}`)} >{data.block?.height ? data.block.height : null}</td>
-                      <td>{data.block?.hash ? formatHash(data.block.hash, 15, '....') : null}</td>
-                      <td onClick={() => router.push(`/validators/${data.validator.operator_address}`)}>
-                        <img className="img" width={30} src={getValidatorsLogoFromWebsites(data?.validator?.description?.website)} alt="" />
-                        <p style={{ display: 'inline', marginLeft: '10px' }}>{data?.validator?.description?.moniker}</p>
+                      <td
+                        onClick={() =>
+                          router.push(`/blocks/${data.block.height}`)
+                        }
+                      >
+                        {data.block?.height ? data.block.height : null}
+                      </td>
+                      <td>
+                        {data.block?.hash
+                          ? formatHash(data.block.hash, 15, "....")
+                          : null}
+                      </td>
+                      <td
+                        onClick={() =>
+                          router.push(
+                            `/validators/${data.validator.operator_address}`
+                          )
+                        }
+                      >
+                        <img
+                          className="img"
+                          width={30}
+                          src={getValidatorsLogoFromWebsites(
+                            data?.validator?.description?.website
+                          )}
+                          alt=""
+                        />
+                        <p style={{ display: "inline", marginLeft: "10px" }}>
+                          {data?.validator?.description?.moniker}
+                        </p>
                       </td>
                       <td>{data?.block?.noTxs}</td>
-                      <td>{data?.block?.time ? toDay(data?.block.time, 'from') : null}</td>
+                      <td>
+                        {data?.block?.time
+                          ? toDay(data?.block.time, "from")
+                          : null}
+                      </td>
                     </tr>
-                  )
+                  );
                 }
-              })
-            })
-            }
+              });
+            })}
           </table>
         </Responsive>
       </Container>
 
       <Flex className="align-items-center justify-content-between">
-        <LatestBlocks className={darkMode ? 'dark-mode' : ''}>Latest Transactions</LatestBlocks>
-        <Link href='/blocks' ><a><ViewAll className={darkMode ? 'dark-mode' : ''}>{viewAll}</ViewAll></a></Link>
+        <LatestBlocks className={darkMode ? "dark-mode" : ""}>
+          Latest Transactions
+        </LatestBlocks>
+        <Link href="/blocks">
+          <a>
+            <ViewAll className={darkMode ? "dark-mode" : ""}>{viewAll}</ViewAll>
+          </a>
+        </Link>
       </Flex>
-      <Container className={darkMode ? 'dark-mode' : ''}>
+      <Container className={darkMode ? "dark-mode" : ""}>
         <TxsData getAllTxs={getAllTxs} />
       </Container>
     </Wrapper>
-  )
+  );
 }
 
 const Decrease = styled.div`
   transform: rotate(180deg);
   margin-top: 3px;
-`
+`;
 
 const Amount = styled.div`
   color: #2ec169;
-  font-size:24px;
+  font-size: 24px;
   font-weight: bolder;
-  text-align:right;
+  text-align: right;
   margin-bottom: 10px;
 `;
 
@@ -371,7 +554,7 @@ const Wrapper = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 1075px){
+  @media screen and (max-width: 1075px) {
     width: calc(100vw - 70px);
   }
 `;
@@ -382,9 +565,9 @@ const Grid = styled.div`
   margin: 20px 0px;
   width: 100%;
   grid-gap: 20px;
-  @media screen and (max-width:1272px){
-      grid-template-columns: repeat(6, 1fr);
-    }
+  @media screen and (max-width: 1272px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
 `;
 
 const GridItem = styled.div`
@@ -393,47 +576,47 @@ const GridItem = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
   height: 150px;
-  &.chart{
-    height:auto !important;
+  &.chart {
+    height: auto !important;
     min-height: 250px !important;
   }
-  &.first-item{
+  &.first-item {
     grid-column: 1 / 4;
     grid-row: 1 / span 2;
     height: unset;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 1 / span 8;
     }
-    @media screen and (max-width:838px){
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 8;
     }
   }
-  &.second-item{
+  &.second-item {
     grid-column: 4 / span 2;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 1 / span 3;
-    };
-    @media screen and (max-width:838px){
-      grid-column: 1 / span 8;
-    };
-  }
-  &.third-item{
-    grid-column: 4 / span 2;
-    @media screen and (max-width:1272px){
-      grid-column: 4/ 9;
-    };
-    @media screen and (max-width:838px){
+    }
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 8;
     }
   }
-  &.w-200px{
+  &.third-item {
+    grid-column: 4 / span 2;
+    @media screen and (max-width: 1272px) {
+      grid-column: 4/ 9;
+    }
+    @media screen and (max-width: 838px) {
+      grid-column: 1 / span 8;
+    }
+  }
+  &.w-200px {
     width: 200px;
   }
-  &.h-200px{
+  &.h-200px {
     height: 200px;
   }
-  &.dark-mode{
-    background-color:#19172d !important;
+  &.dark-mode {
+    background-color: #19172d !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
@@ -451,50 +634,50 @@ const GridItem1 = styled.div`
   box-shadow: 0px 7px 30px #0015da29;
   border-radius: 20px;
   height: 160px;
-  @media screen and (max-width:1272px){
+  @media screen and (max-width: 1272px) {
     grid-column: 1/ 5;
   }
-  @media screen and (max-width:838px){
-      grid-column: 1 / span 11;
-    }
-  &.second-item{
+  @media screen and (max-width: 838px) {
+    grid-column: 1 / span 11;
+  }
+  &.second-item {
     grid-column: 2 / 4;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 5/ 11;
     }
-    @media screen and (max-width:838px){
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 11;
     }
   }
-  &.third-item{
+  &.third-item {
     grid-column: 4 / 7;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 1/ 5;
     }
-    @media screen and (max-width:838px){
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 11;
     }
   }
-  &.fourth-item{
+  &.fourth-item {
     grid-column: 7 / 10;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 5/ 11;
     }
-    @media screen and (max-width:838px){
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 11;
     }
   }
-  &.span-last-ends{
+  &.span-last-ends {
     grid-column: 4 / 10;
-    @media screen and (max-width:1272px){
+    @media screen and (max-width: 1272px) {
       grid-column: 1/ 11;
     }
-    @media screen and (max-width:838px){
+    @media screen and (max-width: 838px) {
       grid-column: 1 / span 11;
     }
   }
-  &.dark-mode{
-    background-color:#19172d !important;
+  &.dark-mode {
+    background-color: #19172d !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
@@ -506,12 +689,12 @@ const Container = styled.div`
   border-radius: 20px;
   padding: 20px;
   margin: 20px 0px;
-  &.dark-mode{
-    background-color:#19172d !important;
+  &.dark-mode {
+    background-color: #19172d !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
-  };
-  @media screen and (max-width: 400px){
-    width: calc(100vw - 20px)
+  }
+  @media screen and (max-width: 400px) {
+    width: calc(100vw - 20px);
   }
 `;
 
@@ -537,7 +720,17 @@ const MarketCapVal = styled.div`
 const Divider = styled.div`
   width: 5px;
   height: 90%;
-  background: radial-gradient( 50% 50% at 50% 50%,rgba(57.9999965429306,66.00001126527786,138.00000697374344,0.2199999988079071) 0%,rgba(93.00000205636024,83.00000265240669,213.00000250339508,0) 100% );
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(
+        57.9999965429306,
+        66.00001126527786,
+        138.00000697374344,
+        0.2199999988079071
+      )
+      0%,
+    rgba(93.00000205636024, 83.00000265240669, 213.00000250339508, 0) 100%
+  );
 `;
 
 const FlexCenter = styled.div`
@@ -551,7 +744,7 @@ const Bullet = styled.div`
   height: 30px;
   border-radius: 10px;
   background: #3a428a;
-  &.light{
+  &.light {
     background: #d1d6ff;
   }
 `;
@@ -567,7 +760,7 @@ const APR1 = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   letter-spacing: 0;
-  margin-left: 20px
+  margin-left: 20px;
 `;
 
 const Text1 = styled.div`
@@ -626,7 +819,7 @@ const Percent = styled.div`
   ${UrbanistBoldChambray21px}
   position: relative;
   top: 35px;
-  left:1px;
+  left: 1px;
   letter-spacing: 1.68px;
 `;
 
@@ -680,9 +873,8 @@ const Bonded = styled.div`
   letter-spacing: 0;
 `;
 
-
 const Phone = styled.div`
-    font-weight: bold;
+  font-weight: bold;
   letter-spacing: 1.28px;
 `;
 
@@ -690,7 +882,6 @@ const Phone1 = styled.div`
   letter-spacing: 1.28px;
   font-weight: bold;
 `;
-
 
 const LatestBlocks = styled.div`
   font-family: var(--font-family-urbanist);
@@ -745,4 +936,4 @@ const Corichain1 = styled.div`
   letter-spacing: 0;
 `;
 
-export default HomePageContent
+export default HomePageContent;

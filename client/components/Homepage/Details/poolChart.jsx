@@ -5,7 +5,7 @@ import 'chart.js/auto';
 export default class PoolChart extends React.Component {
   render() {
   const tokens = this.props
-  //console.log(tokens)
+
   const state = {
     labels: [],
     datasets: [

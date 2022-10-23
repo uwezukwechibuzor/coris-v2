@@ -2,29 +2,39 @@ import React from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../../../lib/hooks";
 import { formatNumbers } from "../../../lib/Util/format";
-import { UrbanistBoldBlack16px, UrbanistNormalBlack24px, UrbanistNormalBlack16px } from "../../../styledMixins";
-
+import {
+  UrbanistBoldBlack16px,
+  UrbanistNormalBlack24px,
+  UrbanistNormalBlack16px,
+} from "../../../styledMixins";
 
 function Details(props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
+  const darkMode = useAppSelector((state) => state.general.darkMode);
   const { onlineVotingPower, x36516M1, place, x36516M2 } = props;
 
   return (
     <Details1>
-      <OnlineVotingPower className={darkMode ? 'dark-mode' : ''}>{onlineVotingPower}</OnlineVotingPower>
+      <OnlineVotingPower className={darkMode ? "dark-mode" : ""}>
+        {onlineVotingPower}
+      </OnlineVotingPower>
       <Group7328>
         <div>
-          <X36516m className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M1)}</X36516m>
+          <X36516m className={darkMode ? "dark-mode" : ""}>
+            {formatNumbers(x36516M1)}
+          </X36516m>
           <div>
             <Place
               style={{
-                color: darkMode ? 'white' : 'black'
+                color: darkMode ? "white" : "black",
               }}
-            >{place}</Place>
+            >
+              {place}
+            </Place>
           </div>
-          <X36516m1 className={darkMode ? 'dark-mode' : ''}>{formatNumbers(x36516M2)}</X36516m1>
+          <X36516m1 className={darkMode ? "dark-mode" : ""}>
+            {formatNumbers(x36516M2)}
+          </X36516m1>
         </div>
-
       </Group7328>
     </Details1>
   );
@@ -42,7 +52,7 @@ const OnlineVotingPower = styled.div`
   min-height: 29px;
   letter-spacing: 0;
   width: 160px;
-  &.darkMode{
+  &.darkMode {
     color: white;
   }
 `;
@@ -61,7 +71,7 @@ const X36516m = styled.div`
   font-size: 14px;
   width: 100px;
   letter-spacing: 1.28px;
-  &.darkMode{
+  &.darkMode {
     color: white;
   }
 `;
@@ -81,7 +91,7 @@ const X36516m1 = styled.div`
   min-height: 19px;
   font-size: 14px;
   width: 100px;
-  &.darkMode{
+  &.darkMode {
     color: white;
   }
 `;

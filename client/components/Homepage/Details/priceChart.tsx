@@ -1,63 +1,63 @@
 import React, { useRef } from "react";
-import { priceChartType } from "./types";
-import HighchartsReact from 'highcharts-react-official';
-import Highcharts from 'highcharts';
+import HighchartsReact from "highcharts-react-official";
+import Highcharts from "highcharts";
 import { useAppSelector } from "../../../lib/hooks";
 
-
 const PriceChart = (props) => {
-  const darkMode = useAppSelector(state => state.general.darkMode)
-  const chartRef = useRef()
-  
-  const getPriceData = props
-  
-  let y = []
-  let x = []
-  for(const i in getPriceData) {
-    x.push(getPriceData[i][0])
-    y.push(getPriceData[i][1])
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+  const chartRef = useRef();
+
+  const getPriceData = props;
+
+  let y = [];
+  let x = [];
+  for (const i in getPriceData) {
+    x.push(getPriceData[i][0]);
+    y.push(getPriceData[i][1]);
   }
 
   const options = {
     title: {
-      text: 'My chart'
+      text: "My chart",
     },
-    series: [{
-      data: [1, 2, 3]
-    }]
-  }
+    series: [
+      {
+        data: [1, 2, 3],
+      },
+    ],
+  };
 
   var config = {
     chart: {
-      zoomType: 'x',
-      backgroundColor: 'transparent',
+      zoomType: "x",
+      backgroundColor: "transparent",
     },
     title: {
-      text: ''
+      text: "",
     },
     // subtitle: {
     //   text: document.ontouchstart === undefined ?
     //     'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
     // },
     xAxis: {
-      type: 'datetime',
+      type: "datetime",
       zoomEnabled: true,
       categories: x,
-      tickInterval: 60, 
+      tickInterval: 60,
       labels: {
-        formatter: function() {
-          return Highcharts.dateFormat('%Y-%m-%d %I:%M:%S %p', this.value);
+        formatter: function () {
+          return Highcharts.dateFormat("%Y-%m-%d %I:%M:%S %p", this.value);
         },
       },
     },
     yAxis: {
       title: {
-        text: 'Exchange rate',
+        text: "Exchange rate",
       },
       visible: false,
     },
     legend: {
-      enabled: false
+      enabled: false,
     },
     plotOptions: {
       area: {
@@ -66,37 +66,39 @@ const PriceChart = (props) => {
             x1: 0,
             y1: 0,
             x2: 1,
-            y2: 1
+            y2: 1,
           },
           stops: [
             [0, darkMode ? "#402782" : "#c7aefe"],
-            [1, "transparent"]
-          ]
+            [1, "transparent"],
+          ],
         },
         marker: {
           radius: 5,
           fillColor: "#5a55d2",
           lineWidth: "5",
           lineColor: "transparent",
-          enabledThreshold: "4"
+          enabledThreshold: "4",
         },
         lineWidth: 2,
         lineColor: "#5a55d2",
         states: {
           hover: {
-            lineWidth: 2
-          }
+            lineWidth: 2,
+          },
         },
-        threshold: null
-      }
+        threshold: null,
+      },
     },
 
-    series: [{
-      type: 'area',
-      name: 'USD',
-      data: y,
-    }]
-  }
+    series: [
+      {
+        type: "area",
+        name: "USD",
+        data: y,
+      },
+    ],
+  };
 
   return (
     <HighchartsReact
@@ -104,10 +106,9 @@ const PriceChart = (props) => {
       ref={chartRef}
       containerProps={{ style: { width: "100%", height: "300px" } }}
       options={config}
-    // highcharts={Highcharts}
+      // highcharts={Highcharts}
     />
-  )
-
-}
+  );
+};
 
 export default PriceChart;

@@ -1,6 +1,4 @@
-
 export interface priceChartType {
-    priceChartXValues: any,
-    priceChartYValues: any,
-  }
-  
+  priceChartXValues: any;
+  priceChartYValues: any;
+}
