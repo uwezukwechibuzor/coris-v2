@@ -38,8 +38,9 @@ function SideNavBar(props) {
     parameters,
     assetIcon,
     assets,
+    chain_id,
   } = props;
-
+  //console.log(chain_id);
   const navigate = (selectedPage) => {
     dispatch(toggleSidebar(false));
     setSelectedPage(selectedPage);

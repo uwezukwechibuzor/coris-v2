@@ -11,7 +11,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   //get validators data
   const getAllValidators = children?.props?.children?.props?.children?.props;
-
+   
+  //get url Path
+  const chain_id =  children?.props?.children?.props?.children?.props.chain_id
+  
   return (
     <MainParent className={darkMode && "dark-mode"}>
       <Head>
@@ -20,7 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           content="width=device-width, initial-scale=1"
         ></meta>
       </Head>
-      <SideNavBar {...sideNavBarData} />
+      <SideNavBar {...sideNavBarData} chain_id={chain_id} />
       <FlexCol2>
         <div className="d-table w-100" style={{ height: "100vh" }}>
           <div

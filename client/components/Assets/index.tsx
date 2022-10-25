@@ -1,31 +1,26 @@
 import React, { useState } from "react";
 import AssetsTitle from "./AssetTitle";
 import styled from "styled-components";
-import {
-  UrbanistNormalNewCar172px,
-  UrbanistNormalBlack172px,
-  UrbanistMediumAbsoluteZero172px,
-  UrbanistBoldBlack40px
-} from "../../styledMixins";
+import { UrbanistBoldBlack40px } from "../../styledMixins";
 import SearchButton from "./SearchButton";
 import { useAppSelector } from "../../lib/hooks";
 
 function AssetsContent(props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
-  const coinsData = props
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+  const coinsData = props;
   //console.log(coinsData)
 
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
 
   return (
     <>
       <FlexBetween>
-        <Title className={darkMode ? 'dark-mode' : ''}>Assets</Title>
+        <Title className={darkMode ? "dark-mode" : ""}>Assets</Title>
         <SearchButton setQuery={setQuery} />
       </FlexBetween>
 
       <Responsive>
-        <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
+        <table className={darkMode ? "w-100 mt-3 dark-mode" : "w-100 mt-3"}>
           <thead>
             <tr style={{ fontWeight: "bold" }}>
               <th>Rank</th>
@@ -38,68 +33,80 @@ function AssetsContent(props) {
             </tr>
           </thead>
           <tbody>
-            {coinsData?.coinsData?.filter(coin => {
-              //if Query does not exist
-              if (query === ' ') {
-                return coin;
-              } else if (coin.name.toLowerCase().includes(query.toLocaleLowerCase())) {
-                //query exists here
-                return coin
-              }
-            })
+            {coinsData?.coinsData
+              ?.filter((coin) => {
+                //if Query does not exist
+                if (query === " ") {
+                  return coin;
+                } else if (
+                  coin.name.toLowerCase().includes(query.toLocaleLowerCase())
+                ) {
+                  //query exists here
+                  return coin;
+                }
+              })
               .map((coin, index) => (
                 <tr key={index} className="striped">
-                  <td>
-                    {index + 1}
-                  </td>
+                  <td>{index + 1}</td>
                   <td>
                     <Flex>
                       <FlexColumn>
-                        <img src={coin?.image ? coin.image : null} alt="" className="img" />
-                        <sub className="symbol" >{coin?.symbol ? coin.symbol : null}
+                        <img
+                          src={coin?.image ? coin.image : null}
+                          alt=""
+                          className="img"
+                        />
+                        <sub className="symbol">
+                          {coin?.symbol ? coin.symbol : null}
                         </sub>
                       </FlexColumn>
-                      <FlexColumn>
-                        {coin?.id ? coin.id : null}
-                      </FlexColumn>
+                      <FlexColumn>{coin?.id ? coin.id : null}</FlexColumn>
                     </Flex>
                   </td>
                   <td>
-                    ${coin?.current_price ? coin.current_price.toFixed(2) : null}
+                    $
+                    {coin?.current_price ? coin.current_price.toFixed(2) : null}
                   </td>
                   <td>
-                    ${coin?.market_cap ? coin.market_cap.toLocaleString() : null}
+                    $
+                    {coin?.market_cap ? coin.market_cap.toLocaleString() : null}
                   </td>
                   <td>
-                    {coin?.total_volume ? coin.total_volume.toLocaleString() : null}
+                    {coin?.total_volume
+                      ? coin.total_volume.toLocaleString()
+                      : null}
                   </td>
                   <td>
-                    {coin?.total_supply ? coin.total_supply.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : <p className="total_supply">null</p>}
+                    {coin?.total_supply ? (
+                      coin.total_supply
+                        .toFixed(2)
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    ) : (
+                      <p className="total_supply">null</p>
+                    )}
                   </td>
                 </tr>
-              ))
-            }
+              ))}
           </tbody>
         </table>
       </Responsive>
       <style jsx>{`
-           .symbol {
-             color: red;
-             font-size: 10px;
-           }
-           .img {
-           margin-right: 10px;
-           width:23px;
-           }
-           .total_supply {
-               color: red;
-           }
-         `}</style>
+        .symbol {
+          color: red;
+          font-size: 10px;
+        }
+        .img {
+          margin-right: 10px;
+          width: 23px;
+        }
+        .total_supply {
+          color: red;
+        }
+      `}</style>
     </>
   );
 }
-
-
 
 const Flex = styled.div`
   display: flex;
@@ -108,7 +115,7 @@ const Flex = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 1075px){
+  @media screen and (max-width: 1075px) {
     width: calc(100vw - 40px);
   }
 `;
@@ -133,4 +140,4 @@ const Title = styled.h1`
   margin-bottom: 30px;
 `;
 
-export default AssetsContent
+export default AssetsContent;

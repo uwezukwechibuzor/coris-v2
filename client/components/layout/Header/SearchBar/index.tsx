@@ -16,7 +16,7 @@ export function SearchBar(props) {
   const searchingValidators = props?.allValidators
     ? props?.allValidators?.map((data) => data)
     : null;
-console.log(searchingValidators)
+
   let searchedData;
   let err;
   searchingValidators?.filter((data) => {

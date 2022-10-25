@@ -15,6 +15,7 @@ import { BaseChainApi } from "../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../lib/coingeckoAPI";
 
 function Home(props) {
+  //console.log(props)
   const [getBlocks, setBlocks] = useState([]);
   const [getAllTxs, setAllTxs] = useState([]);
   const [getInflation, setInflation] = useState(null);
@@ -27,97 +28,81 @@ function Home(props) {
   //get all chain validators from props
   const getAllValidators = props?.getAllValidators;
 
-  const queryTotalBlocks = 7;
-  const queryTotalTxs = 7;
+  const queryTotalBlocks = 5;
+  const queryTotalTxs = 5;
   let coinID = "umee";
 
   //fetch latest Blocks
-  const fetchLatestBlocks = async () => {
-    try {
-      const response = await axios.get(
-        BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks)
-      );
-      if (response.status === 200) {
-        setBlocks(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
+      .then((response) => {
+        setBlocks(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [getBlocks]);
 
   //get all latest transactions
-  const fetchAllTxsData = async () => {
-    try {
-      const response = await axios.get(
-        BaseChainApi() + allTxsEndpoint(queryTotalTxs)
-      );
-      if (response.status === 200) {
-        setAllTxs(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + allTxsEndpoint(queryTotalTxs))
+      .then((response) => {
+        setAllTxs(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [getAllTxs]);
 
   //get inflation percentage
-  const fetchInflationData = async () => {
-    try {
-      const response = await axios.get(BaseChainApi() + inflationEndpoint);
-      if (response.status === 200) {
-        setInflation(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + inflationEndpoint)
+      .then((response) => {
+        setInflation(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //get Community Pool
-  const fetchCommunityPoolData = async () => {
-    try {
-      const response = await axios.get(BaseChainApi() + communityPoolEndpoint);
-      if (response.status === 200) {
-        setCommunityPool(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + communityPoolEndpoint)
+      .then((response) => {
+        setCommunityPool(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //active validators
-  const fetchActiveValidators = async () => {
-    try {
-      const response = await axios.get(
-        BaseChainApi() + chainActiveValidatorsEndpoint
-      );
-      if (response.status === 200) {
-        setActiveValidators(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainActiveValidatorsEndpoint)
+      .then((response) => {
+        setActiveValidators(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //get Pool
-  const fetchChainPoolData = async () => {
-    try {
-      const response = await axios.get(BaseChainApi() + chainPoolEndpoint);
-      if (response.status === 200) {
-        setChainPool(await response.data);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    //call the functions here when the components mounts
-    fetchLatestBlocks();
-    fetchAllTxsData();
-    fetchInflationData();
-    fetchCommunityPoolData();
-    fetchActiveValidators();
-    fetchChainPoolData();
-  }, [getBlocks, getAllTxs]);
+    axios
+      .get(BaseChainApi() + chainPoolEndpoint)
+      .then((response) => {
+        setChainPool(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //checks for these states
   const inflation = getInflation

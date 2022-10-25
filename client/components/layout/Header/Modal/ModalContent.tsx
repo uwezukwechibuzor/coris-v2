@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { useAppSelector } from "../../../../lib/hooks";
 
@@ -47,7 +48,14 @@ export function ModalContent({ toggle }) {
                   <h4 className="text-center">Mainnets</h4>
                   <Grid>
                     <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
+                      <Link
+                        href={{
+                          pathname: "/[chain_id]/blocks",
+                          query: { chain_id: "cosmos" },
+                        }}
+                      >
+                        <a>Cosmos</a>
+                      </Link>
                     </GridItem>
                     <GridItem className={darkMode ? "dark-mode" : ""}>
                       sddfdf

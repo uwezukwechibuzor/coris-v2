@@ -1,72 +1,74 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
-import { useRouter } from 'next/router'
-import BlockHeightContent from '../../components/Blocks/Details';
-import { chainActiveValidatorsEndpoint, chainBlockHeightDetailsEndpont, chainBlockHeightTxsEndpoint } from '../../lib/chainApiEndpoints';
-
-const isServerReq = req => !req.url.startsWith('/_next');
-
+import { useRouter } from "next/router";
+import BlockHeightContent from "../../components/Blocks/Details";
+import {
+  chainActiveValidatorsEndpoint,
+  chainBlockHeightDetailsEndpont,
+  chainBlockHeightTxsEndpoint,
+} from "../../lib/chainApiEndpoints";
+import axios from "axios";
+import { BaseChainApi } from "../../lib/baseChainApi";
 
 function BlocksDetails(props) {
-    //get blocks details from query
-    const blockData = props.blockHeightDetails !== undefined? props.blockHeightDetails : null
-    
-    //get all transactions existing on each blocks
-    const transactions =  props.blockHeightTxs !== undefined? props?.blockHeightTxs : null
+  const [getActiveValidators, setActiveValidators] = useState([]);
+  const [getTxsByHeight, setTxsByHeight] = useState([]);
+  const [getBlockHeightDetails, setBlockHeightDetails] = useState([]);
 
-    const activeValidators =  props.chainActiveValidatorsData !== undefined? props?.chainActiveValidatorsData : null
-   
-    const blockDetailsData = {
-        title: "Block Details",
-        blockData: blockData,
-        txs: transactions,
-        activeValidators: activeValidators
-    };
-    
-    return (
-        <>
-        <BlockHeightContent {...blockDetailsData} />
-        </>
-    )
-}
+  const router = useRouter();
+  const query = router.query;
 
-export async function getServerSideProps({ query, res, req }) {
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainBlockHeightDetailsEndpont(query?.height))
+      .then((response) => {
+        setBlockHeightDetails(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [query.height]);
 
-    try {
-       // Fetch data from external API
-     //get inflation data
-     const getBlockHeightDetails =  isServerReq(req) ?  await fetch(`https:${chainBlockHeightDetailsEndpont(query.height)}`) : null
-     const blockHeightDetails = await getBlockHeightDetails.json();
+  //fetch Transactions in a Block Height
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainBlockHeightTxsEndpoint(query.height))
+      .then((response) => {
+        setTxsByHeight(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [query.height]);
 
-     const getBlocksHeightTxs =  isServerReq(req) ?  await fetch(`https:${chainBlockHeightTxsEndpoint(query.height)}`) : null
-     const blockHeightTxs = await getBlocksHeightTxs.json()
+  //active validators
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainActiveValidatorsEndpoint)
+      .then((response) => {
+        setActiveValidators(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [query.height]);
 
-       //get chain active validators
-    const getChainActiveValidators =  isServerReq(req) ?  await fetch(`https:${chainActiveValidatorsEndpoint}`)
-    : null
-    const chainActiveValidatorsData = await getChainActiveValidators.json()
-     
-    res.setHeader(
-     'Cache-Control',
-     'public, s-maxage=600, stale-while-revalidate=900'
-   )
- 
-   return {
-     props: {
-        blockHeightDetails: Object.assign({}, blockHeightDetails),
-        blockHeightTxs: Object.assign({}, blockHeightTxs),
-        chainActiveValidatorsData: Object.assign({}, chainActiveValidatorsData)
-     },
-   }
-
- } catch (error) {
-    return {}
- }
-} 
-
-export default BlocksDetails
-
-BlocksDetails.getLayout = function getLayout(page: any) {
-    return <Layout>{page}</Layout>
+  const blockDetailsData = {
+    title: "Block Details",
+    blockData: getBlockHeightDetails,
+    txs: getTxsByHeight,
+    activeValidators: getActiveValidators,
   };
 
+  return (
+    <>
+      <BlockHeightContent {...blockDetailsData} />
+    </>
+  );
+}
+
+export default BlocksDetails;
+
+BlocksDetails.getLayout = function getLayout(page: any) {
+  return <Layout>{page}</Layout>;
+};

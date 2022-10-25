@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
+import AssetsContent from "../../../components/Assets";
+import Layout from "../../../components/layout/Layout";
 import axios from "axios";
-import { cosmosEcoSystem_API } from "../../lib/coingeckoAPI";
-import AssetsContent from "../../components/Assets";
-import Layout from "../../components/layout/Layout";
-
+import { cosmosEcoSystem_API } from "../../coingeckoAPI";
 
 function Assets(props) {
   const [coinsData, setCoins] = useState([]);
@@ -29,8 +28,4 @@ function Assets(props) {
 }
 
 export default Assets;
-
-Assets.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>;
-};
 

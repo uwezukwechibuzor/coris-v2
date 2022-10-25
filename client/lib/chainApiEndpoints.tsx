@@ -1,4 +1,3 @@
-
 export const latestBlocksEndpoint = (limit) => `/blocks/latest?limit=${limit}`;
 
 export const allTxsEndpoint = (limit) => `/txs?limit=${limit}`;

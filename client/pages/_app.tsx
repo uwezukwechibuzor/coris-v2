@@ -13,6 +13,7 @@ import { ErrorFallback } from "../components/ErrorFallback";
 import { BaseChainApi } from "../lib/baseChainApi";
 import { ChainAllValidatorsEndpoint } from "../lib/chainApiEndpoints";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 Object.assign(globalThis, {
   fetch,
@@ -48,29 +49,30 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
 
   //general query for all components
   //get all validators
-  const fetchAllValidators = async () => {
-    try {
-      const response = await axios.get(
-        BaseChainApi() + ChainAllValidatorsEndpoint
-      );
-      if (response.status === 200) {
-        setAllValidators(await response.data.validators);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
-    fetchAllValidators();
+    axios
+      .get(BaseChainApi() + ChainAllValidatorsEndpoint)
+      .then((response) => {
+        setAllValidators(response?.data?.validators);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const allValidators = getAllValidators ? getAllValidators : null;
 
+  const router = useRouter();
+  const query = router.query;
+
   return getLayout(
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <SSRProvider>
-        <Component {...pageProps} getAllValidators={allValidators} />
+        <Component
+          {...pageProps}
+          getAllValidators={allValidators}
+          chain_id={query}
+        />
       </SSRProvider>
     </ErrorBoundary>
   );
