@@ -1,102 +1,140 @@
-import React from 'react'
-import ParamsContent from '../../components/Params'
+import React, { useEffect, useState } from "react";
+import ParamsContent from "../../components/Params";
 import Layout from "../../components/layout/Layout";
-import { distributionParamsEndpoint, govParamsEndpoint, mintingParamsEndpoint, nodeInfoEndpoint, slashingParamsEndpoint, stakingParamsEndpoint } from '../../lib/chainApiEndpoints';
-
-const isServerReq = req => !req.url.startsWith('/_next');
+import {
+  distributionParamsEndpoint,
+  govParamsEndpoint,
+  mintingParamsEndpoint,
+  nodeInfoEndpoint,
+  slashingParamsEndpoint,
+  stakingParamsEndpoint,
+} from "../../lib/chainApiEndpoints";
+import { BaseChainApi } from "../../lib/baseChainApi";
+import axios from "axios";
 
 function Params(props) {
-    
-   const govMintingParams = props?.govMintingParams;
-   const govVotingParams = props?.govVotingParams;
-   const govDepositParams = props?.govDepositParams;
-   const govTallyingParams = props?.govTallyingParams
-   const govSlashingParams = props?.govSlashingParams;
-   const  govStakingParams = props?.govStakingParams;
-   const govDistributionParams = props?.govDistributionParams;
-   const chainNodeInfo = props?.chainNodeInfo
-   
+  const [getMintingParams, setMintingParams] = useState({});
+  const [getGovVotingParams, setGovVotingParams] = useState({});
+  const [getGovDepositParams, setGovDepositParams] = useState({});
+  const [getGovTallyingParams, setGovTallyingParams] = useState({});
+  const [getSlashingParams, setSlashingParams] = useState({});
+  const [getStakingParams, setStakingParams] = useState({});
+  const [getDistributionParams, setDistributionParams] = useState({});
+  const [getChainNodeInfo, setChainNodeInfo] = useState({});
 
-   const paramsData = {
-    govMintingParams: govMintingParams,
-    govVotingParams: govVotingParams,
-    govDepositParams: govDepositParams,
-    govTallyingParams: govTallyingParams,
-    govSlashingParams: govSlashingParams,
-    govStakingParams: govStakingParams,
-    govDistributionParams: govDistributionParams,
-    chainNodeInfo: chainNodeInfo
-   }
-    return (
-     <>
-      <ParamsContent {...paramsData}  />
-     </>
-    )
+  //fetch minting params
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + mintingParamsEndpoint)
+      .then((response) => {
+        setMintingParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //fetch governance params
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + govParamsEndpoint("voting"))
+      .then((response) => {
+        setGovVotingParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + govParamsEndpoint("deposit"))
+      .then((response) => {
+        setGovDepositParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + govParamsEndpoint("tallying"))
+      .then((response) => {
+        setGovTallyingParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //fetch slashing params
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + slashingParamsEndpoint)
+      .then((response) => {
+        setSlashingParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //fetch staking params
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + stakingParamsEndpoint)
+      .then((response) => {
+        setStakingParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //fetch Distribution params
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + distributionParamsEndpoint)
+      .then((response) => {
+        setDistributionParams(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //fetch Chain Node Info
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + nodeInfoEndpoint)
+      .then((response) => {
+        setChainNodeInfo(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const paramsData = {
+    govMintingParams: getMintingParams,
+    govVotingParams: getGovVotingParams,
+    govDepositParams: getGovDepositParams,
+    govTallyingParams: getGovTallyingParams,
+    govSlashingParams: getSlashingParams,
+    govStakingParams: getStakingParams,
+    govDistributionParams: getDistributionParams,
+    chainNodeInfo: getChainNodeInfo,
+  };
+  return (
+    <>
+      <ParamsContent {...paramsData} />
+    </>
+  );
 }
 
-export async function getServerSideProps({ res, req }) {
-
-    try {
-       // Fetch data from external API
-       //minting params
-     const  getGovMintingParams = isServerReq(req) ? await fetch(`https:${mintingParamsEndpoint}`) : null
-     const  govMintingParams = await getGovMintingParams.json();
-
-     //governance params for voting
-     const getGovVotingParams = isServerReq(req) ? await fetch(`https:${govParamsEndpoint('voting')}`) : null
-     const govVotingParams = await getGovVotingParams.json(); 
-     
-     //governance params for deposits
-     const getGovDepositParams = isServerReq(req) ? await fetch(`https:${govParamsEndpoint('deposit')}`) : null
-     const govDepositParams = await getGovDepositParams.json();
-     
-     //governance params for tallying
-     const getGovTallyingParams = isServerReq(req) ? await fetch(`https:${govParamsEndpoint('tallying')}`) : null
-     const govTallyingParams = await getGovTallyingParams.json();
-    
-     //governance slashing params
-    const getGovSlashingParams = isServerReq(req) ? await fetch(`https:${slashingParamsEndpoint}`) : null
-    const govSlashingParams = await getGovSlashingParams.json();
-
-    //governance staking params
-    const getGovStakingParams =  isServerReq(req) ? await fetch(`https:${stakingParamsEndpoint}`) : null
-    const govStakingParams = await getGovStakingParams.json();
-
-    //governance distribution params
-    const getGovDistributionParams = isServerReq(req) ? await fetch(`https:${distributionParamsEndpoint}`) : null
-    const govDistributionParams = await getGovDistributionParams.json()
-
-    //get chain node info
-    const  getChainNodeInfo  =  isServerReq(req) ? await fetch(`https:${nodeInfoEndpoint}`) : null
-    const chainNodeInfo = await getChainNodeInfo.json()
-
-    res.setHeader(
-     'Cache-Control',
-     'public, s-maxage=600, stale-while-revalidate=900'
-   )
-   //res.writeHead(307, { Location: '/_error' }).end()
- 
-   return {
-     props: {
-        govMintingParams: Object.assign({}, govMintingParams),
-        govVotingParams:  Object.assign({}, govVotingParams),
-        govDepositParams: Object.assign({}, govDepositParams),
-        govTallyingParams: Object.assign({}, govTallyingParams),
-        govSlashingParams: Object.assign({}, govSlashingParams),
-        govStakingParams: Object.assign({}, govStakingParams),
-        govDistributionParams: Object.assign({}, govDistributionParams),
-        chainNodeInfo : Object.assign({}, chainNodeInfo ),
-     },
-   }
-
- } catch (error) {
-   
- }
-} 
-
-export default Params
+export default Params;
 
 Params.getLayout = function getLayout(page: any) {
-    return <Layout>{page}</Layout>
-  };
-
+  return <Layout>{page}</Layout>;
+};
