@@ -1,82 +1,59 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import ConsensusDetails from "../../../components/Validators/Consensus";
-import { allChainValidatorsEndpoint, chainPoolEndpoint, consensusStateEndpoint } from "../../../lib/chainApiEndpoints";
-
-const isServerReq = req => !req.url.startsWith('/_next');
+import { BaseChainApi } from "../../../lib/baseChainApi";
+import {
+  chainPoolEndpoint,
+  consensusStateEndpoint,
+} from "../../../lib/chainApiEndpoints";
 
 function ValidatorsConsensusState(props) {
-  
-  //get all validators data for bonded, unbonded and unbounding
-  const ValidatorsData = !props?.chainAllValidators ? null : props?.chainAllValidators?.validators?.map((validator: any) => {
-   return  validator
-  })
+  const [getChainPool, setChainPool] = useState(null);
+  const [getConsensusState, setConsensusState] = useState(null);
+
+  //get all chain validators from props
+  const getAllValidators = props?.getAllValidators;
 
   //get total bonded tokens
-  const bondedTokensFromPool = !props?.poolData ? null : props?.poolData?.pool?.bonded_tokens
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainPoolEndpoint)
+      .then((response) => {
+        setChainPool(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //consensus state for the validators
-  const consensusState = !props?.consensusState ? null : props?.consensusState 
- 
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + consensusStateEndpoint)
+      .then((response) => {
+        setConsensusState(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [getConsensusState]);
+
   const validatorsDetails = {
-    validators: ValidatorsData,
-    totalBondedTokens: bondedTokensFromPool,
-    consensusState: consensusState
-  }
-  
+    validators: getAllValidators,
+    totalBondedTokens: getChainPool?.pool?.bonded_tokens,
+    consensusState: getConsensusState,
+  };
+
   return (
-   <> 
-  <ConsensusDetails {...validatorsDetails} />
-  </>
+    <>
+      <ConsensusDetails {...validatorsDetails} />
+    </>
   );
 }
 
-export async function getServerSideProps({res, req}) {
-  
-  let consensusState, poolData, chainAllValidators;
-   
-  try {
-  // Fetch data from external API
-  //get Pool
-    const getConsensusState =  isServerReq(req) ? await fetch(consensusStateEndpoint) : null
-    !getConsensusState.ok ? { props: { consensusState: Object.assign({}, null) }} : consensusState = await  getConsensusState.json()
-  
-    const getPool =  isServerReq(req) ? await fetch(chainPoolEndpoint) : null
-    !getPool.ok ? { props: { poolData: Object.assign({}, null) }} : poolData = await getPool.json()
-
-    const getAllChainValidators =  isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
-    !getAllChainValidators.ok ? { props: { chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
-
-  res.setHeader(
-   'Cache-Control',
-   'public, s-maxage=600, stale-while-revalidate=900'
- )
-
-  if(!consensusState || !poolData || !chainAllValidators){
-      return {
-        props: {
-          consensusState: Object.assign({}, null),
-          poolData: Object.assign({}, null),
-          chainAllValidators: Object.assign({}, null) 
-        },
-      }
-  } else {
-      return {
-        props: {
-          consensusState: Object.assign({}, consensusState),
-          poolData: Object.assign({}, poolData),
-          chainAllValidators: Object.assign({}, chainAllValidators) 
-        },
-      }
-  }
-
-} catch (error) {
-     console.log("Error" + error)
-    }
-  } 
-
-
-export default ValidatorsConsensusState
+export default ValidatorsConsensusState;
 
 ValidatorsConsensusState.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>
+  return <Layout>{page}</Layout>;
 };

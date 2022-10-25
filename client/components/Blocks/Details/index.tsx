@@ -112,6 +112,7 @@ function BlockHeightContent(props: any) {
           <div>Header</div>
           <hr />
           <table style={{ width: "100%" }}>
+            <thead>
             <tr>
               <td style={{ fontWeight: "bold", width: "150px" }}>Chain Id</td>
               <td>
@@ -120,6 +121,7 @@ function BlockHeightContent(props: any) {
                   : null}
               </td>
             </tr>
+            
             <tr>
               <td style={{ fontWeight: "bold" }}>Height</td>
               <td>
@@ -231,6 +233,7 @@ function BlockHeightContent(props: any) {
                   : null}
               </td>
             </tr>
+            </thead>
           </table>
         </Card>
       </Container>
