@@ -1,47 +1,38 @@
-import React from 'react'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
-
-import { useRouter } from 'next/router'
-import TransactionContents from '../../components/Transaction';
-import { chainTxsByHashEndpoint } from '../../lib/chainApiEndpoints';
+import TransactionContents from "../../components/Transaction";
+import { BaseChainApi } from "../../lib/baseChainApi";
+import { chainTxsByHashEndpoint } from "../../lib/chainApiEndpoints";
+import { useRouter } from "next/router";
 
 function TransactionDetails(props) {
-  
-    const transactionDetails = props.chainTxsByHash !== undefined?  props.chainTxsByHash : null
-   
-    return (
-       <>
-       <TransactionContents txDetails={transactionDetails} />
-       </>
-    )
+  const [getChainTxsByHash, setChainTxsByHash] = useState(null);
+
+  const router = useRouter();
+  const query = router.query;
+
+  //fetch Txs By Hash
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainTxsByHashEndpoint(query?.hash))
+      .then((response) => {
+        setChainTxsByHash(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [query.hash]);
+
+  return (
+    <>
+      <TransactionContents txDetails={getChainTxsByHash} />
+    </>
+  );
 }
 
-export async function getServerSideProps({ query, res }) {
-
-  try {
-     // Fetch data from external API
-   //get inflation data
-   const getChainTxsByHash = await fetch(`https:${chainTxsByHashEndpoint(query.hash)}`);
-   const chainTxsByHash = await getChainTxsByHash.json();
-
-  res.setHeader(
-   'Cache-Control',
-   'public, s-maxage=600, stale-while-revalidate=900'
- )
-
- return {
-   props: {
-    chainTxsByHash: Object.assign({}, chainTxsByHash), 
-   },
- }
-
-} catch (error) {
-   
-}
-  } 
-
-export default TransactionDetails
+export default TransactionDetails;
 
 TransactionDetails.getLayout = function getLayout(page: any) {
-    return <Layout>{page}</Layout>
-  };
+  return <Layout>{page}</Layout>;
+};

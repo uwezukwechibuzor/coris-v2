@@ -12,8 +12,8 @@ import { BaseChainApi } from "../../lib/baseChainApi";
 
 function BlocksDetails(props) {
   const [getActiveValidators, setActiveValidators] = useState([]);
-  const [getTxsByHeight, setTxsByHeight] = useState([]);
-  const [getBlockHeightDetails, setBlockHeightDetails] = useState([]);
+  const [getTxsByHeight, setTxsByHeight] = useState(null);
+  const [getBlockHeightDetails, setBlockHeightDetails] = useState(null);
 
   const router = useRouter();
   const query = router.query;
