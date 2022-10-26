@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { getPercentageOfValidatorsBondedTokens, getValidatorsLogoFromWebsites, roundValidatorsVotingPowerToWholeNumber, sortValidatorsByVotingPower } from "../../lib/Util/format"
+import {
+  getPercentageOfValidatorsBondedTokens,
+  getValidatorsLogoFromWebsites,
+  roundValidatorsVotingPowerToWholeNumber,
+  sortValidatorsByVotingPower,
+} from "../../lib/Util/format";
 import styled from "styled-components";
-import Tabs from 'react-bootstrap/Tabs'
-import Tab from 'react-bootstrap/Tab'
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
 import {
   UrbanistNormalNewCar172px,
   UrbanistNormalBlack172px,
   UrbanistMediumAbsoluteZero172px,
-  UrbanistBoldBlack40px
+  UrbanistBoldBlack40px,
 } from "../../styledMixins";
 import SearchButton from "./SearchButton";
 import Link from "next/link";
@@ -15,47 +20,58 @@ import { Router, useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
 
 function ValidatorsContent(props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
-  const [query, setQuery] = useState("")
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+  const [query, setQuery] = useState("");
 
-  const {
-    totalBondedTokens,
-    uptimeByBlocksHeights,
-    chainAllValidators
-  } = props;
+  const { totalBondedTokens, uptimeByBlocksHeights, chainAllValidators } =
+    props;
   //console.log( uptimeByBlocksHeights)
 
   var activeValidatorsData = chainAllValidators?.map((data) => {
-    if (data.status === 'BOND_STATUS_BONDED') {
-      return data
+    if (data.status === "BOND_STATUS_BONDED") {
+      return data;
     }
-  })
+  });
 
   var inActiveValidatorsData = chainAllValidators?.map((data) => {
-    if (data.status === 'BOND_STATUS_UNBONDED' || data.status === 'BOND_STATUS_UNBONDING') {
-      return data
+    if (
+      data.status === "BOND_STATUS_UNBONDED" ||
+      data.status === "BOND_STATUS_UNBONDING"
+    ) {
+      return data;
     }
-  })
+  });
 
   //sort by voting power
-  sortValidatorsByVotingPower(activeValidatorsData)
-  sortValidatorsByVotingPower(inActiveValidatorsData)
+  sortValidatorsByVotingPower(activeValidatorsData);
+  sortValidatorsByVotingPower(inActiveValidatorsData);
 
   //declare cumulative shares for both active and inactive validators
-  let activeValidatorsCumulativeShare: number = 0
-  let inActiveValidatorsCumulativeShare: number = 0
+  let activeValidatorsCumulativeShare: number = 0;
+  let inActiveValidatorsCumulativeShare: number = 0;
 
-  const router = useRouter()
+  const router = useRouter();
 
   return (
-    <div className={darkMode ? 'dark-mode' : ''}>
-      <Title className={darkMode ? 'dark-mode' : ''}>Validators</Title>
+    <div className={darkMode ? "dark-mode" : ""}>
+      <Title className={darkMode ? "dark-mode" : ""}>Validators</Title>
       <div>
         <SearchButton setQuery={setQuery} />
-        <Tabs defaultActiveKey="active" id="uncontrolled-tab-example" className="" variant="tabs">
+        <Tabs
+          defaultActiveKey="active"
+          id="uncontrolled-tab-example"
+          className=""
+          variant="tabs"
+        >
           <Tab eventKey="active" title="Active" className="w-100">
             <Responsive>
-              <table className={darkMode ? 'w-100 mt-3 table table-responsive dark-mode' : 'w-100 mt-3 table table-responsive'}>
+              <table
+                className={
+                  darkMode
+                    ? "w-100 mt-3 table table-responsive dark-mode"
+                    : "w-100 mt-3 table table-responsive"
+                }
+              >
                 <colgroup>
                   <col />
                   <col style={{ width: "50px" }} />
@@ -70,66 +86,113 @@ function ValidatorsContent(props) {
                     <th style={{ width: "60px" }}>Cummulative Share</th>
                     <th style={{ width: "60px" }}>Commission</th>
                     <th style={{ width: "60px" }}>Uptime</th>
+                    <th style={{ width: "60px" }}>Token</th>
+                    <th style={{ width: "60px" }}>Missed</th>
+                    <th style={{ width: "60px" }}>Status</th>
+                    <th style={{ width: "60px" }}>Delegate</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {activeValidatorsData?.filter(data => {
-                    //if Query does not exist
-                    if (query === ' ') {
-                      return data;
-                    } else if (data?.description?.moniker.toLowerCase().includes(query.toLocaleLowerCase())) {
-                      return data
-                    }
-                  })
+                  {activeValidatorsData
+                    ?.filter((data) => {
+                      //if Query does not exist
+                      if (query === " ") {
+                        return data;
+                      } else if (
+                        data?.description?.moniker
+                          .toLowerCase()
+                          .includes(query.toLocaleLowerCase())
+                      ) {
+                        return data;
+                      }
+                    })
                     .map((data, index) => {
-                      var percentageOfVotingPower: number = getPercentageOfValidatorsBondedTokens(data?.tokens, totalBondedTokens)
+                      var percentageOfVotingPower: number =
+                        getPercentageOfValidatorsBondedTokens(
+                          data?.tokens,
+                          totalBondedTokens
+                        );
 
-                      activeValidatorsCumulativeShare += percentageOfVotingPower
+                      activeValidatorsCumulativeShare +=
+                        percentageOfVotingPower;
 
-                      const commission = data?.commission?.commission_rates?.rate * 100
+                      const commission =
+                        data?.commission?.commission_rates?.rate * 100;
                       return (
-                        <tr className="validator-item-row" onClick={() => router.push(`/validators/${data.operator_address}`)} >
+                        <tr
+                          className="validator-item-row"
+                          onClick={() =>
+                            router.push(`/validators/${data.operator_address}`)
+                          }
+                        >
                           <td>{index + 1}</td>
                           <td>
                             <Flex>
                               <FlexMiddle>
-                                <img className="img" src={getValidatorsLogoFromWebsites(data?.description?.website)} alt="" />
+                                <img
+                                  className="img"
+                                  src={getValidatorsLogoFromWebsites(
+                                    data?.description?.website
+                                  )}
+                                  alt=""
+                                />
                               </FlexMiddle>
-                              <FlexMiddle className="ellipsis" style={{ width: "120px" }}>
+                              <FlexMiddle
+                                className="ellipsis"
+                                style={{ width: "120px" }}
+                              >
                                 {data?.description?.moniker}
                               </FlexMiddle>
                             </Flex>
                           </td>
                           <td>
-                            {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
-                            <div style={{ color: 'red' }} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
+                            {roundValidatorsVotingPowerToWholeNumber(
+                              data?.tokens
+                            )}
+                            <div style={{ color: "red" }} className="sub">
+                              {percentageOfVotingPower.toFixed(2) + "%"}
+                            </div>
                           </td>
                           <td style={{ position: "relative" }}>
-                            <div style={{
-                              position: "absolute",
-                              top: "0px",
-                              left: "0px",
-                              height: "100%",
-                              width: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "flex-end",
-                              paddingRight: "20px"
-                            }}>
-                              {activeValidatorsCumulativeShare.toFixed(2) + '%'}
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: "0px",
+                                left: "0px",
+                                height: "100%",
+                                width: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                                paddingRight: "20px",
+                              }}
+                            >
+                              {activeValidatorsCumulativeShare.toFixed(2) + "%"}
                             </div>
-                            <div className="w-100 d-flex h-100 position-absolute" style={{ top: "0px", left: "0px" }}>
-                              <div className="h-100" style={{ width: `${activeValidatorsCumulativeShare.toFixed(2)}%`, background: "#ecf8f447"}}></div>
-                              <div className="h-100" style={{ width: "5px", background: "#c5f1de" }}></div>
+                            <div
+                              className="w-100 d-flex h-100 position-absolute"
+                              style={{ top: "0px", left: "0px" }}
+                            >
+                              <div
+                                className="h-100"
+                                style={{
+                                  width: `${activeValidatorsCumulativeShare.toFixed(
+                                    2
+                                  )}%`,
+                                  background: "#ecf8f447",
+                                }}
+                              ></div>
+                              <div
+                                className="h-100"
+                                style={{ width: "5px", background: "#c5f1de" }}
+                              ></div>
                             </div>
                           </td>
-                          <td>{commission.toFixed(2) + '%'}</td>
+                          <td>{commission.toFixed(2) + "%"}</td>
                           <td>100%</td>
                         </tr>
-                      )
-                    }
-                    )
-                  }
+                      );
+                    })}
                 </tbody>
               </table>
             </Responsive>
@@ -148,27 +211,49 @@ function ValidatorsContent(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {inActiveValidatorsData?.filter(data => {
-                    //if Query does not exist
-                    if (query === ' ') {
-                      return data;
-                    } else if (data?.description?.moniker.toLowerCase().includes(query.toLocaleLowerCase())) {
-                      return data
-                    }
-                  })
+                  {inActiveValidatorsData
+                    ?.filter((data) => {
+                      //if Query does not exist
+                      if (query === " ") {
+                        return data;
+                      } else if (
+                        data?.description?.moniker
+                          .toLowerCase()
+                          .includes(query.toLocaleLowerCase())
+                      ) {
+                        return data;
+                      }
+                    })
                     .map((data, index) => {
-                      var percentageOfVotingPower: number = getPercentageOfValidatorsBondedTokens(data?.tokens, totalBondedTokens)
+                      var percentageOfVotingPower: number =
+                        getPercentageOfValidatorsBondedTokens(
+                          data?.tokens,
+                          totalBondedTokens
+                        );
 
-                      inActiveValidatorsCumulativeShare += percentageOfVotingPower
-                      const commission = data?.commission?.commission_rates?.rate * 100
+                      inActiveValidatorsCumulativeShare +=
+                        percentageOfVotingPower;
+                      const commission =
+                        data?.commission?.commission_rates?.rate * 100;
 
                       return (
-                        <tr className="validator-item-row" onClick={() => router.push(`/validators/${data.operator_address}`)} >
+                        <tr
+                          className="validator-item-row"
+                          onClick={() =>
+                            router.push(`/validators/${data.operator_address}`)
+                          }
+                        >
                           <td>{index + 1}</td>
                           <td>
                             <Flex>
                               <FlexMiddle>
-                                <img className="img" src={getValidatorsLogoFromWebsites(data?.description?.website)} alt="" />
+                                <img
+                                  className="img"
+                                  src={getValidatorsLogoFromWebsites(
+                                    data?.description?.website
+                                  )}
+                                  alt=""
+                                />
                               </FlexMiddle>
                               <FlexMiddle>
                                 {data?.description?.moniker}
@@ -176,14 +261,20 @@ function ValidatorsContent(props) {
                             </Flex>
                           </td>
                           <td>
-                            {roundValidatorsVotingPowerToWholeNumber(data?.tokens)}
-                            <div style={{ color: "red" }} className="sub">{percentageOfVotingPower.toFixed(2) + '%'}</div>
+                            {roundValidatorsVotingPowerToWholeNumber(
+                              data?.tokens
+                            )}
+                            <div style={{ color: "red" }} className="sub">
+                              {percentageOfVotingPower.toFixed(2) + "%"}
+                            </div>
                           </td>
-                          <td>{inActiveValidatorsCumulativeShare.toFixed(2) + '%'}</td>
-                          <td>{commission.toFixed(2) + '%'}</td>
+                          <td>
+                            {inActiveValidatorsCumulativeShare.toFixed(2) + "%"}
+                          </td>
+                          <td>{commission.toFixed(2) + "%"}</td>
                           <td>0%</td>
                         </tr>
-                      )
+                      );
                     })}
                 </tbody>
               </table>
@@ -195,15 +286,14 @@ function ValidatorsContent(props) {
   );
 }
 
-
 const Flex = styled.div`
   display: flex;
 `;
 
 const FlexMiddle = styled.div`
   display: flex;
-  align-items:center;
-  margin-left: 10px
+  align-items: center;
+  margin-left: 10px;
 `;
 
 const ValidatorTitleData = {
@@ -304,10 +394,9 @@ const Delegate = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 1075px){
+  @media screen and (max-width: 1075px) {
     width: 100vw;
   }
 `;
-
 
 export default ValidatorsContent;

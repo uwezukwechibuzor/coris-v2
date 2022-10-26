@@ -2,86 +2,68 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import ValidatorsContent from "../../components/Validators";
-import { allChainValidatorsEndpoint, chainPoolEndpoint } from "../../lib/chainApiEndpoints";
-
-const isServerReq = req => !req.url.startsWith('/_next');
+import { BaseChainApi } from "../../lib/baseChainApi";
+import {
+  chainPoolEndpoint,
+  latestBlocksEndpoint,
+} from "../../lib/chainApiEndpoints";
 
 function Validators(props) {
+  const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);
+  const [getChainPool, setChainPool] = useState(null);
+
+  //get all chain validators from props
+  const chainAllValidators = props?.getAllValidators;
+
+  //get Pool
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + chainPoolEndpoint)
+      .then((response) => {
+        setChainPool(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   //get total bonded tokens
-  const bondedTokensFromPool = props?.poolData !== null?  props?.poolData?.pool?.bonded_tokens : null
-  
-  const chainAllValidators  = props?.chainAllValidators  !== null?  props?.chainAllValidators.validators  : null
+  const bondedTokensFromPool =
+    getChainPool !== null ? getChainPool?.pool?.bonded_tokens : null;
 
-      //get uptime by blocks
-    //get blocks
-    const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([])
-    const queryTotalBlocks = 100
-    let getBlocksAPi = process.env.NEXT_PUBLIC_GetBlocks
-    useEffect(() => {
-        axios.get(`${getBlocksAPi}/blocks/latest?limit=${queryTotalBlocks}`).then((response) => {
-            setUptimeByBlocksHeights(response.data)
-        }).catch((error) => {
-            console.log(error)
-        })
-      }, [getUptimeByBlocksHeights])
-     
-    const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(uptimeByBlocksHeights => uptimeByBlocksHeights)
+  //get uptime by blocks
+  //get blocks
+  const queryTotalBlocks = 100;
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
+      .then((response) => {
+        setUptimeByBlocksHeights(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [getUptimeByBlocksHeights]);
+
+  const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(
+    (uptimeByBlocksHeights) => uptimeByBlocksHeights
+  );
 
   const validatorsDetails = {
     totalBondedTokens: bondedTokensFromPool,
-    uptimeByBlocksHeights:  uptimeByBlocksHeights,
-    chainAllValidators:chainAllValidators 
-  }
+    uptimeByBlocksHeights: uptimeByBlocksHeights,
+    chainAllValidators: chainAllValidators,
+  };
 
   return (
-   <> 
-  <ValidatorsContent {...validatorsDetails } />
-  </>
+    <>
+      <ValidatorsContent {...validatorsDetails} />
+    </>
   );
-} 
-
-export async function getServerSideProps({res, req}) {
-  
-  var poolData, chainAllValidators;
-
-  try {
-  // Fetch data from external API
-  //get Pool
-  const getPool =  isServerReq(req) ? await fetch(chainPoolEndpoint) : null
-  !getPool.ok ? { props: { poolData: Object.assign({}, null) }} : poolData = await getPool.json()
-
-  const getAllChainValidators =  isServerReq(req) ? await fetch(allChainValidatorsEndpoint) : null
-  !getAllChainValidators.ok ? { props: { chainAllValidators: Object.assign({}, null) }} : chainAllValidators = await getAllChainValidators.json();
-   
-  res.setHeader(
-   'Cache-Control',
-   'public, s-maxage=600, stale-while-revalidate=900'
- )
- 
- if (!poolData || !chainAllValidators) {
-  return {
-    props: {
-      poolData: Object.assign({}, null),
-      chainAllValidators: Object.assign({}, null),
-    },
-  }
- } else {
-  return {
-    props: {
-      poolData: Object.assign({}, poolData),
-      chainAllValidators: Object.assign({}, chainAllValidators),
-    },
-  }
- }
-
-} catch (error) {
-   console.log("Error" + error)
-  } 
 }
 
-export default Validators
+export default Validators;
 
 Validators.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>
+  return <Layout>{page}</Layout>;
 };
