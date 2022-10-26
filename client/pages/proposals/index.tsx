@@ -1,63 +1,43 @@
-import React from 'react'
-import ProposalsContent from '../../components/Proposals'
+import React, { useEffect, useState } from "react";
+import ProposalsContent from "../../components/Proposals";
 import Layout from "../../components/layout/Layout";
-import { proposalsEndpoint } from '../../lib/chainApiEndpoints';
-
-const isServerReq = req => !req.url.startsWith('/_next');
+import { proposalsEndpoint } from "../../lib/chainApiEndpoints";
+import axios from "axios";
+import { BaseChainApi } from "../../lib/baseChainApi";
 
 function Proposals(props) {
-     
-    const getProposals = props?.proposalsData
-   
-    const proposalsData = {
-        id: "#ID",
-        title2: "Title",
-        status: "Status",
-        votingStart: "Voting Start",
-        votingEnd: "Voting End",
-        totalDeposit: "Total Deposit",
-        proposalsData: getProposals
-      };
-    
-    return (
-        <>
-        <ProposalsContent {...proposalsData} />
-        </>
-    )
+  const [getProposals, setProposals] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + proposalsEndpoint)
+      .then((response) => {
+        setProposals(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const proposalsData = {
+    id: "#ID",
+    title2: "Title",
+    status: "Status",
+    votingStart: "Voting Start",
+    votingEnd: "Voting End",
+    totalDeposit: "Total Deposit",
+    proposalsData: getProposals,
+  };
+
+  return (
+    <>
+      <ProposalsContent {...proposalsData} />
+    </>
+  );
 }
 
-
-export async function getServerSideProps({ res, req }) {
-
-  try {
-     // Fetch data from external API
-   //get proposals data
-   const getProposals = isServerReq(req) ? await fetch(`https:${proposalsEndpoint}`) : null
-   const proposalsData = await getProposals.json()
- 
-
-  res.setHeader(
-   'Cache-Control',
-   'public, s-maxage=600, stale-while-revalidate=900'
- )
- //res.writeHead(307, { Location: '/_error' }).end()
-
- return {
-   props: {
-    proposalsData: Object.assign({},  proposalsData),
-   },
- }
-
-} catch (error) {
- 
-}
-} 
-
-
-export default Proposals
+export default Proposals;
 
 Proposals.getLayout = function getLayout(page: any) {
-    return <Layout>{page}</Layout>
-  };
-  
-  
+  return <Layout>{page}</Layout>;
+};

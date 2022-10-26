@@ -1,24 +1,23 @@
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
+import Form from "react-bootstrap/Form";
+import FormControl from "react-bootstrap/FormControl";
 import styled from "styled-components";
-import { useAppSelector } from '../../lib/hooks';
+import { useAppSelector } from "../../lib/hooks";
 
-
-function SearchButton (props) {
-  const darkMode = useAppSelector(state => state.general.darkMode)
-    return (
-        <Search>
-        <Form className="d-flex">
+function SearchButton(props) {
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+  return (
+    <Search>
+      <Form className="d-flex">
         <FormControl
           placeholder="Search Proposer"
-          className={darkMode ? 'dark-mode me-2' : 'me-2'}
+          className={darkMode ? "dark-mode me-2" : "me-2"}
           aria-label="Search"
-          name='search'
-          onChange={event => props.setQuery(event.target.value)}
+          name="search"
+          onChange={(event) => props.setQuery(event.target.value)}
         />
-        </Form>
-        </Search>
-    )
+      </Form>
+    </Search>
+  );
 }
 
 const Search = styled.div`
@@ -30,4 +29,4 @@ const Search = styled.div`
   width: 100%;
 `;
 
-export default SearchButton
+export default SearchButton;
