@@ -38,6 +38,7 @@ function SideNavBar(props) {
     parameters,
     assetIcon,
     assets,
+    relayerIcon,
     chain_id,
   } = props;
   //console.log(chain_id);
@@ -181,7 +182,7 @@ function SideNavBar(props) {
           <a className="m-24">
             <FlexRow>
               <FlexCell>
-                <Icon1 src={assetIcon} />
+                <Icon1 src={relayerIcon} />
               </FlexCell>
               <FlexCell>
                 <Assets

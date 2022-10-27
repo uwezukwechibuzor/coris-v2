@@ -17,7 +17,6 @@ import {
   UrbanistBoldBlack40px,
 } from "../../styledMixins";
 import SearchButton from "./SearchButton";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
 import DelegateButton from "./DelegateButton";
@@ -106,7 +105,6 @@ function ValidatorsContent(props) {
                   {activeValidatorsData
                     ?.filter((data) => {
                       //if Query does not exist
-                      console.log(data);
                       if (query === " ") {
                         return data;
                       } else if (
