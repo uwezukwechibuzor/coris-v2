@@ -61,6 +61,8 @@ function ConsensusDetails(props) {
                 <th>Validator</th>
                 <th>Voting Power</th>
                 <th>Cummulative Share</th>
+                <th>Status</th>
+                <th>Jailed</th>
                 <th>Pre-Vote</th>
                 <th>Pre-Commit</th>
               </tr>
@@ -127,6 +129,14 @@ function ConsensusDetails(props) {
                             ? activeValidatorsCumulativeShare.toFixed(2) + "%"
                             : 0}
                         </td>
+                        <td>
+                          {data[0].status === "BOND_STATUS_BONDED"
+                            ? "Bonded"
+                            : data[0]?.status === "BOND_STATUS_UNBONDED"
+                            ? "UnBounded"
+                            : "UnBounding"}
+                        </td>
+                        <td>{data[0]?.jailed === false ? "No" : "Yes"}</td>
                         <td>
                           {data[1] === "nil-Vote" ? (
                             <img src="https://img.icons8.com/color/20/000000/cancel--v1.png" />

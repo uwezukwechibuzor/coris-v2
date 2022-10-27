@@ -21,21 +21,21 @@ export const chainBlockHeightTxsEndpoint = (height) =>
 export const chainTxsByHashEndpoint = (hash) => `/chain_txs_hash?hash=${hash}`;
 
 export const chainValidatorsDetailsEndpoint = (address) =>
-  `/chain_validator_details?address=${address}`;
+  `/chain_validator_details/${address}`;
 
 export const chainValidatorsSlashingSigningInfosDetailsEndpoint = (
   cons_address
 ) =>
-  `/chain_validator_slashing_signing_info_details?cons_address=${cons_address}`;
+  `/chain_validator_slashing_signing_info_details?cons_address${cons_address}`;
 
 export const chainValidatorDelegationsEndpoint = (validator_addr) =>
-  `/chain_validator_delegations?validator_addr=${validator_addr}`;
+  `/chain_validator_delegations/${validator_addr}`;
 
 export const chainValidatorUnDelegationsEndpoint = (validator_addr) =>
-  `/chain_validator_undelegations?validator_addr=${validator_addr}`;
+  `/chain_validator_undelegations/${validator_addr}`;
 
 export const chainValidatorReDelegationsEndpoint = (delegator_addr) =>
-  `/chain_validator_undelegations?delegator_addr=${delegator_addr}`;
+  `/chain_validator_undelegations/${delegator_addr}`;
 
 export const consensusStateEndpoint = `/chain_consensus`;
 

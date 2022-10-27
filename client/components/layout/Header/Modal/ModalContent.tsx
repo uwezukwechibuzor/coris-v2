@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { useAppSelector } from "../../../../lib/hooks";
+import Chain from "./chains";
 
 export function ModalContent({ toggle }) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -47,31 +48,39 @@ export function ModalContent({ toggle }) {
                 <Container>
                   <h4 className="text-center">Mainnets</h4>
                   <Grid>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      <Link
-                        href={{
-                          pathname: "/[chain_id]/blocks",
-                          query: { chain_id: "cosmos" },
-                        }}
-                      >
-                        <a>Cosmos</a>
-                      </Link>
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
+                    <Chain
+                      chain_id={"cosmos"}
+                      chainName="COSMOS"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="UMEE"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="UMEE"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="UMEE"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="UMEE"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="UMEE"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
                   </Grid>
                 </Container>
-                <Container className="mt-3">
+                {/* <Container className="mt-3">
                   <h4 className="text-center">Testnets</h4>
                   <Grid>
                     <GridItem className={darkMode ? "dark-mode" : ""}>
@@ -90,11 +99,11 @@ export function ModalContent({ toggle }) {
                       sddfdf
                     </GridItem>
                   </Grid>
-                </Container>
+    </Container> */}
               </Show>
             </ShowBox>
             <div className="d-table-row" style={{ height: "50px" }}>
-              <div>Developed by Coris</div>
+              <div>Developed by Cypher-Core Dev</div>
             </div>
           </div>
         </ModalDialogue>
@@ -117,12 +126,12 @@ const ShowBox = styled.div`
 
 const Container = styled.div`
   display: block;
-  padding: 40px;
+  padding: 30px;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-gap: 20px;
   @media screen and (max-width: 778px) {
     grid-template-columns: repeat(2, 1fr);
@@ -183,8 +192,8 @@ const Modal = styled.div`
 const ModalDialogue = styled.div`
   display: block;
   background: white;
-  height: 600px;
-  width: 900px;
+  height: 500px;
+  width: 500px;
   min-width: 75%;
   border-radius: 20px;
   box-shadow: 0px 0px 10px #00000038;

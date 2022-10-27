@@ -14,7 +14,7 @@ const Title1 = styled.h1`
   min-width: 284px;
   letter-spacing: 0;
   margin-top: 60px;
-  &.darkMode{
+  &.darkMode {
     color: white !important;
   }
 `;

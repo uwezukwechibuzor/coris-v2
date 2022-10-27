@@ -116,11 +116,14 @@ function ValidatorsContent(props) {
                       }
                     })
                     .map((data, index) => {
-                      var percentageOfVotingPower: number =
-                        getPercentageOfValidatorsBondedTokens(
-                          data?.tokens,
-                          totalBondedTokens
-                        );
+                      let percentageOfVotingPower: number;
+                      data?.tokens || totalBondedTokens
+                        ? (percentageOfVotingPower =
+                            getPercentageOfValidatorsBondedTokens(
+                              data?.tokens,
+                              totalBondedTokens
+                            ))
+                        : 0;
 
                       activeValidatorsCumulativeShare +=
                         percentageOfVotingPower;
@@ -163,7 +166,7 @@ function ValidatorsContent(props) {
                           </td>
                           <td>
                             <div style={{ color: "red" }} className="sub">
-                              {data?.tokens
+                              {percentageOfVotingPower !== Infinity
                                 ? percentageOfVotingPower.toFixed(2) + "%"
                                 : 0}
                             </div>
@@ -182,7 +185,7 @@ function ValidatorsContent(props) {
                                 paddingRight: "20px",
                               }}
                             >
-                              {data?.tokens
+                              { activeValidatorsCumulativeShare !== Infinity
                                 ? activeValidatorsCumulativeShare.toFixed(2) +
                                   "%"
                                 : 0}

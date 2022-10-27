@@ -13,7 +13,7 @@ function ConnectWallet(props) {
     className,
   } = props;
   const [open, setOpen] = useState(false);
-  const darkMode = useAppSelector((state) => state.general.darkMode);
+  const {darkMode, chain} = useAppSelector((state) => state.general);
 
   return (
     <ConnectWallet1
@@ -25,13 +25,13 @@ function ConnectWallet(props) {
       <Flex>
         {darkMode && className !== "mobile" ? (
           <>
-            <Asset62 className="asset-6-2" src={asset63} />
-            <Asset72 className="asset-7-2" src={asset73} />
+            <img src={chain.image} alt="" width={40} className="me-3" />
+            {chain.name}
           </>
         ) : (
           <>
-            <Asset62 className="asset-6-2" src={asset62} />
-            <Asset72 className="asset-7-2" src={asset72} />
+            <img src={chain.image} alt="" width={40} className="me-3" />
+            <span>{chain.name}</span>
           </>
         )}
       </Flex>
