@@ -3,7 +3,6 @@ import {
   formatNumbers,
   getPercentageOfValidatorsBondedTokens,
   getValidatorsLogoFromWebsites,
-  roundValidatorsVotingPowerToWholeNumber,
   sortValidatorsByVotingPower,
   toDay,
 } from "../../lib/Util/format";

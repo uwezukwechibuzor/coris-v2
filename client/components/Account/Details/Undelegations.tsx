@@ -46,7 +46,7 @@ function AccountUndelegationsContent(props) {
                             </tr>
                         </thead>
 
-                        { currentunDelegations.length  !== 0? currentunDelegations.map(data =>
+                        { currentunDelegations?.length  !== 0? currentunDelegations?.map(data =>
                             <tbody>
                                 <tr className="striped">
                                     <Link href='/account[address]' as={`/account/${data.delegator_address}`} ><a>
@@ -87,7 +87,7 @@ function AccountUndelegationsContent(props) {
                             </tbody>}
                     </table>
                 </Responsive>
-                {currentunDelegations.length !== 0 ? 
+                {currentunDelegations?.length !== 0 ? 
           <ReactPaginate
             previousLabel={"←"}
             nextLabel={"→"}

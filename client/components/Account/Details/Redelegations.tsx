@@ -44,7 +44,7 @@ function AccountRedelegationsContent(props) {
                                 </th>
                             </tr>
                         </thead>
-                        {currentredelegations.length !== 0 ? currentredelegations?.map(data =>
+                        {currentredelegations?.length !== 0 ? currentredelegations?.map(data =>
                             <tbody>
                                 <tr className="striped">
                                     <td>
@@ -87,7 +87,7 @@ function AccountRedelegationsContent(props) {
                             </tbody>}
                     </table>
                 </Responsive>
-                { currentredelegations.length !== 0 ? 
+                { currentredelegations?.length !== 0 ? 
           <ReactPaginate
             previousLabel={"←"}
             nextLabel={"→"}

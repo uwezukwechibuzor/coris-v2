@@ -78,7 +78,7 @@ function ValidatorsDetails(props) {
       .catch((error) => {
         console.log(error);
       });
-  }, [bech32Address]);
+  }, [query.address]);
 
   //get each validators delegations
   useEffect(() => {
