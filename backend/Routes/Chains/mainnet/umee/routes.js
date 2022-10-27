@@ -103,29 +103,15 @@ app.get("/umee/blocks/latest", async function (req, res) {
 app.get("/umee/txs", async function (req, res) {
   try {
     const limit = req.query.limit;
-    const blocks = await Model.umeeTxsModel
+    const txs = await Model.umeeTxsModel
       .find({}, {}, { sort: { _id: -1 } })
       .limit(limit);
-    res.json(blocks);
+    res.json(txs);
     //console.log(blocks)
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
-
-/*app.get('/blocks', async function(req, res) {
-    try{  
-
-      const blocks = await blockModel.find({}, {}, { sort: {'_id': -1}}).select('height hash proposer noTxs time').limit(1500)
-       res.json(blocks) 
-      //console.log(blocks)
-}
-catch(error){
-    res.status(500).json({message: error.message})
-}
-
-});
-*/
 
 //Reverse Proxy For all the chain endpoints
 //get all chain validators
@@ -213,7 +199,7 @@ app.get("/umee/block_height_details", async (req, res) => {
   try {
     const height = req.query.height;
     const response = await fetch(
-      `${process.env.UMEE_REST_API}${endPoints.chainBlockHeightDetails(height)}`
+      process.env.UMEE_REST_API + endPoints.chainBlockHeightDetails(height)
     );
     if (response.status !== 200 || !response) {
       throw "Error Querying Chain API";
@@ -260,13 +246,11 @@ app.get("/umee/chain_txs_hash", async (req, res) => {
 });
 
 //get chain validators details
-app.get("/umee/chain_validator_details", async (req, res) => {
+app.get("/umee/chain_validator_details/:address", async (req, res) => {
   try {
-    const adddress = req.query.adddress;
+    const adddress = req.params.address;
     const response = await fetch(
-      `${process.env.UMEE_REST_API}${endPoints.chainValidatorsDetails(
-        adddress
-      )}`
+      process.env.UMEE_REST_API + endPoints.chainValidatorsDetails(adddress)
     );
     if (response.status !== 200 || !response) {
       throw "Error Querying Chain API";
@@ -301,61 +285,70 @@ app.get(
 );
 
 //get chain validators delegations
-app.get("/umee/chain_validator_delegations", async (req, res) => {
-  try {
-    const validator_adddress = req.query.validator_adddress;
-    const response = await fetch(
-      `${process.env.UMEE_REST_API}${endPoints.chainValidatorDelegations(
-        validator_adddress
-      )}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
+app.get(
+  "/umee/chain_validator_delegations/:validator_adddress",
+  async (req, res) => {
+    try {
+      const validator_adddress = req.params.validator_adddress;
+      const response = await fetch(
+        `${process.env.UMEE_REST_API}${endPoints.chainValidatorDelegations(
+          validator_adddress
+        )}`
+      );
+      if (response.status !== 200 || !response) {
+        throw "Error Querying Chain API";
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
+);
 
 //get chain validators undelegations
-app.get("/umee/chain_validator_undelegations", async (req, res) => {
-  try {
-    const validator_adddress = req.query.validator_adddress;
-    const response = await fetch(
-      `${process.env.UMEE_REST_API}${endPoints.chainValidatorUnDelegations(
-        validator_adddress
-      )}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
+app.get(
+  "/umee/chain_validator_undelegations/:validator_adddress",
+  async (req, res) => {
+    try {
+      const validator_adddress = req.params.validator_adddress;
+      const response = await fetch(
+        `${process.env.UMEE_REST_API}${endPoints.chainValidatorUnDelegations(
+          validator_adddress
+        )}`
+      );
+      if (response.status !== 200 || !response) {
+        throw "Error Querying Chain API";
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
+);
 
 //get chain validators redelegations
-app.get("/umee/chain_validator_undelegations", async (req, res) => {
-  try {
-    const delegator_adddress = req.query.delegator_adddress;
-    const response = await fetch(
-      `${process.env.UMEE_REST_API}${endPoints.chainValidatorReDelegations(
-        delegator_adddress
-      )}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
+app.get(
+  "/umee/chain_validator_undelegations/:delegator_adddress",
+  async (req, res) => {
+    try {
+      const delegator_adddress = req.params.delegator_adddress;
+      const response = await fetch(
+        `${process.env.UMEE_REST_API}${endPoints.chainValidatorReDelegations(
+          delegator_adddress
+        )}`
+      );
+      if (response.status !== 200 || !response) {
+        throw "Error Querying Chain API";
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
-});
+);
 
 //get chain validators consensus state
 app.get("/umee/chain_consensus", async (req, res) => {
