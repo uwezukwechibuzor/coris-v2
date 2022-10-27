@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
-import ValidatorsContent from "../../components/Validators";
-import { BaseChainApi } from "../../lib/baseChainApi";
+import Layout from "../../../components/layout/Layout";
+import ValidatorsContent from "../../../components/Validators";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 import {
   chainPoolEndpoint,
   latestBlocksEndpoint,
-} from "../../lib/chainApiEndpoints";
+} from "../../../lib/chainApiEndpoints";
 
 function Validators(props) {
   const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);

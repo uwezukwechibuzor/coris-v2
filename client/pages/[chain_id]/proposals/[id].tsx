@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import ProposalDetailsContents from "../../components/Proposals/Details";
-import Layout from "../../components/layout/Layout";
+import ProposalDetailsContents from "../../../components/Proposals/Details";
+import Layout from "../../../components/layout/Layout";
 import { useRouter } from "next/router";
 import {
   proposalDepositsEndpoint,
   proposalDetailsEndpoint,
   proposalVotingOptionsEndpoint,
-} from "../../lib/chainApiEndpoints";
+} from "../../../lib/chainApiEndpoints";
 import axios from "axios";
-import { BaseChainApi } from "../../lib/baseChainApi";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 
 const isServerReq = (req) => !req.url.startsWith("/_next");
 

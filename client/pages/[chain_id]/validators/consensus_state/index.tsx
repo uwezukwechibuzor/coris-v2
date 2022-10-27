@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Layout from "../../../components/layout/Layout";
-import ConsensusDetails from "../../../components/Validators/Consensus";
-import { BaseChainApi } from "../../../lib/baseChainApi";
+import Layout from "../../../../components/layout/Layout";
+import ConsensusDetails from "../../../../components/Validators/Consensus";
+import { BaseChainApi } from "../../../../lib/baseChainApi";
 import {
   chainPoolEndpoint,
   consensusStateEndpoint,
-} from "../../../lib/chainApiEndpoints";
+} from "../../../../lib/chainApiEndpoints";
 
 function ValidatorsConsensusState(props) {
   const [getChainPool, setChainPool] = useState(null);

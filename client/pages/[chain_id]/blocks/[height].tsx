@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
+import Layout from "../../../components/layout/Layout";
 import { useRouter } from "next/router";
-import BlockHeightContent from "../../components/Blocks/Details";
+import BlockHeightContent from "../../../components/Blocks/Details";
 import {
   chainActiveValidatorsEndpoint,
   chainBlockHeightDetailsEndpont,
   chainBlockHeightTxsEndpoint,
-} from "../../lib/chainApiEndpoints";
+} from "../../../lib/chainApiEndpoints";
 import axios from "axios";
-import { BaseChainApi } from "../../lib/baseChainApi";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function BlocksDetails(props) {
   const [getActiveValidators, setActiveValidators] = useState([]);

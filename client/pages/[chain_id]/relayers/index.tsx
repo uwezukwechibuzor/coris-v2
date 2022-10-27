@@ -1,6 +1,6 @@
 import React from "react";
-import RelayersPage from "../../components/IBC_Relayers";
-import Layout from "../../components/layout/Layout";
+import RelayersPage from "../../../components/IBC_Relayers";
+import Layout from "../../../components/layout/Layout";
 
 function IBC_Relayers(props) {
   return (

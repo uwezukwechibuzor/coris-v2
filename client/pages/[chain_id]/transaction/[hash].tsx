@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
-import TransactionContents from "../../components/Transaction";
-import { BaseChainApi } from "../../lib/baseChainApi";
-import { chainTxsByHashEndpoint } from "../../lib/chainApiEndpoints";
+import Layout from "../../../components/layout/Layout";
+import TransactionContents from "../../../components/Transaction";
+import { BaseChainApi } from "../../../lib/baseChainApi";
+import { chainTxsByHashEndpoint } from "../../../lib/chainApiEndpoints";
 import { useRouter } from "next/router";
 
 function TransactionDetails(props) {

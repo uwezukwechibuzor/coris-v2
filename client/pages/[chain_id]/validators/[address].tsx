@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
-import ValidatorsDetailsContent from "../../components/Validators/Details";
+import Layout from "../../../components/layout/Layout";
+import ValidatorsDetailsContent from "../../../components/Validators/Details";
 import { useRouter } from "next/router";
 import axios from "axios";
 import {
@@ -10,10 +10,10 @@ import {
   chainValidatorsSlashingSigningInfosDetailsEndpoint,
   chainValidatorUnDelegationsEndpoint,
   latestBlocksEndpoint,
-} from "../../lib/chainApiEndpoints";
+} from "../../../lib/chainApiEndpoints";
 import { Bech32, fromBase64 } from "@cosmjs/encoding";
 import { sha256 } from "@cosmjs/crypto";
-import { BaseChainApi } from "../../lib/baseChainApi";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function ValidatorsDetails(props) {
   const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);

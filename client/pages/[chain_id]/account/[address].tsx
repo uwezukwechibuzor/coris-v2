@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
+import Layout from "../../../components/layout/Layout";
 import { useRouter } from "next/router";
-import AccountContents from "../../components/Account";
+import AccountContents from "../../../components/Account";
 import {
   accountBalanceEndpoint,
   accountDelegationRewardsEndpoint,
@@ -10,9 +10,9 @@ import {
   accountUnDelegationsEndpoint,
   allTxsEndpoint,
   authAccountEndpoint,
-} from "../../lib/chainApiEndpoints";
+} from "../../../lib/chainApiEndpoints";
 import axios from "axios";
-import { BaseChainApi } from "../../lib/baseChainApi";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function AccountDetails(props) {
   const [getAllTxs, setAllTxs] = useState([]);

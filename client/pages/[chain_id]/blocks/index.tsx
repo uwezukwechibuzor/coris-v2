@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/layout/Layout";
-import BlocksContent from "../../components/Blocks";
+import Layout from "../../../components/layout/Layout";
+import BlocksContent from "../../../components/Blocks";
 import axios from "axios";
 import {
   allTxsEndpoint,
   chainActiveValidatorsEndpoint,
   latestBlocksEndpoint,
-} from "../../lib/chainApiEndpoints";
-import { BaseChainApi } from "../../lib/baseChainApi";
+} from "../../../lib/chainApiEndpoints";
+import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function Blocks(props) {
   const [getBlocks, setBlocks] = useState([]);
