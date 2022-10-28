@@ -2,6 +2,8 @@
 
 A community-built Blockchain explorer for the cosmos ecosystem, brought to you by Cypher Core LLC
 
+## Demo (alpha)
+- [Cosmos](http://144.202.39.104:3000/cosmos)
 
 ## Using Docker
  [Install Docker](https://docs.docker.com/get-docker/)  on your machine.
