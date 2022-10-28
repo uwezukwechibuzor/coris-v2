@@ -362,7 +362,7 @@ function ProposalDetailsContents(props) {
           <FlexBetween>
             <Container>
               <Link
-                href="/[chain_id]/account[address]"
+                href="/[chain_id]/account/[address]"
                 as={`/${chain_id}/account/${data.depositor}`}
               >
                 <a>{data ? data.depositor : null}</a>

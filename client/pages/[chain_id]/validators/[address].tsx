@@ -65,7 +65,7 @@ function ValidatorsDetails(props) {
       : "";
   const ed25519PubkeyRaw = fromBase64(consensusPubkey);
   const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-  const bech32Address = Bech32.encode("umeevalcons", addressData);
+  const bech32Address = Bech32.encode("cosmosvalcons", addressData);
 
   //get validator slashing signing Info Details
   useEffect(() => {

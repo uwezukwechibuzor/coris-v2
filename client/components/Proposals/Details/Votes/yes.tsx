@@ -42,8 +42,8 @@ function YesVoteOptions(props) {
               </div>
               <div className="ml-3">
                 <Link
-                  href="/[chain_id]/account[address]"
-                  as={`${props?.chain_id}/account/${currentActiveYesVotes[i].voter}`}
+                  href="/[chain_id]/account/[address]"
+                  as={`/${props?.chain_id}/account/${currentActiveYesVotes[i].voter}`}
                 >
                   <a>{currentActiveYesVotes[i].voter}</a>
                 </Link>

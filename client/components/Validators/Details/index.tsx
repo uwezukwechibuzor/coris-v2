@@ -57,7 +57,7 @@ function ValidatorsDetailsContent(props) {
         : "";
     const ed25519PubkeyRaw = fromBase64(consensusPubkey);
     const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-    bech32Address = Bech32.encode("umeevalcons", addressData);
+    bech32Address = Bech32.encode("cosmosvalcons", addressData);
 
     operatorAddress =
       validatorsDetails?.operator_address !== undefined
@@ -65,7 +65,7 @@ function ValidatorsDetailsContent(props) {
         : " ";
 
     accountAddress = toBech32(
-      "umee",
+      "cosmos",
       fromHex(toHex(fromBech32(operatorAddress).data))
     );
 
@@ -83,7 +83,7 @@ function ValidatorsDetailsContent(props) {
   //uptimeByBlocksHeights
   const convertedSignatures = getUptimeByBlocksHeights?.map((data) => {
     const convertedSigs = data.signatures?.map((sig) => {
-      return toBech32("umeevalcons", fromHex(sig?.validator_address));
+      return toBech32("cosmosvalcons", fromHex(sig?.validator_address));
     });
     return convertedSigs;
   });

@@ -42,7 +42,7 @@ function VetoVoteOptions(props) {
               </div>
               <div className="ml-3">
                 <Link
-                  href="/[chain_id]/account[address]"
+                  href="/[chain_id]/account/[address]"
                   as={`/${props?.chain_id}/account/${currentActiveVetoVotes[i].voter}`}
                 >
                   <a>

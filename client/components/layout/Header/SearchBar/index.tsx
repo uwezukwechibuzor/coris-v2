@@ -36,12 +36,12 @@ export function SearchBar(props) {
     ) {
       data?.operator_address === query
         ? (searchedData = (
-            <a href={`/validators/${data.operator_address}`}>
+            <a href={`/[chain_id]/validators/${data.operator_address}`}>
               {data?.operator_address}
             </a>
           ))
         : (searchedData = (
-            <a href={`/validators/${data.operator_address}`}>
+            <a href={`/[chain_id]/validators/${data.operator_address}`}>
               {data?.description?.moniker}
             </a>
           ));
