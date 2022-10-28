@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useAppSelector } from "../../../../lib/hooks";
 
 export function SearchBar(props) {
+  const chain_id = props?.chain_id?.chain_id;
   const [searchResult, setSearchResult] = useState([] as any);
 
   const searchBar: MutableRefObject<HTMLDivElement> = useRef();
@@ -36,12 +37,12 @@ export function SearchBar(props) {
     ) {
       data?.operator_address === query
         ? (searchedData = (
-            <a href={`/[chain_id]/validators/${data.operator_address}`}>
+            <a href={`/${chain_id}/validators/${data.operator_address}`}>
               {data?.operator_address}
             </a>
           ))
         : (searchedData = (
-            <a href={`/[chain_id]/validators/${data.operator_address}`}>
+            <a href={`/${chain_id}/validators/${data.operator_address}`}>
               {data?.description?.moniker}
             </a>
           ));

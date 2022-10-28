@@ -46,7 +46,11 @@ function Header(props) {
             </svg>
           </button>
         </MobileSideBarToggler>
-        <SearchBar src={searchBarData.src} allValidators={allValidators} />
+        <SearchBar
+          src={searchBarData.src}
+          allValidators={allValidators}
+          chain_id={props?.chain_id}
+        />
 
         <ConnectWallet
           toggle={(val) => dispatch(toggleConnectWalletModal(val))}

@@ -31,7 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               darkMode && "dark-mode"
             } d-table-row w-100 main-header`}
           >
-            <Header {...getAllValidators} />
+            <Header {...getAllValidators} chain_id={chain_id} />
           </div>
           <div className="d-table-row w-100 h-100">
             <div className="d-table w-100 h-100">

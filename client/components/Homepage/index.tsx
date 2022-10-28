@@ -58,16 +58,16 @@ function HomePageContent(props) {
   } = props;
 
   //function that receieves proposer address and returns the validators details
-  const joinedBlocksValidatorsData = getBlocks.map((block) => {
+  const joinedBlocksValidatorsData = getBlocks?.map((block) => {
     //convert proposer address to cosmosvalcons
-    const proposerToBech32 = toBech32("umeevalcons", fromHex(block.proposer));
+    const proposerToBech32 = toBech32("cosmosvalcons", fromHex(block.proposer));
     const getActiveChainValidators = activeValidators?.validators?.map(
       (validator) => {
         //fetch just the active validators
         //get the consensus pubkey
         const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
         const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-        const bech32Address = Bech32.encode("umeevalcons", addressData);
+        const bech32Address = Bech32.encode("cosmosvalcons", addressData);
 
         if (bech32Address === proposerToBech32) {
           return { validator, block };

@@ -30,10 +30,10 @@ function BlocksContent(props) {
         //get the consensus pubkey
         const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
         const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-        const bech32Address = Bech32.encode("umeevalcons", addressData);
+        const bech32Address = Bech32.encode("cosmosvalcons", addressData);
 
         const proposerToBech32 = toBech32(
-          "umeevalcons",
+          "cosmosvalcons",
           fromHex(block?.proposer)
         );
 
