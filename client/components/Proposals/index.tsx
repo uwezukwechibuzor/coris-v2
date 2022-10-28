@@ -15,7 +15,7 @@ function ProposalsContent(props) {
 
   const [query, setQuery] = useState("");
 
-  const { proposalsData } = props;
+  const { proposalsData, chain_id } = props;
 
   const activeProposals = proposalsData?.proposals?.map((proposal) => {
     if (
@@ -320,7 +320,9 @@ function ProposalsContent(props) {
                   <Button
                     variant="outline-primary"
                     onClick={() =>
-                      router.push(`/proposals/${proposal?.proposal_id}`)
+                      router.push(
+                        `/${chain_id}/proposals/${proposal?.proposal_id}`
+                      )
                     }
                   >
                     Read more
@@ -367,7 +369,9 @@ function ProposalsContent(props) {
                 <tr
                   style={{ cursor: "pointer" }}
                   onClick={() =>
-                    router.push(`/proposals/${proposal?.proposal_id}`)
+                    router.push(
+                      `/${chain_id}/proposals/${proposal?.proposal_id}`
+                    )
                   }
                 >
                   <td>{proposal?.proposal_id}</td>

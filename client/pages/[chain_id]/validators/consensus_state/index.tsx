@@ -14,6 +14,7 @@ function ValidatorsConsensusState(props) {
 
   //get all chain validators from props
   const getAllValidators = props?.getAllValidators;
+  const chain_id = props?.chain_id?.chain_id;
 
   //get total bonded tokens
   useEffect(() => {
@@ -43,6 +44,7 @@ function ValidatorsConsensusState(props) {
     validators: getAllValidators,
     totalBondedTokens: getChainPool?.pool?.bonded_tokens,
     consensusState: getConsensusState,
+    chain_id: chain_id,
   };
 
   return (

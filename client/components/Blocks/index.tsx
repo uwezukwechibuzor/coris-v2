@@ -15,10 +15,10 @@ import router from "next/router";
 
 function BlocksContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
-  const { getBlocks, getAllTxs, activeValidators } = props;
+  const { getBlocks, getAllTxs, activeValidators, chain_id } = props;
   //console.log(getBlocks)
 
-  let p = []
+  let p = [];
 
   //function that receieves proposer address and returns the validators details
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
@@ -31,8 +31,11 @@ function BlocksContent(props) {
         const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
         const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
         const bech32Address = Bech32.encode("umeevalcons", addressData);
-       
-    const proposerToBech32 = toBech32("umeevalcons", fromHex(block?.proposer));
+
+        const proposerToBech32 = toBech32(
+          "umeevalcons",
+          fromHex(block?.proposer)
+        );
 
         if (bech32Address === proposerToBech32) {
           return { validator, block };
@@ -75,7 +78,9 @@ function BlocksContent(props) {
                         return (
                           <tr
                             onClick={() =>
-                              router.push(`/blocks/${data.block.height}`)
+                              router.push(
+                                `/${chain_id}/blocks/${data.block.height}`
+                              )
                             }
                           >
                             <td>
@@ -89,7 +94,7 @@ function BlocksContent(props) {
                             <td
                               onClick={() =>
                                 router.push(
-                                  `/validators/${data.validator.operator_address}`
+                                  `/${chain_id}/validators/${data.validator.operator_address}`
                                 )
                               }
                             >
@@ -129,7 +134,7 @@ function BlocksContent(props) {
         </Tab>
         <Tab eventKey="inactive" title="Transactions">
           <Responsive>
-            <TxsData getAllTxs={getAllTxs} />
+            <TxsData getAllTxs={getAllTxs} chain_id={chain_id} />
           </Responsive>
         </Tab>
       </Tabs>

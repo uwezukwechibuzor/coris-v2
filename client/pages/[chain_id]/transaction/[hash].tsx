@@ -12,6 +12,8 @@ function TransactionDetails(props) {
   const router = useRouter();
   const query = router.query;
 
+  const chain_id = props?.chain_id?.chain_id;
+
   //fetch Txs By Hash
   useEffect(() => {
     axios
@@ -26,7 +28,7 @@ function TransactionDetails(props) {
 
   return (
     <>
-      <TransactionContents txDetails={getChainTxsByHash} />
+      <TransactionContents txDetails={getChainTxsByHash} chain_id={chain_id} />
     </>
   );
 }

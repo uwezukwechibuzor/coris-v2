@@ -45,8 +45,8 @@ function AbstainVoteOptions(props) {
               </div>
               <div className="ml-3">
                 <Link
-                  href="/account[address]"
-                  as={`/account/${currentActiveAbstainVotes[i].voter}`}
+                  href="/[chain_id]/account[address]"
+                  as={`/${props?.chain_id}/account/${currentActiveAbstainVotes[i].voter}`}
                 >
                   <a>{currentActiveAbstainVotes[i].voter}</a>
                 </Link>

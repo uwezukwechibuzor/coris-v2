@@ -24,6 +24,8 @@ function ValidatorsDetails(props) {
   const [getValidatorUnDelegations, setValidatorUnDelegations] = useState(null);
   const [getChainPool, setChainPool] = useState(null);
 
+  const chain_id = props?.chain_id?.chain_id;
+
   const router = useRouter();
   const query = router.query;
 
@@ -63,7 +65,7 @@ function ValidatorsDetails(props) {
       : "";
   const ed25519PubkeyRaw = fromBase64(consensusPubkey);
   const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-  const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+  const bech32Address = Bech32.encode("umeevalcons", addressData);
 
   //get validator slashing signing Info Details
   useEffect(() => {
@@ -123,6 +125,7 @@ function ValidatorsDetails(props) {
     chainValidatorDelegations: getValidatorDelegations,
     chainValidatorUnDelegations: getValidatorUnDelegations,
     getChainPool,
+    chain_id: chain_id,
   };
 
   return <ValidatorsDetailsContent {...data} />;

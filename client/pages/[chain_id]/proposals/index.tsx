@@ -8,6 +8,8 @@ import { BaseChainApi } from "../../../lib/baseChainApi";
 function Proposals(props) {
   const [getProposals, setProposals] = useState([]);
 
+  const chain_id = props?.chain_id?.chain_id;
+
   useEffect(() => {
     axios
       .get(BaseChainApi() + proposalsEndpoint)
@@ -31,7 +33,7 @@ function Proposals(props) {
 
   return (
     <>
-      <ProposalsContent {...proposalsData} />
+      <ProposalsContent {...proposalsData}  chain_id={chain_id}/>
     </>
   );
 }

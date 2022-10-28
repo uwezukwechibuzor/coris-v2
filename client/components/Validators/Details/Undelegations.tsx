@@ -59,12 +59,14 @@ function UndelegationsContent(props) {
               </tr>
             </thead>
             <tbody>
-              {currentunDelegationsData.length !== 0 ? (
+              {currentunDelegationsData?.length !== 0 ? (
                 currentunDelegationsData?.map((data) => (
                   <tr className="striped">
                     <td
                       onClick={() =>
-                        router.push(`/account/${data?.delegator_address}`)
+                        router.push(
+                          `/${props?.chain_id}/account/${data?.delegator_address}`
+                        )
                       }
                     >
                       <Flex style={{ alignItems: "center" }}>

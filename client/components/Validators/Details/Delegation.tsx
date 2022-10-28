@@ -54,7 +54,7 @@ function DelegationsContent(props) {
                     <td
                       onClick={() =>
                         router.push(
-                          `/account/${data.delegation?.delegator_address}`
+                          `/${props?.chain_id}/account/${data.delegation?.delegator_address}`
                         )
                       }
                     >

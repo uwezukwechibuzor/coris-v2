@@ -54,6 +54,7 @@ function HomePageContent(props) {
     chainAllValidators,
     coinData,
     priceChart,
+    chain_id,
   } = props;
 
   //function that receieves proposer address and returns the validators details
@@ -428,7 +429,7 @@ function HomePageContent(props) {
         <LatestBlocks className={darkMode ? "dark-mode" : ""}>
           {latestBlocks}
         </LatestBlocks>
-        <Link href="/blocks">
+        <Link href={`${chain_id}/blocks`}>
           <a>
             <ViewAll className={darkMode ? "dark-mode" : ""}>{viewAll}</ViewAll>
           </a>
@@ -458,7 +459,7 @@ function HomePageContent(props) {
                     <tr>
                       <td
                         onClick={() =>
-                          router.push(`/blocks/${data.block.height}`)
+                          router.push(`${chain_id}/blocks/${data.block.height}`)
                         }
                       >
                         {data.block?.height ? data.block.height : null}
@@ -471,7 +472,7 @@ function HomePageContent(props) {
                       <td
                         onClick={() =>
                           router.push(
-                            `/validators/${data.validator.operator_address}`
+                            `${chain_id}/validators/${data.validator.operator_address}`
                           )
                         }
                       >
@@ -506,7 +507,7 @@ function HomePageContent(props) {
         <LatestBlocks className={darkMode ? "dark-mode" : ""}>
           Latest Transactions
         </LatestBlocks>
-        <Link href="/blocks">
+        <Link href={`${chain_id}/blocks`}>
           <a>
             <ViewAll className={darkMode ? "dark-mode" : ""}>{viewAll}</ViewAll>
           </a>

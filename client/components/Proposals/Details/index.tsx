@@ -13,8 +13,14 @@ import { COIN, DENOM } from "../../../lib/Util/constants";
 
 function ProposalDetailsContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
-  const { type, total, proposalDetails, proposalsVotingOptions, deposits } =
-    props;
+  const {
+    type,
+    total,
+    proposalDetails,
+    proposalsVotingOptions,
+    deposits,
+    chain_id,
+  } = props;
 
   const [selectedVoteView, setVoteView] = useState("yes");
 
@@ -277,8 +283,8 @@ function ProposalDetailsContents(props) {
           <Container>
             <strong className="text-info">
               <Link
-                href="/account[address]"
-                as={`/account/${proposal?.proposal?.content?.recipient}`}
+                href="/[chain_id]/account[address]"
+                as={`/${chain_id}/account/${proposal?.proposal?.content?.recipient}`}
               >
                 <a>
                   {proposal?.proposal?.content?.recipient
@@ -355,7 +361,10 @@ function ProposalDetailsContents(props) {
         {depositDetails?.map((data) => (
           <FlexBetween>
             <Container>
-              <Link href="/account[address]" as={`/account/${data.depositor}`}>
+              <Link
+                href="/[chain_id]/account[address]"
+                as={`/${chain_id}/account/${data.depositor}`}
+              >
                 <a>{data ? data.depositor : null}</a>
               </Link>
             </Container>
@@ -419,13 +428,19 @@ function ProposalDetailsContents(props) {
             </TabTogglerItem>
           </TabToggler>
           {selectedVoteView === "yes" ? (
-            <YesVoteOptions voteOptionYes={voteOptionYes} />
+            <YesVoteOptions voteOptionYes={voteOptionYes} chain_id={chain_id} />
           ) : selectedVoteView === "no" ? (
-            <NoVoteOptions voteOptionNo={voteOptionNo} />
+            <NoVoteOptions voteOptionNo={voteOptionNo} chain_id={chain_id} />
           ) : selectedVoteView === "veto" ? (
-            <VetoVoteOptions voteOptionVeto={voteOptionVeto} />
+            <VetoVoteOptions
+              voteOptionVeto={voteOptionVeto}
+              chain_id={chain_id}
+            />
           ) : (
-            <AbstainVoteOptions voteOptionAbstain={voteOptionAbstain} />
+            <AbstainVoteOptions
+              voteOptionAbstain={voteOptionAbstain}
+              chain_id={chain_id}
+            />
           )}
         </div>
       </Card>

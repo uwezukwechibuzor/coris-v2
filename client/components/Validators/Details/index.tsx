@@ -36,6 +36,7 @@ function ValidatorsDetailsContent(props) {
     chainValidatorDelegations,
     chainValidatorUnDelegations,
     poolData,
+    chain_id,
   } = props;
   //console.log(props);
   const [selectedDelegations, setDelegationPage] = useState("delegations");
@@ -142,7 +143,11 @@ function ValidatorsDetailsContent(props) {
           <div>
             <strong>Operator Address</strong>
           </div>
-          <small onClick={() => router.push(`/validators/${operatorAddress}`)}>
+          <small
+            onClick={() =>
+              router.push(`/${chain_id}/validators/${operatorAddress}`)
+            }
+          >
             {operatorAddress}
             {/* <CopyClip value={operatorAddress} /> */}
           </small>
@@ -169,7 +174,11 @@ function ValidatorsDetailsContent(props) {
           <div>
             <strong>Address</strong>
           </div>
-          <small onClick={() => router.push(`/account/${accountAddress}`)}>
+          <small
+            onClick={() =>
+              router.push(`/${chain_id}/account/${accountAddress}`)
+            }
+          >
             {accountAddress}
           </small>
         </div>
@@ -282,8 +291,10 @@ function ValidatorsDetailsContent(props) {
             <BlockGrid>
               {getUptime.map((data) => (
                 <Link
-                  href="/blocks[height]"
-                  as={`/blocks/${data.upTime?.height || data.noUpTime?.height}`}
+                  href="/[chain_id]/blocks[height]"
+                  as={`/${chain_id}/blocks/${
+                    data.upTime?.height || data.noUpTime?.height
+                  }`}
                 >
                   <a>
                     <Block
@@ -343,9 +354,12 @@ function ValidatorsDetailsContent(props) {
             </TabTogglerItem>
           </TabToggler>
           {selectedDelegations === "delegations" ? (
-            <DelegationsContent {...validatorsDelegations} />
+            <DelegationsContent
+              {...validatorsDelegations}
+              chain_id={chain_id}
+            />
           ) : (
-            <UndelegationsContent {...unDelegations} />
+            <UndelegationsContent {...unDelegations} chain_id={chain_id} />
           )}
         </div>
       </Card>

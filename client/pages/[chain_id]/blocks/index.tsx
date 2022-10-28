@@ -17,6 +17,8 @@ function Blocks(props) {
   const queryTotalBlocks = 15;
   const queryTotalTxs = 20;
 
+  const chain_id = props?.chain_id?.chain_id;
+
   useEffect(() => {
     axios
       .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
@@ -56,6 +58,7 @@ function Blocks(props) {
         getBlocks={getBlocks}
         getAllTxs={getAllTxs}
         activeValidators={getActiveValidators}
+        chain_id={chain_id}
       />
     </>
   );

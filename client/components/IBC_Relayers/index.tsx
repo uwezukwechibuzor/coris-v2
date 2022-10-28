@@ -1,5 +1,4 @@
 import React from "react";
-import Layout from "../layout/Layout";
 import styled from "styled-components";
 import { useAppSelector } from "../../lib/hooks";
 import { Accordion, Table } from "react-bootstrap";
@@ -117,10 +116,6 @@ function RelayersPage(props) {
     </div>
   );
 }
-
-RelayersPage.getLayout = function getLayout(page: any) {
-  return <Layout>{page}</Layout>;
-};
 
 export default RelayersPage;
 

@@ -17,7 +17,7 @@ import router from "next/router";
 
 function BlockHeightContent(props: any) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
-  const { title, blockData, txs, activeValidators } = props;
+  const { title, blockData, txs, activeValidators, chain_id } = props;
 
   const [currentPage, setCurrentPage] = useState(0);
   const [currentTxsPage, setCurrentTxsPage] = useState(0);
@@ -113,126 +113,128 @@ function BlockHeightContent(props: any) {
           <hr />
           <table style={{ width: "100%" }}>
             <thead>
-            <tr>
-              <td style={{ fontWeight: "bold", width: "150px" }}>Chain Id</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header.chain_id
-                  : null}
-              </td>
-            </tr>
-            
-            <tr>
-              <td style={{ fontWeight: "bold" }}>Height</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header.height
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Block Time</td>
-              <td>
-                {blockData?.block?.header
-                  ? toDay(blockData?.block?.header?.time, "from")
-                  : null}
-                (
-                {blockData?.block?.header
-                  ? toDay(blockData?.block?.header?.time, "")
-                  : null}{" "}
-                )
-              </td>
-            </tr>
-            <tr>
-              <td>Block Hash</td>
-              <td>{blockData?.block_id ? blockData?.block_id?.hash : null}</td>
-            </tr>
-            <tr>
-              <td>Number of Tx</td>
-              <td>
-                {blockData?.block?.data?.txs
-                  ? blockData.block.data.txs.length
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Txs Total Fee</td>
-              <td>
-                {totalTxsFee} {COIN}
-              </td>
-            </tr>
-            <tr>
-              <td>Proposer</td>
-              <td>
-                <Link
-                  href="/validators[address]"
-                  as={`/validators/${proposerName?.validator?.operator_address}`}
-                >
-                  <a>
-                    <img
-                      className="img"
-                      width={30}
-                      src={getValidatorsLogoFromWebsites(
-                        proposerName?.validator?.description?.website
-                      )}
-                      alt=""
-                    />
+              <tr>
+                <td style={{ fontWeight: "bold", width: "150px" }}>Chain Id</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header.chain_id
+                    : null}
+                </td>
+              </tr>
 
-                    {proposerName?.validator?.description
-                      ? proposerName?.validator?.description?.moniker
-                      : null}
-                  </a>
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>App Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.app_hash
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Consensus Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.consensus_hash
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Data_Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.data_hash
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>App Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.app_hash
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Evidence Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.evidence_hash
-                  : null}
-              </td>
-            </tr>
-            <tr>
-              <td>Validators Hash</td>
-              <td>
-                {blockData?.block?.header
-                  ? blockData?.block?.header?.validators_hash
-                  : null}
-              </td>
-            </tr>
+              <tr>
+                <td style={{ fontWeight: "bold" }}>Height</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header.height
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Block Time</td>
+                <td>
+                  {blockData?.block?.header
+                    ? toDay(blockData?.block?.header?.time, "from")
+                    : null}
+                  (
+                  {blockData?.block?.header
+                    ? toDay(blockData?.block?.header?.time, "")
+                    : null}{" "}
+                  )
+                </td>
+              </tr>
+              <tr>
+                <td>Block Hash</td>
+                <td>
+                  {blockData?.block_id ? blockData?.block_id?.hash : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Number of Tx</td>
+                <td>
+                  {blockData?.block?.data?.txs
+                    ? blockData.block.data.txs.length
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Txs Total Fee</td>
+                <td>
+                  {totalTxsFee} {COIN}
+                </td>
+              </tr>
+              <tr>
+                <td>Proposer</td>
+                <td>
+                  <Link
+                    href="/[chain_id]/validators[address]"
+                    as={`/${chain_id}/validators/${proposerName?.validator?.operator_address}`}
+                  >
+                    <a>
+                      <img
+                        className="img"
+                        width={30}
+                        src={getValidatorsLogoFromWebsites(
+                          proposerName?.validator?.description?.website
+                        )}
+                        alt=""
+                      />
+
+                      {proposerName?.validator?.description
+                        ? proposerName?.validator?.description?.moniker
+                        : null}
+                    </a>
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <td>App Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.app_hash
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Consensus Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.consensus_hash
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Data_Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.data_hash
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>App Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.app_hash
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Evidence Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.evidence_hash
+                    : null}
+                </td>
+              </tr>
+              <tr>
+                <td>Validators Hash</td>
+                <td>
+                  {blockData?.block?.header
+                    ? blockData?.block?.header?.validators_hash
+                    : null}
+                </td>
+              </tr>
             </thead>
           </table>
         </Card>
@@ -257,7 +259,7 @@ function BlockHeightContent(props: any) {
                           <td
                             onClick={() =>
                               router.push(
-                                `/validators/${data.validator.operator_address}`
+                                `/${chain_id}/validators/${data.validator.operator_address}`
                               )
                             }
                           >
@@ -335,7 +337,9 @@ function BlockHeightContent(props: any) {
                   <tbody>
                     <tr>
                       <td
-                        onClick={() => router.push(`/transaction/${tx.txhash}`)}
+                        onClick={() =>
+                          router.push(`/${chain_id}/transaction/${tx.txhash}`)
+                        }
                       >
                         {formatHash(tx?.txhash, 20, "..")}
                       </td>

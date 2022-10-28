@@ -42,10 +42,14 @@ function VetoVoteOptions(props) {
               </div>
               <div className="ml-3">
                 <Link
-                  href="/account[address]"
-                  as={`/account/${currentActiveVetoVotes[i].voter}`}
+                  href="/[chain_id]/account[address]"
+                  as={`/${props?.chain_id}/account/${currentActiveVetoVotes[i].voter}`}
                 >
-                  <a>{currentActiveVetoVotes[i] ? currentActiveVetoVotes[i].voter : "Empty"}</a>
+                  <a>
+                    {currentActiveVetoVotes[i]
+                      ? currentActiveVetoVotes[i].voter
+                      : "Empty"}
+                  </a>
                 </Link>
               </div>
             </Flex>

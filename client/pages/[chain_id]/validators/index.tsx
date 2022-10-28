@@ -14,6 +14,7 @@ function Validators(props) {
 
   //get all chain validators from props
   const chainAllValidators = props?.getAllValidators;
+  const chain_id = props?.chain_id?.chain_id;
 
   //get Pool
   useEffect(() => {
@@ -57,7 +58,7 @@ function Validators(props) {
 
   return (
     <>
-      <ValidatorsContent {...validatorsDetails} />
+      <ValidatorsContent {...validatorsDetails} chain_id={chain_id} />
     </>
   );
 }

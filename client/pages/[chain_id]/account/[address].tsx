@@ -26,6 +26,8 @@ function AccountDetails(props) {
   const router = useRouter();
   const query = router.query;
 
+  const chain_id = props?.chain_id?.chain_id;
+
   //query all transactions and check to return all transactions that equals the query address
   const queryTotalTxs = 600;
   useEffect(() => {
@@ -119,6 +121,7 @@ function AccountDetails(props) {
     accountReledelgations: getAccountReDelegations,
     accountUnboundingDelegations: getAccountUnDelegations,
     getAllTxs: getAllTxs,
+    chain_id: chain_id,
   };
 
   return (

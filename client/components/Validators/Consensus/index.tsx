@@ -13,7 +13,7 @@ import { useAppSelector } from "../../../lib/hooks";
 function ConsensusDetails(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
-  const { validators, totalBondedTokens, consensusState } = props;
+  const { validators, totalBondedTokens, consensusState, chain_id } = props;
 
   let activeVal = [];
   validators?.map((data) => {
@@ -87,7 +87,7 @@ function ConsensusDetails(props) {
                         className="validator-item-row"
                         onClick={() =>
                           router.push(
-                            `/validators/${data[index].operator_address}`
+                            `/${chain_id}/validators/${data[index].operator_address}`
                           )
                         }
                       >

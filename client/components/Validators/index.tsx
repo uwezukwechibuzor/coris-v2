@@ -26,9 +26,13 @@ function ValidatorsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const [query, setQuery] = useState("");
 
-  const { totalBondedTokens, uptimeByBlocksHeights, chainAllValidators } =
-    props;
-  //console.log( uptimeByBlocksHeights)
+  const {
+    totalBondedTokens,
+    uptimeByBlocksHeights,
+    chainAllValidators,
+    chain_id,
+  } = props;
+  console.log(chain_id);
 
   var activeValidatorsData = chainAllValidators?.map((data) => {
     if (data.status === "BOND_STATUS_BONDED") {
@@ -148,7 +152,7 @@ function ValidatorsContent(props) {
                                 style={{ width: "120px" }}
                                 onClick={() =>
                                   router.push(
-                                    `/validators/${data.operator_address}`
+                                    `/${chain_id}/validators/${data.operator_address}`
                                   )
                                 }
                               >
@@ -184,7 +188,7 @@ function ValidatorsContent(props) {
                                 paddingRight: "20px",
                               }}
                             >
-                              { activeValidatorsCumulativeShare !== Infinity
+                              {activeValidatorsCumulativeShare !== Infinity
                                 ? activeValidatorsCumulativeShare.toFixed(2) +
                                   "%"
                                 : 0}
@@ -311,7 +315,7 @@ function ValidatorsContent(props) {
                                 style={{ width: "120px" }}
                                 onClick={() =>
                                   router.push(
-                                    `/validators/${data.operator_address}`
+                                    `/${chain_id}/validators/${data.operator_address}`
                                   )
                                 }
                               >

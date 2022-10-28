@@ -28,6 +28,7 @@ function AccountContents(props) {
     accountReledelgations,
     accountUnboundingDelegations,
     getAllTxs,
+    chain_id,
   } = props;
 
   // const balance =  Number(accountBalance?.balances[0]?.amount)
@@ -343,11 +344,20 @@ function AccountContents(props) {
               </TabTogglerItem>
             </TabToggler>
             {selectedDelegations === "delegations" ? (
-              <AccountDelegationsContent {...accountDelegations} />
+              <AccountDelegationsContent
+                {...accountDelegations}
+                chain_id={chain_id}
+              />
             ) : selectedDelegations === "redelegations" ? (
-              <AccountRedelegationsContent {...accountReledelgations} />
+              <AccountRedelegationsContent
+                {...accountReledelgations}
+                chain_id={chain_id}
+              />
             ) : (
-              <AccountUndelegationsContent {...accountUnboundingDelegations} />
+              <AccountUndelegationsContent
+                {...accountUnboundingDelegations}
+                chain_id={chain_id}
+              />
             )}
           </div>
         </Card>

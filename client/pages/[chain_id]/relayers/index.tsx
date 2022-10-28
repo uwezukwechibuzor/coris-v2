@@ -3,9 +3,11 @@ import RelayersPage from "../../../components/IBC_Relayers";
 import Layout from "../../../components/layout/Layout";
 
 function IBC_Relayers(props) {
+  const chain_id = props?.chain_id?.chain_id;
+
   return (
     <>
-      <RelayersPage />
+      <RelayersPage chain_id={chain_id} />
     </>
   );
 }

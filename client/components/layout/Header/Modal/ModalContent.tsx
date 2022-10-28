@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styled, { keyframes } from "styled-components";
 import { useAppSelector } from "../../../../lib/hooks";
-import Chain from "./chains";
+import Chain from "./Chains";
 
 export function ModalContent({ toggle }) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -56,26 +56,26 @@ export function ModalContent({ toggle }) {
                     <Chain
                       chain_id={"umee"}
                       chainName="UMEE"
+                      chainImage="https://miro.medium.com/max/1400/1*1522ubTJNkRNK7Fmn9FtzQ.png"
+                    />
+                    <Chain
+                      chain_id={"umee"}
+                      chainName="Chian A "
                       chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
                     />
                     <Chain
                       chain_id={"umee"}
+                      chainName="Chain B"
+                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                    />
+                    <Chain
+                      chain_id={"Chain C"}
                       chainName="UMEE"
                       chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
                     />
                     <Chain
                       chain_id={"umee"}
-                      chainName="UMEE"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
-                    />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="UMEE"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
-                    />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="UMEE"
+                      chainName="Chain D"
                       chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
                     />
                   </Grid>

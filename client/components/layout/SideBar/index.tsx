@@ -41,186 +41,409 @@ function SideNavBar(props) {
     relayerIcon,
     chain_id,
   } = props;
-  //console.log(chain_id);
+
   const navigate = (selectedPage) => {
     dispatch(toggleSidebar(false));
     setSelectedPage(selectedPage);
     router.push(selectedPage);
   };
 
-  return (
-    <SideNavigation
-      className={`${sidebarToggled && "show"} ${darkMode && "dark-mode"}`}
-    >
-      <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
-      <Clicker onClick={() => navigate("/")}>
-        <Logo />
-      </Clicker>
-      <SearchBar src={searchBarData.src} className="mobile" />
-      <Wrapper>
-        <Clicker onClick={() => navigate("/")} title="Overview">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <SolidGeneralChartPie src={solidGeneralChartPie} />
-              </FlexCell>
-              <FlexCell>
-                <Overview style={{ color: selectedPage === "/" && "white" }}>
-                  {overview}
-                </Overview>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/validators")} title="Validators">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <IconUser src={iconUser} />
-              </FlexCell>
-              <FlexCell>
-                <Validators
-                  style={{ color: selectedPage === "/validators" && "white" }}
-                >
-                  {validators}
-                </Validators>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/blocks")} title="Blocks">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <IconUser src={icon1} />
-              </FlexCell>
-              <FlexCell>
-                <Blocks
-                  style={{ color: selectedPage === "/blocks" && "white" }}
-                >
-                  {blocks}
-                </Blocks>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/proposals")} title="Proposals">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <Icon src={icon2} />
-              </FlexCell>
-              <FlexCell>
-                <Proposals
-                  style={{ color: selectedPage === "/proposals" && "white" }}
-                >
-                  {proposals}
-                </Proposals>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/params")} title="Parameters">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <Icon1 src={icon3} />
-              </FlexCell>
-              <FlexCell>
-                <Parameters
-                  style={{ color: selectedPage === "/params" && "white" }}
-                >
-                  {parameters}
-                </Parameters>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker
-          onClick={() => navigate("/validators/consensus_state")}
-          title="Consensus"
-        >
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <IconUser src={iconUser1} />
-              </FlexCell>
-              <FlexCell>
-                <Consensus
-                  style={{ color: selectedPage === "/consensus" && "white" }}
-                >
-                  {consensus}
-                </Consensus>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/assets")} title="Assets">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <Icon1 src={assetIcon} />
-              </FlexCell>
-              <FlexCell>
-                <Assets
-                  style={{ color: selectedPage === "/assets" && "white" }}
-                >
-                  {assets}
-                </Assets>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-        <br />
-        <Clicker onClick={() => navigate("/relayers")} title="Assets">
-          <a className="m-24">
-            <FlexRow>
-              <FlexCell>
-                <Icon1 src={relayerIcon} />
-              </FlexCell>
-              <FlexCell>
-                <Assets
-                  style={{ color: selectedPage === "/assets" && "white" }}
-                >
-                  Relayers
-                </Assets>
-              </FlexCell>
-            </FlexRow>
-          </a>
-        </Clicker>
-      </Wrapper>
-      <ConnectWallet
-        className="mobile"
-        toggle={(val) => dispatch(toggleConnectWalletModal(val))}
-        asset62={connectWallet1Data.asset62}
-        asset72={connectWallet1Data.asset72}
-        outlineMediaShuffle={connectWallet1Data.outlineMediaShuffle}
-      />
-      <div
-        className="d-flex align-items-end justify-content-center"
-        style={{ marginTop: "50px" }}
+  if (chain_id?.chain_id === "cosmos") {
+    return (
+      <SideNavigation
+        className={`${sidebarToggled && "show"} ${darkMode && "dark-mode"}`}
       >
-        <NightmodeButton
-          onClick={() => dispatch(toggleDarkMode())}
-          className={darkMode ? "dark-mode mobile" : "mobile"}
+        <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
+        <Clicker onClick={() => navigate("/cosmos")}>
+          <Logo />
+        </Clicker>
+        <SearchBar src={searchBarData.src} className="mobile" />
+        <Wrapper>
+          <Clicker onClick={() => navigate("/cosmos")} title="Overview">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <SolidGeneralChartPie src={solidGeneralChartPie} />
+                </FlexCell>
+                <FlexCell>
+                  <Overview
+                    style={{ color: selectedPage === "/cosmos" && "white" }}
+                  >
+                    {overview}
+                  </Overview>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/cosmos/validators")}
+            title="Validators"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={iconUser} />
+                </FlexCell>
+                <FlexCell>
+                  <Validators
+                    style={{
+                      color: selectedPage === "/cosmos/validators" && "white",
+                    }}
+                  >
+                    {validators}
+                  </Validators>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/cosmos/blocks")} title="Blocks">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={icon1} />
+                </FlexCell>
+                <FlexCell>
+                  <Blocks
+                    style={{
+                      color: selectedPage === "/cosmos/blocks" && "white",
+                    }}
+                  >
+                    {blocks}
+                  </Blocks>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/cosmos/proposals")}
+            title="Proposals"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon src={icon2} />
+                </FlexCell>
+                <FlexCell>
+                  <Proposals
+                    style={{
+                      color: selectedPage === "/cosmos/proposals" && "white",
+                    }}
+                  >
+                    {proposals}
+                  </Proposals>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/cosmos/params")}
+            title="Parameters"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={icon3} />
+                </FlexCell>
+                <FlexCell>
+                  <Parameters
+                    style={{
+                      color: selectedPage === "/cosmos/params" && "white",
+                    }}
+                  >
+                    {parameters}
+                  </Parameters>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/cosmos/validators/consensus_state")}
+            title="Consensus"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={iconUser1} />
+                </FlexCell>
+                <FlexCell>
+                  <Consensus
+                    style={{
+                      color: selectedPage === "/cosmos/consensus" && "white",
+                    }}
+                  >
+                    {consensus}
+                  </Consensus>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/cosmos/assets")} title="Assets">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={assetIcon} />
+                </FlexCell>
+                <FlexCell>
+                  <Assets
+                    style={{
+                      color: selectedPage === "/cosmos/assets" && "white",
+                    }}
+                  >
+                    {assets}
+                  </Assets>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/cosmos/relayers")} title="Assets">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={relayerIcon} />
+                </FlexCell>
+                <FlexCell>
+                  <Assets
+                    style={{
+                      color: selectedPage === "/cosmos/assets" && "white",
+                    }}
+                  >
+                    Relayers
+                  </Assets>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+        </Wrapper>
+        <ConnectWallet
+          className="mobile"
+          toggle={(val) => dispatch(toggleConnectWalletModal(val))}
+          asset62={connectWallet1Data.asset62}
+          asset72={connectWallet1Data.asset72}
+          outlineMediaShuffle={connectWallet1Data.outlineMediaShuffle}
+        />
+        <div
+          className="d-flex align-items-end justify-content-center"
+          style={{ marginTop: "50px" }}
         >
-          <OutlineGeneralMoon
-            src={
-              !darkMode
-                ? "/img/outline-general-moon@2x.svg"
-                : "/img/outline-general-moon-white@2x.png"
-            }
-          />
-        </NightmodeButton>
-      </div>
-    </SideNavigation>
-  );
+          <NightmodeButton
+            onClick={() => dispatch(toggleDarkMode())}
+            className={darkMode ? "dark-mode mobile" : "mobile"}
+          >
+            <OutlineGeneralMoon
+              src={
+                !darkMode
+                  ? "/img/outline-general-moon@2x.svg"
+                  : "/img/outline-general-moon-white@2x.png"
+              }
+            />
+          </NightmodeButton>
+        </div>
+      </SideNavigation>
+    );
+  } else if (chain_id?.chain_id === "umee") {
+    return (
+      <SideNavigation
+        className={`${sidebarToggled && "show"} ${darkMode && "dark-mode"}`}
+      >
+        <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
+        <Clicker onClick={() => navigate("/umee/")}>
+          <Logo />
+        </Clicker>
+        <SearchBar src={searchBarData.src} className="mobile" />
+        <Wrapper>
+          <Clicker onClick={() => navigate("/umee")} title="Overview">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <SolidGeneralChartPie src={solidGeneralChartPie} />
+                </FlexCell>
+                <FlexCell>
+                  <Overview
+                    style={{ color: selectedPage === "/umee" && "white" }}
+                  >
+                    {overview}
+                  </Overview>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/umee/validators")}
+            title="Validators"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={iconUser} />
+                </FlexCell>
+                <FlexCell>
+                  <Validators
+                    style={{
+                      color: selectedPage === "/umee/validators" && "white",
+                    }}
+                  >
+                    {validators}
+                  </Validators>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/umee/blocks")} title="Blocks">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={icon1} />
+                </FlexCell>
+                <FlexCell>
+                  <Blocks
+                    style={{
+                      color: selectedPage === "/umee/blocks" && "white",
+                    }}
+                  >
+                    {blocks}
+                  </Blocks>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/umee/proposals")}
+            title="Proposals"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon src={icon2} />
+                </FlexCell>
+                <FlexCell>
+                  <Proposals
+                    style={{
+                      color: selectedPage === "/umee/proposals" && "white",
+                    }}
+                  >
+                    {proposals}
+                  </Proposals>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/umee/params")} title="Parameters">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={icon3} />
+                </FlexCell>
+                <FlexCell>
+                  <Parameters
+                    style={{
+                      color: selectedPage === "/umee/params" && "white",
+                    }}
+                  >
+                    {parameters}
+                  </Parameters>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker
+            onClick={() => navigate("/umee/validators/consensus_state")}
+            title="Consensus"
+          >
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <IconUser src={iconUser1} />
+                </FlexCell>
+                <FlexCell>
+                  <Consensus
+                    style={{
+                      color: selectedPage === "/umee/consensus" && "white",
+                    }}
+                  >
+                    {consensus}
+                  </Consensus>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/umee/assets")} title="Assets">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={assetIcon} />
+                </FlexCell>
+                <FlexCell>
+                  <Assets
+                    style={{
+                      color: selectedPage === "/umee/assets" && "white",
+                    }}
+                  >
+                    {assets}
+                  </Assets>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+          <br />
+          <Clicker onClick={() => navigate("/umee/relayers")} title="Assets">
+            <a className="m-24">
+              <FlexRow>
+                <FlexCell>
+                  <Icon1 src={relayerIcon} />
+                </FlexCell>
+                <FlexCell>
+                  <Assets
+                    style={{
+                      color: selectedPage === "/umee/assets" && "white",
+                    }}
+                  >
+                    Relayers
+                  </Assets>
+                </FlexCell>
+              </FlexRow>
+            </a>
+          </Clicker>
+        </Wrapper>
+        <ConnectWallet
+          className="mobile"
+          toggle={(val) => dispatch(toggleConnectWalletModal(val))}
+          asset62={connectWallet1Data.asset62}
+          asset72={connectWallet1Data.asset72}
+          outlineMediaShuffle={connectWallet1Data.outlineMediaShuffle}
+        />
+        <div
+          className="d-flex align-items-end justify-content-center"
+          style={{ marginTop: "50px" }}
+        >
+          <NightmodeButton
+            onClick={() => dispatch(toggleDarkMode())}
+            className={darkMode ? "dark-mode mobile" : "mobile"}
+          >
+            <OutlineGeneralMoon
+              src={
+                !darkMode
+                  ? "/img/outline-general-moon@2x.svg"
+                  : "/img/outline-general-moon-white@2x.png"
+              }
+            />
+          </NightmodeButton>
+        </div>
+      </SideNavigation>
+    );
+  }
 }
 
 const connectWallet1Data = {

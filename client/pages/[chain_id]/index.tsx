@@ -30,7 +30,14 @@ function Home(props) {
 
   const queryTotalBlocks = 5;
   const queryTotalTxs = 5;
-  let coinID = "umee";
+
+  let coinID;
+
+  props?.chain_id?.chain_id === "cosmos"
+    ? (coinID = "cosmos")
+    : (coinID = "umee");
+
+  const chain_id = props?.chain_id?.chain_id;
 
   //fetch latest Blocks
   useEffect(() => {
@@ -168,6 +175,7 @@ function Home(props) {
     poolData: chainPool,
     coinData: coinData,
     priceChart: priceChart,
+    chain_id: chain_id
   };
 
   return (

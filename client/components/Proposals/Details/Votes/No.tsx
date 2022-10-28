@@ -42,8 +42,8 @@ function NoVoteOptions(props) {
               </div>
               <div className="ml-3">
                 <Link
-                  href="/account[address]"
-                  as={`/account/${currentActiveNoVotes[i].voter}`}
+                  href="/[chain_id]/account[address]"
+                  as={`/${props?.chain_id}/account/${currentActiveNoVotes[i].voter}`}
                 >
                   <a>{currentActiveNoVotes[i].voter}</a>
                 </Link>

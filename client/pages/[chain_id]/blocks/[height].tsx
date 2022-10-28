@@ -18,6 +18,8 @@ function BlocksDetails(props) {
   const router = useRouter();
   const query = router.query;
 
+  const chain_id = props?.chain_id?.chain_id;
+
   useEffect(() => {
     axios
       .get(BaseChainApi() + chainBlockHeightDetailsEndpont(query?.height))
@@ -62,7 +64,8 @@ function BlocksDetails(props) {
 
   return (
     <>
-      <BlockHeightContent {...blockDetailsData} />
+  const chain_id = props?.chain_id?.chain_id;
+      <BlockHeightContent {...blockDetailsData} chain_id={chain_id} />
     </>
   );
 }

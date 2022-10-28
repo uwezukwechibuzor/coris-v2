@@ -17,6 +17,8 @@ function ProposalDetails(props) {
   const [getProposalsVotingOptions, setProposalsVotingOptions] = useState(null);
   const [getDeposits, setDeposits] = useState(null);
 
+  const chain_id = props?.chain_id?.chain_id;
+
   const router = useRouter();
   const query = router.query;
 
@@ -62,6 +64,7 @@ function ProposalDetails(props) {
     proposalDetails: getProposalDetails,
     proposalsVotingOptions: getProposalsVotingOptions,
     deposits: getDeposits,
+    chain_id: chain_id,
   };
 
   return (
