@@ -24,13 +24,13 @@ async function getBlocksAsync() {
     //get transactions data in each blocks
     const getTxs = await fetch(
       `${process.env.UMEE_REST_API}/${endPoints.chainBlockHeightTxs(
-        block?.block?.header?.height
+        block.block.header.height
       )}`
     );
     if (!getTxs.ok) throw new Error("unexpected response");
 
     const txData = await getTxs.json();
-    txData?.tx_responses?.map((tx) => {
+    txData.tx_responses.map((tx) => {
       const transactionsData = new Model.umeeTxsModel({
         txHash: tx.txhash,
         messages: tx.tx.body.messages,
