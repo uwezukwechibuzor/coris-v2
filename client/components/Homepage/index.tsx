@@ -514,7 +514,7 @@ function HomePageContent(props) {
         </Link>
       </Flex>
       <Container className={darkMode ? "dark-mode" : ""}>
-        <TxsData getAllTxs={getAllTxs} />
+        <TxsData getAllTxs={getAllTxs} chain_id={chain_id} />
       </Container>
     </Wrapper>
   );
