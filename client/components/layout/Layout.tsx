@@ -6,7 +6,7 @@ import styled from "styled-components";
 import Head from "next/head";
 import { useAppSelector } from "../../lib/hooks";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({ children }) => {
   const { darkMode } = useAppSelector((state) => state.general);
 
   //get validators data

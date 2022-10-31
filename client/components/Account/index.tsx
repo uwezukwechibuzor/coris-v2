@@ -70,7 +70,7 @@ function AccountContents(props) {
             <FlexMiddle className="mt-3">Address</FlexMiddle>
             <FlexMiddle>
               <h5>{query.address}</h5>
-              <CopyClip value={query.address} />
+              {/*<CopyClip value={query.address} /> */}
             </FlexMiddle>
             <hr style={{ border: "1px solid rgb(199 199 199)" }} />
             <FlexMiddle>
