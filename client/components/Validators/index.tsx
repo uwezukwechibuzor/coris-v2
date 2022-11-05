@@ -89,18 +89,26 @@ function ValidatorsContent(props) {
                   <tr style={{ fontWeight: "bold" }}>
                     <th>Rank</th>
                     <th style={{ width: "40px" }}>Validator</th>
-                    <th>Voting Power</th>
+                    <th>
+                      Voting <br /> Power
+                    </th>
                     <th>% VP</th>
                     <th style={{ width: "60px", marginLeft: "-40px" }}>
-                      Cumulative Share
+                      Cumulative <br /> Share
                     </th>
                     <th>Commission</th>
                     <th>Uptime</th>
                     <th>Status</th>
                     <th>Jailed</th>
-                    <th>Unbonding Height</th>
-                    <th>Unbonding Time</th>
-                    <th>Update Time</th>
+                    <th>
+                      Unbonding <br /> Height
+                    </th>
+                    <th>
+                      Unbonding <br /> Time
+                    </th>
+                    <th>
+                      Update <br /> Time
+                    </th>
                     <th>Delegate</th>
                   </tr>
                 </thead>
@@ -254,18 +262,26 @@ function ValidatorsContent(props) {
                   <tr style={{ fontWeight: "bold" }}>
                     <th>Rank</th>
                     <th style={{ width: "40px" }}>Validator</th>
-                    <th>Voting Power</th>
+                    <th>
+                      Voting <br /> Power
+                    </th>
                     <th>% VP</th>
                     <th style={{ width: "60px", marginLeft: "-40px" }}>
-                      Cumulative Share
+                      Cumulative <br /> Share
                     </th>
                     <th>Commission</th>
                     <th>Uptime</th>
                     <th>Status</th>
                     <th>Jailed</th>
-                    <th>Unbonding Height</th>
-                    <th>Unbonding Time</th>
-                    <th>Update Time</th>
+                    <th>
+                      Unbonding <br /> Height
+                    </th>
+                    <th>
+                      Unbonding <br /> Time
+                    </th>
+                    <th>
+                      Update <br /> Time
+                    </th>
                     <th>Delegate</th>
                   </tr>
                 </thead>
