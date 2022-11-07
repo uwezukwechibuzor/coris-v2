@@ -3,7 +3,7 @@ import { HYDRATE } from "next-redux-wrapper";
 import { ChainAllValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
 import { chainURL } from "./interfaces/chainsURL";
 
-const baseChainAPI =  process.env.NEXT_PUBLIC_UMEE_API
+const baseChainAPI =  chainURL.UMEE_API
 
 export const chainApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -40,119 +40,119 @@ export const chainApi = createApi({
       providesTags:  ['Validators'],
     }),  
     getChainActiveValidators: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500`,
+      query: () => `${chainURL.UMEE_API}/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500`,
       providesTags:  ['ActiveValidators'],
     }),   
     getChainValidatorDetails: builder.query<any, any>({
-      query: (address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${address}`,
+      query: (address) => `${baseChainAPI}/cosmos/staking/v1beta1/validators/${address}`,
       providesTags:  ['ValidatorDetails'],
     }), 
      getChainPool: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/pool`,
+      query: () => `${baseChainAPI}/cosmos/staking/v1beta1/pool`,
       providesTags:  ['Pool'],
     }), 
     getChainDelegations: builder.query<any, any>({
-      query: (validator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
+      query: (validator_addr) => `${baseChainAPI}/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
       providesTags:  ['Delegations'],
     }),
     getChainUnDelegations: builder.query<any, any>({
-      query: (validator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
+      query: (validator_addr) => `${baseChainAPI}/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
       providesTags:  ['UnDelegations'],
     }),
     getChainRedelegations: builder.query<any, any>({
-      query: (delegator_addr) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`,
+      query: (delegator_addr) => `${baseChainAPI}/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`,
       providesTags:  ['Redelegations'],
     }),
     getChainMintingParams: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/mint/v1beta1/params`,
+      query: () => `${baseChainAPI}/cosmos/mint/v1beta1/params`,
       providesTags:  ['MintingParameters'],
     }),
     getChainGovParams: builder.query<any, any>({
-      query: (params_type) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/params/${params_type}`,
+      query: (params_type) => `${baseChainAPI}/cosmos/gov/v1beta1/params/${params_type}`,
       providesTags:  ['GovParameters'],
     }),
     getChainSlashingParams: builder.query<any,void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/slashing/v1beta1/params`,
+      query: () => `${baseChainAPI}/cosmos/slashing/v1beta1/params`,
       providesTags:  ['SlashingParameters'],
     }),
     getChainStakingParams: builder.query<any,void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/params`,
+      query: () => `${baseChainAPI}/cosmos/staking/v1beta1/params`,
       providesTags:  ['StakingParameters'],
     }),
     getChainDistributionParams: builder.query<any,void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/params`,
+      query: () => `${baseChainAPI}/cosmos/distribution/v1beta1/params`,
       providesTags:  ['DistributionParameters'],
     }),
     getChainNodeInfo: builder.query<any,void>({
-      query: () => `${chainURL.cosmosChainREST}/node_info`,
+      query: () => `${baseChainAPI}/node_info`,
       providesTags:  ['NodeInfo'],
     }),
     getChainProposals: builder.query<any,void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals?pagination.limit=500&pagination.reverse=true`,
+      query: () => `${baseChainAPI}/cosmos/gov/v1beta1/proposals?pagination.limit=500&pagination.reverse=true`,
       providesTags:  ['Proposals'],
     }),
     getChainProposalDetails: builder.query<any, any>({
-      query: (proposal_id) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${proposal_id}`,
+      query: (proposal_id) => `${baseChainAPI}/cosmos/gov/v1beta1/proposals/${proposal_id}`,
       providesTags:  ['ProposalDetails'],
     }), 
     getChainAnnualProvisions: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/mint/v1beta1/annual_provisions`,
+      query: () => `${baseChainAPI}/cosmos/mint/v1beta1/annual_provisions`,
       providesTags:  ['AnnualProvisions'],
     }), 
     getChainInflation: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/mint/v1beta1/inflation`,
+      query: () => `${baseChainAPI}/cosmos/mint/v1beta1/inflation`,
       providesTags:  ['Inflation'],
     }),
     getChainCommunityPool: builder.query<any, void>({
-      query: () => `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/community_pool`,
+      query: () => `${baseChainAPI}/cosmos/distribution/v1beta1/community_pool`,
       providesTags:  ['CommunityPool'],
     }),
     getChainTxs: builder.query<any, any>({
-      query: (height) => `${chainURL.cosmosChainREST}/cosmos/tx/v1beta1/txs?events=tx.height=${height}`,
+      query: (height) => `${baseChainAPI}/cosmos/tx/v1beta1/txs?events=tx.height=${height}`,
       providesTags:  ['Transactions'],
     }),
     getChainTxDetails: builder.query<any, any>({
-      query: (hash) => `${chainURL.cosmosChainREST}/cosmos/tx/v1beta1/txs/${hash}`,
+      query: (hash) => `${baseChainAPI}/cosmos/tx/v1beta1/txs/${hash}`,
       providesTags:  ['TransactionDetails'],
     }), 
     getChainValidatorsSlashingSigningInfosDetails: builder.query<any, any>({
-      query: (cons_address) => `${chainURL.cosmosChainREST}/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
+      query: (cons_address) => `${baseChainAPI}/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
       providesTags:  ['SlashingSigningInfosDetails'],
     }), 
     getChainProposalsVotingOptions: builder.query<any, any>({
-      query: (id) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${id}/votes`,
+      query: (id) => `${baseChainAPI}/cosmos/gov/v1beta1/proposals/${id}/votes`,
       providesTags:  ['ProposalsVotingOptions'],
     }),
     getChainProposalsDeposits: builder.query<any, any>({
-      query: (id) => `${chainURL.cosmosChainREST}/cosmos/gov/v1beta1/proposals/${id}/deposits`,
+      query: (id) => `${baseChainAPI}/cosmos/gov/v1beta1/proposals/${id}/deposits`,
       providesTags:  ['ProposalsDeposits'],
     }),
     getChainValidatorsConsensusState: builder.query<any, void>({
-      query: () => `${chainURL.UMEE_API}/consensus_state?`,
+      query: () => `${baseChainAPI}/consensus_state?`,
       providesTags:  ['ConsensusState'],
     }),
     getChainAuthAccountAddress: builder.query<any, any>({
-      query: (address) => `${chainURL.cosmosChainREST}/cosmos/auth/v1beta1/accounts/${address}`,
+      query: (address) => `${baseChainAPI}/cosmos/auth/v1beta1/accounts/${address}`,
       providesTags:  ['AuthAccountAddress'],
     }),
     getChainAccountBalance: builder.query<any, any>({
-      query: (address) => `${chainURL.cosmosChainREST}/cosmos/bank/v1beta1/balances/${address}`,
+      query: (address) => `${baseChainAPI}/cosmos/bank/v1beta1/balances/${address}`,
       providesTags:  ['AccountBalance'],
     }),
     getChainDelegatorRewards: builder.query<any, any>({
-      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/distribution/v1beta1/delegators/${delegator_address}/rewards`,
+      query: (delegator_address) => `${baseChainAPI}/cosmos/distribution/v1beta1/delegators/${delegator_address}/rewards`,
       providesTags:  ['DelegatorRewards'],
     }), 
     getChainAccountDelegations: builder.query<any, any>({
-      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegations/${delegator_address}`,
+      query: (delegator_address) => `${baseChainAPI}/cosmos/staking/v1beta1/delegations/${delegator_address}`,
       providesTags:  ['AccountDelegations'],
     }), 
     getChainAccountReledelgations: builder.query<any, any>({
-      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/redelegations`,
+      query: (delegator_address) => `${baseChainAPI}/cosmos/staking/v1beta1/delegators/${delegator_address}/redelegations`,
       providesTags:  ['AccountReledelgations'],
     }),
     getChainAccountUnbondingDelegations: builder.query<any, any>({
-      query: (delegator_address) => `${chainURL.cosmosChainREST}/cosmos/staking/v1beta1/delegators/${delegator_address}/unbonding_delegations`,
+      query: (delegator_address) => `${baseChainAPI}/cosmos/staking/v1beta1/delegators/${delegator_address}/unbonding_delegations`,
       providesTags:  ['AccountUnbondingDelegations'],
     }),
   }),

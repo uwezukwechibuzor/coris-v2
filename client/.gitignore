@@ -1,6 +1,5 @@
 node_modules
 .next
-.env.local
 .history
 .vscode
 .DS_Store
