@@ -32,6 +32,10 @@ services:
     restart: unless-stopped
     environment:
       MONGOOSE_URL: mongodb://admin:12345@db:27017
+      COSMOS_REST: https://cosmos.api.ping.pub
+      COSMOS_RPC_API: https://rpc.cosmos.network
+      UMEE_REST_API: https://cosmos.api.ping.pub
+      UMEE_RPC_API: https://rpc.cosmos.network
       PORT: 5000
     command: npm run dev
     depends_on:
@@ -53,6 +57,10 @@ services:
     image: coris-client
     container_name: coris-client
     restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_Cosmos_API: http://localhost:5000/umee
+      NEXT_PUBLIC_UMEE_API: http://localhost:5000/umee
+      NEXT_PUBLIC_COIN_ID: umee
     volumes:
       - ./client:/usr/app/client
       - client-ignore:/usr/app/client/node_modules

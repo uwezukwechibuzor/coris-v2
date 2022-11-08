@@ -6,4 +6,4 @@ WORKDIR /usr/app
 #copy fro to 
 COPY ./ ./
 
-RUN npm install  --force
+RUN npm install   --force
