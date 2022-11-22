@@ -8,6 +8,7 @@ import { useAppSelector } from "../../lib/hooks";
 import ReactPaginate from "react-paginate";
 import { Button, ProgressBar } from "react-bootstrap";
 import { COIN, DENOM } from "../../lib/Util/constants";
+import SearchButton from "./SearchButton";
 
 function ProposalsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -15,7 +16,7 @@ function ProposalsContent(props) {
 
   const [query, setQuery] = useState("");
 
-  const { proposalsData, chain_id } = props;
+  const { proposalsData, getFirstFourActiveProposalsTally, chain_id } = props;
 
   const activeProposals = proposalsData?.proposals?.map((proposal) => {
     if (
@@ -28,15 +29,13 @@ function ProposalsContent(props) {
     }
   });
 
-  //get the first from data from the ative proposals
-  const getFirstFourActiveProposals = activeProposals?.slice(0, 4);
-
-  var finalTallyResultSum;
-  var tallyArray = [];
-  var max;
-  const tallyPercentage = (tallyResult: number) =>
-    (tallyResult / finalTallyResultSum) * 100;
-
+  var finalTallySum;
+  const tallyPercentage = (tallyResult: number) => {
+    if (finalTallySum == 0 || tallyResult == 0) {
+      return 0;
+    }
+    return (tallyResult / finalTallySum) * 100;
+  };
   //add pagination to signatures
   const PER_PAGE = 15;
   const offset = currentPage * PER_PAGE;
@@ -50,290 +49,298 @@ function ProposalsContent(props) {
   }
 
   const router = useRouter();
+
   return (
     <div className={darkMode ? "dark-mode" : ""}>
       <Title className={darkMode ? "dark-mode" : ""}>Proposals</Title>
       <Grid>
-        {getFirstFourActiveProposals?.map((proposal, i) => {
-          finalTallyResultSum =
-            Number(proposal?.final_tally_result?.yes) +
-            Number(proposal?.final_tally_result?.no) +
-            Number(proposal?.final_tally_result?.no_with_veto) +
-            Number(proposal?.final_tally_result?.abstain);
+        {getFirstFourActiveProposalsTally?.map((proposals) => {
+          return proposals.map((data) => {
+            finalTallySum =
+              data.tally !== undefined || data?.tally != null
+                ? Number(data?.tally?.tally?.yes) +
+                  Number(data?.tally?.tally?.no) +
+                  Number(data?.tally?.tally?.no_with_veto) +
+                  Number(data?.tally?.tally?.abstain)
+                : 0;
 
-          tallyArray.push(Object.values(proposal.final_tally_result));
-          max = Math.max(...tallyArray[i]);
+            const max = Math.max(
+              data?.tally?.tally?.yes,
+              data?.tally?.tally?.no,
+              data?.tally?.tally?.no_with_veto,
+              data?.tally?.tally?.abstain
+            );
 
-          return (
-            <GridItem className={darkMode ? "dark-mode" : ""}>
-              <FlexBetween>
-                <h5>#{proposal?.proposal_id}</h5>
-                <BadgeStatus>
-                  <Bullet />
-                  <BadgeText>
-                    {proposal.status === "PROPOSAL_STATUS_PASSED" ? (
-                      <Badge bg="success">PASSED</Badge>
-                    ) : proposal.status === "PROPOSAL_STATUS_REJECTED" ? (
-                      <Badge bg="danger">REJECTED</Badge>
-                    ) : proposal.status === "PROPOSAL_STATUS_VOTING_PERIOD" ? (
-                      <Badge bg="info">VOTING PERIOD</Badge>
-                    ) : (
-                      <Badge bg="warning">FAILED</Badge>
-                    )}
-                  </BadgeText>
-                </BadgeStatus>
-              </FlexBetween>
-              <h6>
-                ##{" "}
-                {proposal?.content?.description ? proposal.content.title : null}
-              </h6>
-              <table>
-                <thead>
-                  <TableRow>
-                    <TableData style={{ width: "110px" }}>Proposer</TableData>
-                    <TableData>
-                      <b>{abbrMessage(proposal.content)}</b>
-                    </TableData>
-                  </TableRow>
-                  <TableRow>
-                    <TableData>Voting start</TableData>
-                    <TableData>
-                      <b>{toDay(proposal.voting_start_time)}</b>
-                    </TableData>
-                  </TableRow>
-                </thead>
-                <tbody>
-                  <TableRow>
-                    <TableData>Voting end</TableData>
-                    <TableData>
-                      <b>{toDay(proposal.voting_end_time)}</b>
-                    </TableData>
-                  </TableRow>
-                </tbody>
-              </table>
+            return (
+              <GridItem className={darkMode ? "dark-mode" : ""}>
+                <FlexBetween>
+                  <h5>#{data?.proposal_id}</h5>
+                  <BadgeStatus>
+                    <Bullet />
+                    <BadgeText>
+                      {data?.status === "PROPOSAL_STATUS_PASSED" ? (
+                        <Badge bg="success">PASSED</Badge>
+                      ) : data?.status === "PROPOSAL_STATUS_REJECTED" ? (
+                        <Badge bg="danger">REJECTED</Badge>
+                      ) : data?.status === "PROPOSAL_STATUS_VOTING_PERIOD" ? (
+                        <Badge bg="info">VOTING PERIOD</Badge>
+                      ) : (
+                        <Badge bg="warning">FAILED</Badge>
+                      )}
+                    </BadgeText>
+                  </BadgeStatus>
+                </FlexBetween>
+                <h6>
+                  ## {data?.content?.description ? data?.content?.title : null}
+                </h6>
+                <table>
+                  <thead>
+                    <TableRow>
+                      <TableData style={{ width: "110px" }}>Proposer</TableData>
+                      <TableData>
+                        <b>
+                          {data?.content ? abbrMessage(data?.content) : null}
+                        </b>
+                      </TableData>
+                    </TableRow>
+                    <TableRow>
+                      <TableData>Voting start</TableData>
+                      <TableData>
+                        <b>{toDay(data?.voting_start_time)}</b>
+                      </TableData>
+                    </TableRow>
+                  </thead>
+                  <tbody>
+                    <TableRow>
+                      <TableData>Voting end</TableData>
+                      <TableData>
+                        <b>{toDay(data?.voting_end_time)}</b>
+                      </TableData>
+                    </TableRow>
+                  </tbody>
+                </table>
 
-              <Flex>
-                <div
-                  className="mt-3"
-                  style={{
-                    width: "70%",
-                    borderRight: "1px solid #f3f3f3",
-                    paddingRight: "20px",
-                  }}
-                >
-                  <ProgressBar style={{ height: "30px" }}>
-                    <ProgressBar
-                      striped
-                      variant="success"
-                      now={
-                        proposal
-                          ? tallyPercentage(proposal?.final_tally_result?.yes)
-                          : 0
-                      }
-                      key={1}
-                      label={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.yes
-                            ).toFixed(2) + "%"
-                          : 0
-                      }
-                    />
-                    <ProgressBar
-                      variant="danger"
-                      now={
-                        proposal
-                          ? tallyPercentage(proposal?.final_tally_result?.no)
-                          : 0
-                      }
-                      key={2}
-                      label={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.no
-                            ).toFixed(2) + "%"
-                          : 0
-                      }
-                    />
-                    <ProgressBar
-                      striped
-                      variant="warning"
-                      now={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.no_with_veto
-                            )
-                          : 0
-                      }
-                      key={3}
-                      label={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.no_with_veto
-                            ).toFixed(2) + "%"
-                          : 0
-                      }
-                    />
-                    <ProgressBar
-                      striped
-                      style={{ background: "gray" }}
-                      now={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.abstain
-                            )
-                          : 0
-                      }
-                      key={4}
-                      label={
-                        proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.abstain
-                            ).toFixed(2) + "%"
-                          : 0
-                      }
-                    />
-                  </ProgressBar>
-                  <Grid>
-                    <Container>
-                      <Flex>
-                        <Color className="first" />
-                        <strong style={{ marginLeft: "10px" }}>Yes</strong>
-                      </Flex>
-                      <div>
-                        {proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.yes
-                            ).toFixed(2) + "%"
-                          : 0}
-                        (
-                        {proposal?.final_tally_result?.yes
-                          ? (proposal.final_tally_result.yes / DENOM).toFixed(2)
-                          : 0}{" "}
-                        {COIN})
-                      </div>
-                    </Container>
-                    <Container>
-                      <Flex>
-                        <Color className="second" />
-                        <strong style={{ marginLeft: "10px" }}>No</strong>
-                      </Flex>
-                      <div>
-                        {proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.no
-                            ).toFixed(2) + "%"
-                          : 0}
-                        (
-                        {proposal?.final_tally_result?.no
-                          ? (proposal.final_tally_result.no / DENOM).toFixed(2)
-                          : 0}
-                        {COIN})
-                      </div>
-                    </Container>
-                    <Container>
-                      <Flex>
-                        <Color className="third" />
-                        <strong style={{ marginLeft: "10px" }}>
-                          No With Veto
-                        </strong>
-                      </Flex>
-                      <div>
-                        {proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.no_with_veto
-                            ).toFixed(2) + "%"
-                          : 0}
-                        (
-                        {proposal?.final_tally_result?.no_with_veto
-                          ? (
-                              proposal.final_tally_result.no_with_veto / DENOM
-                            ).toFixed(2)
-                          : 0}{" "}
-                        {COIN})
-                      </div>
-                    </Container>
-                    <Container>
-                      <Flex>
-                        <Color className="fourth" />
-                        <strong style={{ marginLeft: "10px" }}>Abstain</strong>
-                      </Flex>
-                      <div>
-                        {proposal
-                          ? tallyPercentage(
-                              proposal?.final_tally_result?.abstain
-                            ).toFixed(2) + "%"
-                          : 0}
-                        (
-                        {proposal?.final_tally_result?.abstain
-                          ? (
-                              proposal.final_tally_result.abstain / DENOM
-                            ).toFixed(2)
-                          : 0}
-                        {COIN})
-                      </div>
-                    </Container>
-                  </Grid>
-                </div>
-                <div className="ml-3">
-                  <b>Most voted on</b>
-                  <FlexMiddle>
-                    <Box
-                      style={{ marginRight: "5px" }}
-                      className={
-                        tallyPercentage(max) ===
-                        tallyPercentage(proposal?.final_tally_result?.yes)
-                          ? "first"
-                          : tallyPercentage(max) ===
-                            tallyPercentage(proposal?.final_tally_result?.no)
-                          ? "second"
-                          : tallyPercentage(max) ===
-                            tallyPercentage(
-                              proposal?.final_tally_result?.no_with_veto
-                            )
-                          ? "third"
-                          : "fourth"
-                      }
-                    />
-                    <div>
-                      <span>
-                        {tallyPercentage(max) ===
-                        tallyPercentage(proposal?.final_tally_result?.yes)
-                          ? "Yes"
-                          : tallyPercentage(max) ===
-                            tallyPercentage(proposal?.final_tally_result?.no)
-                          ? "No"
-                          : tallyPercentage(max) ===
-                            tallyPercentage(
-                              proposal?.final_tally_result?.no_with_veto
-                            )
-                          ? "No With Veto"
-                          : "Abstain"}
-                      </span>
-                      <span style={{ marginLeft: "5px" }}>
-                        {tallyPercentage(max).toFixed(2)}
-                        <span style={{ fontSize: "12px" }}>%</span>
-                      </span>
-                    </div>
-                  </FlexMiddle>
-                  <br />
-                  <Button
-                    variant="outline-primary"
-                    onClick={() =>
-                      router.push(
-                        `/${chain_id}/proposals/${proposal?.proposal_id}`
-                      )
-                    }
+                <Flex>
+                  <div
+                    className="mt-3"
+                    style={{
+                      width: "70%",
+                      borderRight: "1px solid #f3f3f3",
+                      paddingRight: "20px",
+                    }}
                   >
-                    Read more
-                  </Button>
-                </div>
-              </Flex>
-            </GridItem>
-          );
+                    <ProgressBar style={{ height: "30px" }}>
+                      <ProgressBar
+                        striped
+                        variant="success"
+                        now={
+                          data?.tally?.tally.yes != null
+                            ? tallyPercentage(data?.tally?.tally?.yes)
+                            : 0
+                        }
+                        key={1}
+                        label={
+                          data?.tally?.tally.yes != null
+                            ? tallyPercentage(data?.tally?.tally?.yes).toFixed(
+                                2
+                              ) + "%"
+                            : 0
+                        }
+                      />
+                      <ProgressBar
+                        variant="danger"
+                        now={
+                          data?.tally?.tally.no != null
+                            ? tallyPercentage(data?.tally?.tally?.no)
+                            : 0
+                        }
+                        key={2}
+                        label={
+                          data?.tally?.tally.no != null
+                            ? tallyPercentage(data?.tally?.tally?.no).toFixed(
+                                2
+                              ) + "%"
+                            : 0
+                        }
+                      />
+                      <ProgressBar
+                        striped
+                        variant="warning"
+                        now={
+                          data?.tally?.tally.no_with_veto != null
+                            ? tallyPercentage(data?.tally?.tally?.no_with_veto)
+                            : 0
+                        }
+                        key={3}
+                        label={
+                          data?.tally?.tally.no_with_veto != null
+                            ? tallyPercentage(
+                                data?.tally?.tally?.no_with_veto
+                              ).toFixed(2) + "%"
+                            : 0
+                        }
+                      />
+                      <ProgressBar
+                        striped
+                        style={{ background: "gray" }}
+                        now={
+                          data?.tally?.tally?.abstain != null
+                            ? tallyPercentage(data?.tally?.tally?.abstain)
+                            : 0
+                        }
+                        key={4}
+                        label={
+                          data?.tally?.tally?.abstain != null
+                            ? tallyPercentage(
+                                data?.tally?.tally?.abstain
+                              ).toFixed(2) + "%"
+                            : 0
+                        }
+                      />
+                    </ProgressBar>
+                    <Grid>
+                      <Container>
+                        <Flex>
+                          <Color className="first" />
+                          <strong style={{ marginLeft: "10px" }}>Yes</strong>
+                        </Flex>
+                        <div>
+                          {data?.tally?.tally?.yes != null
+                            ? tallyPercentage(data?.tally?.tally?.yes).toFixed(
+                                2
+                              ) + "%"
+                            : 0}
+                          (
+                          {data?.tally?.tally?.yes != null
+                            ? (data?.tally?.tally?.yes / DENOM).toFixed(2)
+                            : 0}
+                          {COIN})
+                        </div>
+                      </Container>
+                      <Container>
+                        <Flex>
+                          <Color className="second" />
+                          <strong style={{ marginLeft: "10px" }}>No</strong>
+                        </Flex>
+                        <div>
+                          {data?.tally?.tally?.no != null
+                            ? tallyPercentage(data?.tally?.tally?.no).toFixed(
+                                2
+                              ) + "%"
+                            : 0}
+                          (
+                          {data?.tally?.tally?.no != null
+                            ? (data?.tally?.tally?.no / DENOM).toFixed(2)
+                            : 0}
+                          {COIN})
+                        </div>
+                      </Container>
+                      <Container>
+                        <Flex>
+                          <Color className="third" />
+                          <strong style={{ marginLeft: "10px" }}>
+                            No With Veto
+                          </strong>
+                        </Flex>
+                        <div>
+                          {data?.tally?.tally?.no_with_veto != null
+                            ? tallyPercentage(
+                                data?.tally?.tally?.no_with_veto
+                              ).toFixed(2) + "%"
+                            : 0}
+                          (
+                          {data?.tally?.tally?.no_with_veto != null
+                            ? (
+                                data?.tally?.tally?.no_with_veto / DENOM
+                              ).toFixed(2)
+                            : 0}{" "}
+                          {COIN})
+                        </div>
+                      </Container>
+                      <Container>
+                        <Flex>
+                          <Color className="fourth" />
+                          <strong style={{ marginLeft: "10px" }}>
+                            Abstain
+                          </strong>
+                        </Flex>
+                        <div>
+                          {data?.tally?.tally?.abstain != null
+                            ? tallyPercentage(
+                                data?.tally?.tally?.abstain
+                              ).toFixed(2) + "%"
+                            : 0}
+                          (
+                          {data?.tally?.tally?.abstain != null
+                            ? (data?.tally?.tally?.abstain / DENOM).toFixed(2)
+                            : 0}
+                          {COIN})
+                        </div>
+                      </Container>
+                    </Grid>
+                  </div>
+                  <div className="ml-3">
+                    <b>Most voted on</b>
+                    <FlexMiddle>
+                      <Box
+                        style={{ marginRight: "5px" }}
+                        className={
+                          tallyPercentage(max) ===
+                          tallyPercentage(data?.tally?.tally?.yes)
+                            ? "first"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.no)
+                            ? "second"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.no_with_veto)
+                            ? "third"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.abstain)
+                            ? "fourth"
+                            : ""
+                        }
+                      />
+                      <div>
+                        <span>
+                          {tallyPercentage(max) ===
+                          tallyPercentage(data?.tally?.tally?.yes)
+                            ? "Yes"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.no)
+                            ? "No"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.no_with_veto)
+                            ? "No With Veto"
+                            : tallyPercentage(max) ===
+                              tallyPercentage(data?.tally?.tally?.abstain)
+                            ? "Abstain"
+                            : "None"}
+                        </span>
+                        <span style={{ marginLeft: "5px" }}>
+                          {max ? tallyPercentage(max).toFixed(2) : 0}
+                          <span style={{ fontSize: "12px" }}>%</span>
+                        </span>
+                      </div>
+                    </FlexMiddle>
+                    <br />
+                    <Button
+                      variant="outline-primary"
+                      onClick={() =>
+                        router.push(
+                          `/${chain_id}/proposals/${data?.proposal_id}`
+                        )
+                      }
+                    >
+                      Read more
+                    </Button>
+                  </div>
+                </Flex>
+              </GridItem>
+            );
+          });
         })}
       </Grid>
-      {/*<SearchButton setQuery={setQuery} />*/}
+      <SearchButton setQuery={setQuery} />
       <Responsive>
         <table
           className={

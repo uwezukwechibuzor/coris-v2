@@ -9,7 +9,7 @@ function SearchButton(props) {
     <Search>
       <Form className="d-flex">
         <FormControl
-          placeholder="Search Proposer"
+          placeholder="Search Proposer by Title"
           className={darkMode ? "dark-mode me-2" : "me-2"}
           aria-label="Search"
           name="search"

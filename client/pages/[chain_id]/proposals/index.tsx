@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import ProposalsContent from "../../../components/Proposals";
 import Layout from "../../../components/layout/Layout";
-import { proposalsEndpoint } from "../../../lib/chainApiEndpoints";
+import {
+  proposalsEndpoint,
+  proposalTallyOptionsEndpoint,
+} from "../../../lib/chainApiEndpoints";
 import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function Proposals(props) {
-  const [getProposals, setProposals] = useState([]);
+  const [getProposals, setProposals] = useState(null);
+  const [getFirstFourActiveProposalsTally, setFirstFourActiveProposalsTally] = useState([]);
 
   const chain_id = props?.chain_id?.chain_id;
 
@@ -21,6 +25,35 @@ function Proposals(props) {
       });
   }, []);
 
+  //get proposals in Array form
+  const getFirstFourActiveProposals = getProposals?.proposals?.map(
+    (proposals) => {
+      return proposals;
+    }
+  );
+
+  //get the first four proposals
+  const getFirstFourActiveProposalsSlice =  getFirstFourActiveProposals
+  ?.slice(0, 4)
+ for (const i in  getFirstFourActiveProposalsSlice) {
+   axios
+   .get(
+     BaseChainApi() + proposalTallyOptionsEndpoint( getFirstFourActiveProposalsSlice[i]?.proposal_id)
+   )
+   .then((response) => {
+    if (getFirstFourActiveProposalsTally.length === 0) {
+      getFirstFourActiveProposalsSlice[i].tally = response.data
+        let arr = []
+        arr.push(getFirstFourActiveProposalsSlice)
+        setFirstFourActiveProposalsTally(arr)
+    } 
+   })
+   .catch((error) => {
+     console.log(error);
+   });
+ }
+
+
   const proposalsData = {
     id: "#ID",
     title2: "Title",
@@ -29,11 +62,12 @@ function Proposals(props) {
     votingEnd: "Voting End",
     totalDeposit: "Total Deposit",
     proposalsData: getProposals,
+    getFirstFourActiveProposalsTally: getFirstFourActiveProposalsTally,
   };
 
   return (
     <>
-      <ProposalsContent {...proposalsData}  chain_id={chain_id}/>
+      <ProposalsContent {...proposalsData} chain_id={chain_id} />
     </>
   );
 }

@@ -60,6 +60,9 @@ export const proposalDetailsEndpoint = (proposal_id) =>
 export const proposalVotingOptionsEndpoint = (id) =>
   `/chain_proposal_voting_options?id=${id}`;
 
+export const proposalTallyOptionsEndpoint = (id) =>
+  `/chain_proposal_tally_options?id=${id}`;
+
 export const proposalDepositsEndpoint = (id) =>
   `/chain_proposal_deposits?id=${id}`;
 

@@ -243,7 +243,7 @@ function ValidatorsDetailsContent(props) {
         </div>
         <div className="my-3">
           <div>
-            <strong>Vooting Power</strong>
+            <strong>Voting Power</strong>
           </div>
           <small>
             {" "}
@@ -291,9 +291,9 @@ function ValidatorsDetailsContent(props) {
             <BlockGrid>
               {getUptime.map((data) => (
                 <Link
-                  href="/[chain_id]/blocks[height]"
+                  href="/[chain_id]/blocks/[height]"
                   as={`/${chain_id}/blocks/${
-                    data.upTime?.height || data.noUpTime?.height
+                    data?.upTime?.height || data?.noUpTime?.height
                   }`}
                 >
                   <a>
