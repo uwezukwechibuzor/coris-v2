@@ -513,6 +513,23 @@ app.get("/umee/chain_proposal_voting_options", async (req, res) => {
   }
 });
 
+//get chain proposal Tally options
+app.get("/umee/chain_proposal_tally_options", async (req, res) => {
+  try {
+    const id = req.query.id;
+    const response = await fetch(
+      `${process.env.UMEE_REST_API}${endPoints.proposalTallyOptions(id)}`
+    );
+    if (response.status !== 200 || !response) {
+      throw "Error Querying Chain API";
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 //get chain proposal deposits
 app.get("/umee/chain_proposal_deposits", async (req, res) => {
   try {

@@ -23,6 +23,7 @@ module.exports = {
     proposals:  `/cosmos/gov/v1beta1/proposals?pagination.limit=500&pagination.reverse=true`,
     proposalDetails:  (proposal_id) =>  `/cosmos/gov/v1beta1/proposals/${proposal_id}`,
     proposalVotingOptions: (id) =>  `/cosmos/gov/v1beta1/proposals/${id}/votes`,
+    proposalTallyOptions: (id) =>  `/cosmos/gov/v1beta1/proposals/${id}/tally`,
     proposalDeposits: (id) => `/cosmos/gov/v1beta1/proposals/${id}/deposits`,
     authAccount: (address) => `/cosmos/auth/v1beta1/accounts/${address}`,
     accountBalance: (address) => `/cosmos/bank/v1beta1/balances/${address}`,
