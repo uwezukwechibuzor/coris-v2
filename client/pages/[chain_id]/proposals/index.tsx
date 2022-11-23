@@ -10,7 +10,8 @@ import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function Proposals(props) {
   const [getProposals, setProposals] = useState(null);
-  const [getFirstFourActiveProposalsTally, setFirstFourActiveProposalsTally] = useState([]);
+  const [getFirstFourActiveProposalsTally, setFirstFourActiveProposalsTally] =
+    useState([]);
 
   const chain_id = props?.chain_id?.chain_id;
 
@@ -33,27 +34,31 @@ function Proposals(props) {
   );
 
   //get the first four proposals
-  const getFirstFourActiveProposalsSlice =  getFirstFourActiveProposals
-  ?.slice(0, 4)
- for (const i in  getFirstFourActiveProposalsSlice) {
-   axios
-   .get(
-     BaseChainApi() + proposalTallyOptionsEndpoint( getFirstFourActiveProposalsSlice[i]?.proposal_id)
-   )
-   .then((response) => {
-    if (getFirstFourActiveProposalsTally.length === 0) {
-      getFirstFourActiveProposalsSlice[i].tally = response.data
-        let arr = []
-        arr.push(getFirstFourActiveProposalsSlice)
-        setFirstFourActiveProposalsTally(arr)
-    } 
-   })
-   .catch((error) => {
-     console.log(error);
-   });
- }
-
-
+  const getFirstFourActiveProposalsSlice = getFirstFourActiveProposals?.slice(
+    0,
+    4
+  );
+  for (const i in getFirstFourActiveProposalsSlice) {
+    axios
+      .get(
+        BaseChainApi() +
+          proposalTallyOptionsEndpoint(
+            getFirstFourActiveProposalsSlice[i]?.proposal_id
+          )
+      )
+      .then((response) => {
+        if (getFirstFourActiveProposalsTally.length === 0) {
+          getFirstFourActiveProposalsSlice[i].tally = response.data;
+          let arr = [];
+          arr.push(getFirstFourActiveProposalsSlice);
+          setFirstFourActiveProposalsTally(arr);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  
   const proposalsData = {
     id: "#ID",
     title2: "Title",

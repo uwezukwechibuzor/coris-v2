@@ -47,7 +47,7 @@ function ProposalDetails(props) {
       });
   }, [query.id]);
 
-//get proposals tally options data
+//get proposals tally options 
   useEffect(() => {
     axios
       .get(BaseChainApi() + proposalTallyOptionsEndpoint(query.id))
