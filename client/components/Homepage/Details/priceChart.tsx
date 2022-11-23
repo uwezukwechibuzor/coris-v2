@@ -16,17 +16,6 @@ const PriceChart = (props) => {
     y.push(getPriceData[i][1]);
   }
 
-  const options = {
-    title: {
-      text: "My chart",
-    },
-    series: [
-      {
-        data: [1, 2, 3],
-      },
-    ],
-  };
-
   var config = {
     chart: {
       zoomType: "x",
@@ -36,9 +25,11 @@ const PriceChart = (props) => {
       text: "",
     },
     // subtitle: {
-    //   text: document.ontouchstart === undefined ?
-    //     'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-    // },
+    // text:
+    // document.ontouchstart === undefined
+    // ? "Click and drag in the plot area to zoom in"
+    //: "Pinch the chart to zoom in",
+    //},
     xAxis: {
       type: "datetime",
       zoomEnabled: true,
@@ -106,7 +97,6 @@ const PriceChart = (props) => {
       ref={chartRef}
       containerProps={{ style: { width: "100%", height: "300px" } }}
       options={config}
-      // highcharts={Highcharts}
     />
   );
 };

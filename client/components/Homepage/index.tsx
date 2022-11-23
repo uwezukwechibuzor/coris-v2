@@ -1,12 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {
-  formatHash,
-  getValidatorsLogoFromWebsites,
-  numberWithSpaces,
-  formatNumbers,
-  toDay,
-} from "../../lib/Util/format";
+import { numberWithSpaces, formatNumbers, toDay } from "../../lib/Util/format";
 import styled from "styled-components";
 import Details from "./Details";
 import Details2 from "./Details2";
@@ -24,7 +18,7 @@ import ActiveValidatorsChart from "./Details2/activeValidatorsChart";
 import { useAppSelector } from "../../lib/hooks";
 import TxsData from "../Blocks/Txs";
 import { DENOM } from "../../lib/Util/constants";
-import router from "next/router";
+import BlocksData from "../Blocks/Blocks";
 
 //importing dynamically
 const PriceChart = dynamic(() => import("./Details/priceChart"), {
@@ -437,69 +431,10 @@ function HomePageContent(props) {
       </Flex>
       <Container className={darkMode ? "dark-mode" : ""}>
         <Responsive>
-          <table
-            className={darkMode ? "w-100 mt-3 dark-mode" : "w-100 mt-3"}
-            style={{ tableLayout: "fixed" }}
-          >
-            <thead>
-              <tr>
-                <th>Height</th>
-                <th>Hash</th>
-                <th>Proposer</th>
-                <th>No of Txs</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-
-            {joinedBlocksValidatorsData.map((details) => {
-              return details?.map((data) => {
-                if (data !== undefined) {
-                  //console.log(data)
-                  return (
-                    <tr>
-                      <td
-                        onClick={() =>
-                          router.push(`${chain_id}/blocks/${data.block.height}`)
-                        }
-                      >
-                        {data.block?.height ? data.block.height : null}
-                      </td>
-                      <td>
-                        {data.block?.hash
-                          ? formatHash(data.block.hash, 15, "....")
-                          : null}
-                      </td>
-                      <td
-                        onClick={() =>
-                          router.push(
-                            `${chain_id}/validators/${data.validator.operator_address}`
-                          )
-                        }
-                      >
-                        <img
-                          className="img"
-                          width={30}
-                          src={getValidatorsLogoFromWebsites(
-                            data?.validator?.description?.website
-                          )}
-                          alt=""
-                        />
-                        <p style={{ display: "inline", marginLeft: "10px" }}>
-                          {data?.validator?.description?.moniker}
-                        </p>
-                      </td>
-                      <td>{data?.block?.noTxs}</td>
-                      <td>
-                        {data?.block?.time
-                          ? toDay(data?.block.time, "from")
-                          : null}
-                      </td>
-                    </tr>
-                  );
-                }
-              });
-            })}
-          </table>
+          <BlocksData
+            joinedBlocksValidatorsData={joinedBlocksValidatorsData}
+            chain_id={chain_id}
+          />
         </Responsive>
       </Container>
 
@@ -556,7 +491,7 @@ const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
   @media screen and (max-width: 1075px) {
-    width: calc(100vw - 70px);
+    width: 100vw;
   }
 `;
 

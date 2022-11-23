@@ -1,9 +1,4 @@
 import React from "react";
-import {
-  formatHash,
-  getValidatorsLogoFromWebsites,
-  toDay,
-} from "../../lib/Util/format";
 import styled from "styled-components";
 import { UrbanistBoldBlack40px } from "../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
@@ -11,7 +6,7 @@ import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
 import { useAppSelector } from "../../lib/hooks";
 import { Tab, Tabs } from "react-bootstrap";
 import TxsData from "./Txs";
-import router from "next/router";
+import BlocksData from "./Blocks";
 
 function BlocksContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -55,75 +50,10 @@ function BlocksContent(props) {
           <Responsive>
             <Container className="w-100">
               <Responsive>
-                <table
-                  className={darkMode ? "w-100 mt-3 dark-mode" : "w-100 mt-3"}
-                >
-                  <thead>
-                    <tr>
-                      <th>Height</th>
-                      <th>Hash</th>
-                      <th>Proposer</th>
-                      <th>No of Txs</th>
-                      <th>Time</th>
-                    </tr>
-                  </thead>
-
-                  {joinedBlocksValidatorsData.map((details) => {
-                    return details?.map((data) => {
-                      if (data !== undefined) {
-                        return (
-                          <tr
-                            onClick={() =>
-                              router.push(
-                                `/${chain_id}/blocks/${data.block.height}`
-                              )
-                            }
-                          >
-                            <td>
-                              {data.block?.height ? data.block.height : null}
-                            </td>
-                            <td>
-                              {data.block?.hash
-                                ? formatHash(data.block.hash, 15, "....")
-                                : null}
-                            </td>
-                            <td
-                              onClick={() =>
-                                router.push(
-                                  `/${chain_id}/validators/${data.validator.operator_address}`
-                                )
-                              }
-                            >
-                              <img
-                                className="img"
-                                width={30}
-                                src={getValidatorsLogoFromWebsites(
-                                  data?.validator?.description?.website
-                                )}
-                                alt=""
-                              />
-                              <p
-                                style={{
-                                  display: "inline",
-                                  marginLeft: "10px",
-                                }}
-                              >
-                                {data?.validator?.description?.moniker}
-                              </p>
-                            </td>
-
-                            <td>{data?.block?.noTxs}</td>
-                            <td>
-                              {data?.block?.time
-                                ? toDay(data?.block.time, "from")
-                                : null}
-                            </td>
-                          </tr>
-                        );
-                      }
-                    });
-                  })}
-                </table>
+                <BlocksData
+                  joinedBlocksValidatorsData={joinedBlocksValidatorsData}
+                  chain_id={chain_id}
+                />
               </Responsive>
             </Container>
           </Responsive>
