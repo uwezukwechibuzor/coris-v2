@@ -32,7 +32,7 @@ function ProposalDetailsContents(props) {
     Number(getTally?.tally?.no) +
     Number(getTally?.tally?.no_with_veto) +
     Number(getTally?.tally?.abstain);
-  //console.log(finalTallyResultSum)
+  
   const tallyPercentage = (tallyResult: number) =>
     (tallyResult / finalTallySum) * 100;
 
@@ -502,14 +502,6 @@ const FlexBetween = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   flex-wrap: wrap;
-`;
-
-const Bar = styled.div`
-  display: flex;
-  height: 34px;
-  margin-top: 10px;
-  border-radius: 5px;
-  overflow: hidden;
 `;
 
 const Flex = styled.div`

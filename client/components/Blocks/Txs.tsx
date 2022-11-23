@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import { sha256 } from "@cosmjs/crypto";
-import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
 import { useAppSelector } from "../../lib/hooks";
-import ReactPaginate from "react-paginate";
 import { abbrMessage, formatHash, toDay } from "../../lib/Util/format";
-import Link from "next/link";
 import router from "next/router";
 
 const denom = 1000000;
@@ -16,25 +11,11 @@ const TxsData = (props) => {
 
   const allTxs = props?.getAllTxs;
 
-  //add pagination
-  //const [currentPage, setCurrentPage] = useState(0);
-
-  //function handlePageClick({ selected: selectedPage }) {
-  //setCurrentPage(selectedPage);
-  //}
-
-  //const PER_PAGE = 15;
-  //const offset = currentPage * PER_PAGE;
-  //const currentPageData = allTxs.slice(offset, offset + PER_PAGE)
-  //const pageCount = Math.ceil(allTxs.length / PER_PAGE);
-  //console.log(currentPageData, pageCount)
-
   return (
     <table
-      className={darkMode ? "mt-3 dark-mode w-100" : "w-100 mt-3"}
-      style={{ tableLayout: "fixed" }}
+      className={darkMode ? "mt-3 dark-mode w-100" : "w-100 mt-3"} 
     >
-      <thead className="w-100">
+      <thead>
         <tr>
           <th>Tx Hash</th>
           <th>Type</th>
@@ -65,13 +46,5 @@ const TxsData = (props) => {
     </table>
   );
 };
-
-const Container = styled.div`
-  display: block;
-`;
-
-const Responsive = styled.div`
-  width: 100%;
-`;
 
 export default TxsData;

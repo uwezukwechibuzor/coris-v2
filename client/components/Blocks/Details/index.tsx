@@ -164,6 +164,19 @@ function BlockHeightContent(props: any) {
                 </td>
               </tr>
               <tr>
+                <td>Proposer's Logo</td>
+                <td>
+                  <img
+                    className="img"
+                    width={30}
+                    src={getValidatorsLogoFromWebsites(
+                      proposerName?.validator?.description?.website
+                    )}
+                    alt=""
+                  />
+                </td>
+              </tr>
+              <tr>
                 <td>Proposer</td>
                 <td>
                   <Link
@@ -171,15 +184,6 @@ function BlockHeightContent(props: any) {
                     as={`/${chain_id}/validators/${proposerName?.validator?.operator_address}`}
                   >
                     <a>
-                      <img
-                        className="img"
-                        width={30}
-                        src={getValidatorsLogoFromWebsites(
-                          proposerName?.validator?.description?.website
-                        )}
-                        alt=""
-                      />
-
                       {proposerName?.validator?.description
                         ? proposerName?.validator?.description?.moniker
                         : null}

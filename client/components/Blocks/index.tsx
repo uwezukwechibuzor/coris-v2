@@ -16,9 +16,6 @@ import router from "next/router";
 function BlocksContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const { getBlocks, getAllTxs, activeValidators, chain_id } = props;
-  //console.log(getBlocks)
-
-  let p = [];
 
   //function that receieves proposer address and returns the validators details
   const joinedBlocksValidatorsData = getBlocks.map((block) => {
@@ -74,7 +71,6 @@ function BlocksContent(props) {
                   {joinedBlocksValidatorsData.map((details) => {
                     return details?.map((data) => {
                       if (data !== undefined) {
-                        //console.log(data)
                         return (
                           <tr
                             onClick={() =>
@@ -134,7 +130,11 @@ function BlocksContent(props) {
         </Tab>
         <Tab eventKey="inactive" title="Transactions">
           <Responsive>
-            <TxsData getAllTxs={getAllTxs} chain_id={chain_id} />
+            <Container className="w-100">
+              <Responsive>
+                <TxsData getAllTxs={getAllTxs} chain_id={chain_id} />
+              </Responsive>
+            </Container>
           </Responsive>
         </Tab>
       </Tabs>
@@ -155,8 +155,8 @@ const Container = styled.div`
 const Responsive = styled.div`
   width: 100%;
   overflow-x: auto;
-  @media screen and (max-width: 700px) {
-    width: calc(100vw - 40px);
+  @media screen and (max-width: 1075px) {
+    width: 100vw;
   }
 `;
 
