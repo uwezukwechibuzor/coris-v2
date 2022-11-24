@@ -12,29 +12,28 @@ function BlocksContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const { getBlocks, getAllTxs, activeValidators, chain_id } = props;
 
-  //function that receieves proposer address and returns the validators details
-  const joinedBlocksValidatorsData = getBlocks.map((block) => {
+  getBlocks.map((block) => {
     //convert proposer address to cosmosvalcons
-
-    const getActiveChainValidators = activeValidators?.validators?.map(
-      (validator) => {
-        //fetch just the active validators
-        //get the consensus pubkey
-        const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
-        const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-        const bech32Address = Bech32.encode("cosmosvalcons", addressData);
-
-        const proposerToBech32 = toBech32(
-          "cosmosvalcons",
-          fromHex(block?.proposer)
-        );
-
-        if (bech32Address === proposerToBech32) {
-          return { validator, block };
-        }
-      }
+    const proposerToBech32 = toBech32(
+      "cosmosvalcons",
+      fromHex(block?.proposer)
     );
-    return getActiveChainValidators;
+    activeValidators?.validators?.map((validator) => {
+      //fetch just the active validators
+      //get the consensus pubkey
+      const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
+      const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+      const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+
+      //attached validators details to the blocks they proposed
+      if (bech32Address?.includes(proposerToBech32)) {
+        block.operator_address = validator?.operator_address;
+        block.website = validator?.description?.website;
+        block.moniker = validator?.description?.moniker;
+        delete block.signatures;
+        return block;
+      }
+    });
   });
 
   return (
@@ -50,10 +49,7 @@ function BlocksContent(props) {
           <Responsive>
             <Container className="w-100">
               <Responsive>
-                <BlocksData
-                  joinedBlocksValidatorsData={joinedBlocksValidatorsData}
-                  chain_id={chain_id}
-                />
+                <BlocksData getBlocks={getBlocks} chain_id={chain_id} />
               </Responsive>
             </Container>
           </Responsive>

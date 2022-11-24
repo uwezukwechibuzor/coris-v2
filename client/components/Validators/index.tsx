@@ -256,8 +256,8 @@ function ValidatorsContent(props) {
                           </td>
                           <td>{data?.jailed === false ? "No" : "Yes"}</td>
                           <td>{data?.unbonding_height}</td>
-                          <td>{toDay(data?.unbonding_time)}</td>
-                          <td>{toDay(data?.commission?.update_time)}</td>
+                          <td>{toDay(data?.unbonding_time, 'date')}</td>
+                          <td>{toDay(data?.commission?.update_time, 'from')}</td>
                           <td>
                             <DelegateButton className={""} />
                           </td>
@@ -426,8 +426,8 @@ function ValidatorsContent(props) {
                           </td>
                           <td>{data?.jailed === false ? "No" : "Yes"}</td>
                           <td>{data?.unbonding_height}</td>
-                          <td>{toDay(data?.unbonding_time)}</td>
-                          <td>{toDay(data?.commission?.update_time)}</td>
+                          <td>{toDay(data?.unbonding_time, 'date')}</td>
+                          <td>{toDay(data?.commission?.update_time, 'from')}</td>
                           <td>
                             <DelegateButton className={""} />
                           </td>

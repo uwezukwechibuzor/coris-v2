@@ -14,7 +14,7 @@ function Blocks(props) {
   const [getAllTxs, setAllTxs] = useState([]);
   const [getActiveValidators, setActiveValidators] = useState([]);
 
-  const queryTotalBlocks = 15;
+  const queryTotalBlocks = 20;
   const queryTotalTxs = 20;
 
   const chain_id = props?.chain_id?.chain_id;

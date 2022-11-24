@@ -29,38 +29,34 @@ function BlockHeightContent(props: any) {
       : null;
 
   //get the proposer adddress from signatures
-  const validatorsSignaturesDetails =
-    blockData?.block?.last_commit?.signatures.map((validatorSignatureData) => {
+  var validatorsSignaturesDetails = [];
+  props?.blockData?.block?.last_commit?.signatures.map(
+    (validatorSignatureData: any) => {
       //convert proposer address from signatures to cosmosvalcons
       const proposerToBech32 = toBech32(
-        "umeevalcons",
+        "cosmosvalcons",
         fromHex(validatorSignatureData.validator_address)
       );
-      const getActiveChainValidators = activeValidators?.validators?.map(
-        (validator) => {
-          //fetch just the active validators
-          //get the consensus pubkey
-          const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
-          const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-          const bech32Address = Bech32.encode("umeevalcons", addressData);
-          if (bech32Address === proposerToBech32) {
-            return { validator, validatorSignatureData };
-          }
+      activeValidators?.validators?.map((validator: any) => {
+        //fetch just the active validators
+        //get the consensus pubkey
+        const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
+        const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+        const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+        if (bech32Address?.includes(proposerToBech32)) {
+          //append validator data to  validatorSignatureData
+          validatorSignatureData.validator = validator;
+          validatorsSignaturesDetails.push(validatorSignatureData);
         }
-      );
-      return getActiveChainValidators;
-    });
+      });
+    }
+  );
 
-  //get the block proposer
-  //get the proposer name from the active validators existing in the total vaidators
-  let proposerName;
-  validatorsSignaturesDetails?.map((details) =>
-    details?.map((data) =>
-      data?.validatorSignatureData?.validator_address ===
-      proposerToBech32FromBlockQuery
-        ? (proposerName = data)
-        : null
-    )
+  var proposerName;
+  validatorsSignaturesDetails?.map((data) =>
+    data?.validator_address === proposerToBech32FromBlockQuery
+      ? (proposerName = data)
+      : null
   );
 
   //add pagination to signatures
@@ -254,49 +250,34 @@ function BlockHeightContent(props: any) {
                   <th>Time</th>
                 </tr>
               </thead>
-              {currentValidatorSignatureData?.map((details) => {
-                return details?.map((data) => {
-                  if (data !== undefined) {
-                    return (
-                      <tbody>
-                        <tr>
-                          <td
-                            onClick={() =>
-                              router.push(
-                                `/${chain_id}/validators/${data.validator.operator_address}`
-                              )
-                            }
-                          >
-                            <img
-                              className="img"
-                              width={30}
-                              src={getValidatorsLogoFromWebsites(
-                                data?.validator?.description?.website
-                              )}
-                              alt=""
-                            />
-                            <p
-                              style={{ display: "inline", marginLeft: "10px" }}
-                            >
-                              {data?.validator?.description
-                                ? data?.validator?.description?.moniker
-                                : null}
-                            </p>
-                          </td>
-                          <td>
-                            {data?.validatorSignatureData
-                              ? toDay(
-                                  data?.validatorSignatureData?.timestamp,
-                                  "from"
-                                )
-                              : null}
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  }
-                });
-              })}
+              {currentValidatorSignatureData?.map((data) => (
+                <tbody>
+                  <tr>
+                    <td
+                      onClick={() =>
+                        router.push(
+                          `/${chain_id}/validators/${data.validator.operator_address}`
+                        )
+                      }
+                    >
+                      <img
+                        className="img"
+                        width={30}
+                        src={getValidatorsLogoFromWebsites(
+                          data?.validator?.description?.website
+                        )}
+                        alt=""
+                      />
+                      <p style={{ display: "inline", marginLeft: "10px" }}>
+                        {data?.validator?.description
+                          ? data?.validator?.description?.moniker
+                          : null}
+                      </p>
+                    </td>
+                    <td>{data ? toDay(data?.timestamp, "from") : null}</td>
+                  </tr>
+                </tbody>
+              ))}
             </table>
           </Responsive>
           {currentValidatorSignatureData?.length !== 0 ? (
