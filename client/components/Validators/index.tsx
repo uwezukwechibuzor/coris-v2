@@ -6,12 +6,17 @@ import {
   sortValidatorsByVotingPower,
   toDay,
 } from "../../lib/Util/format";
+import {
+  Bech32,
+  fromBase64,
+  fromHex,
+  toBech32,
+} from "@cosmjs/encoding";
+import { sha256 } from "@cosmjs/crypto";
 import styled from "styled-components";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import {
-  UrbanistBoldBlack40px,
-} from "../../styledMixins";
+import { UrbanistBoldBlack40px } from "../../styledMixins";
 import SearchButton from "./SearchButton";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
@@ -29,22 +34,14 @@ function ValidatorsContent(props) {
     chainAllValidators,
     chain_id,
   } = props;
-  console.log(chain_id);
 
-  var activeValidatorsData = chainAllValidators?.map((data) => {
-    if (data.status === "BOND_STATUS_BONDED") {
-      return data;
-    }
-  });
-
-  var inActiveValidatorsData = chainAllValidators?.map((data) => {
-    if (
-      data.status === "BOND_STATUS_UNBONDED" ||
-      data.status === "BOND_STATUS_UNBONDING"
-    ) {
-      return data;
-    }
-  });
+  var activeValidatorsData = [];
+  var inActiveValidatorsData = [];
+  chainAllValidators?.map((data) =>
+    data.status === "BOND_STATUS_BONDED"
+      ? activeValidatorsData.push(data)
+      : inActiveValidatorsData.push(data)
+  );
 
   //sort by voting power
   sortValidatorsByVotingPower(activeValidatorsData);
@@ -53,6 +50,37 @@ function ValidatorsContent(props) {
   //declare cumulative shares for both active and inactive validators
   let activeValidatorsCumulativeShare: number = 0;
   let inActiveValidatorsCumulativeShare: number = 0;
+
+  //uptimeByBlocksHeights
+  const convertedSignatures = uptimeByBlocksHeights?.map((data) => {
+    const convertedSigs = data.signatures?.map((sig) => {
+      return toBech32("cosmosvalcons", fromHex(sig?.validator_address));
+    });
+    return convertedSigs;
+  });
+
+  activeValidatorsData?.map(validator => {
+    //convert operator address to valcons address from validators query using consensus pubkey
+    //check if query is still fetching and if still fetching, set to empty string
+    const consensusPubkey =
+      validator?.consensus_pubkey?.key !== undefined
+        ? validator?.consensus_pubkey?.key
+        : "";
+    const ed25519PubkeyRaw = fromBase64(consensusPubkey);
+    const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+    const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+
+    let totalSignedBlocks = 0;
+    let totalBlocks = 0;
+    convertedSignatures?.map((data) => {
+      totalBlocks++;
+      if (data?.includes(bech32Address)) {
+        totalSignedBlocks++;
+        validator.upTime = (totalSignedBlocks / totalBlocks) * 100;
+        return validator;
+      }
+    });
+  });
 
   const router = useRouter();
 
@@ -139,8 +167,8 @@ function ValidatorsContent(props) {
                       const commission =
                         data?.commission?.commission_rates?.rate * 100;
                       return (
-                        <tr className="validator-item-row">
-                          <td>{index + 1}</td>
+                        <tr className="validator-item-row" key={index}>
+                          <td key={index}>{index + 1}</td>
                           <td>
                             <Flex>
                               <FlexMiddle>
@@ -218,7 +246,7 @@ function ValidatorsContent(props) {
                             </div>
                           </td>
                           <td>{commission.toFixed(2) + "%"}</td>
-                          <td>100%</td>
+                          <td>{data.upTime}%</td>
                           <td>
                             {data.status === "BOND_STATUS_BONDED"
                               ? "Bonded"
@@ -286,7 +314,6 @@ function ValidatorsContent(props) {
                   {inActiveValidatorsData
                     ?.filter((data) => {
                       //if Query does not exist
-                      console.log(data);
                       if (query === " ") {
                         return data;
                       } else if (
@@ -310,8 +337,8 @@ function ValidatorsContent(props) {
                       const commission =
                         data?.commission?.commission_rates?.rate * 100;
                       return (
-                        <tr className="validator-item-row">
-                          <td>{index + 1}</td>
+                        <tr className="validator-item-row" key={index}>
+                          <td key={index}>{index + 1}</td>
                           <td>
                             <Flex>
                               <FlexMiddle>
