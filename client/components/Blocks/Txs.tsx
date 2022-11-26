@@ -25,7 +25,7 @@ const TxsData = (props) => {
           <th>Time</th>
         </tr>
       </thead>
-      {allTxs.map((tx) => (
+      {allTxs?.map((tx) => (
         <tr>
           <td
             onClick={() =>

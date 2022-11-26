@@ -25,8 +25,7 @@ export const chainValidatorsDetailsEndpoint = (address) =>
 
 export const chainValidatorsSlashingSigningInfosDetailsEndpoint = (
   cons_address
-) =>
-  `/chain_validator_slashing_signing_info_details?cons_address${cons_address}`;
+) => `/chain_validator_slashing_signing_info_details/${cons_address}`;
 
 export const chainValidatorDelegationsEndpoint = (validator_addr) =>
   `/chain_validator_delegations/${validator_addr}`;

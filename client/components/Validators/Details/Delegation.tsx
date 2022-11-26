@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { useAppSelector } from "../../../lib/hooks";
 import { COIN, DENOM } from "../../../lib/Util/constants";
-import { formatHash, sortDelegatorsByAmount } from "../../../lib/Util/format";
+import {sortDelegatorsByAmount } from "../../../lib/Util/format";
 
 function DelegationsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);

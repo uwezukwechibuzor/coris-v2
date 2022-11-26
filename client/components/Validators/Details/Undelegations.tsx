@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { COIN, DENOM } from "../../../lib/Util/constants";
 import {
   formatHash,
-  formatTimeDateYear,
   sortUnDelegationsByBalance,
   toDay,
 } from "../../../lib/Util/format";
@@ -132,7 +131,7 @@ function UndelegationsContent(props) {
           </table>
         </Responsive>
       </Underdelegation>
-      {currentunDelegationsData.length !== 0 ? (
+      {currentunDelegationsData?.length !== 0 ? (
         <ReactPaginate
           previousLabel={"←"}
           nextLabel={"→"}

@@ -64,7 +64,6 @@ function BlocksDetails(props) {
 
   return (
     <>
-  const chain_id = props?.chain_id?.chain_id;
       <BlockHeightContent {...blockDetailsData} chain_id={chain_id} />
     </>
   );

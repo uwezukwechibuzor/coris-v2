@@ -23,7 +23,7 @@ import {
 import Badge from "react-bootstrap/Badge";
 import { useAppSelector } from "../../../lib/hooks";
 import CopyClip from "./CopyClip";
-import { DENOM } from "../../../lib/Util/constants";
+import { COIN } from "../../../lib/Util/constants";
 import "react-circular-progressbar/dist/styles.css";
 import router from "next/router";
 
@@ -35,10 +35,10 @@ function ValidatorsDetailsContent(props) {
     chainValidatorsSlashingInfo,
     chainValidatorDelegations,
     chainValidatorUnDelegations,
-    poolData,
+    getChainPool,
     chain_id,
   } = props;
-  //console.log(props);
+
   const [selectedDelegations, setDelegationPage] = useState("delegations");
 
   const validatorsDetails =
@@ -50,7 +50,7 @@ function ValidatorsDetailsContent(props) {
   let operatorAddress, accountAddress, hexAddress, bech32Address;
   try {
     //convert operator address to valcons address from validators query using consensus pubkey
-    //check if query is still fetching and if still fetching, set to empty string
+    //check if query is still fetching and set to empty string
     const consensusPubkey =
       validatorsDetails?.consensus_pubkey?.key !== undefined
         ? validatorsDetails?.consensus_pubkey?.key
@@ -71,32 +71,34 @@ function ValidatorsDetailsContent(props) {
 
     hexAddress = toHex(fromBech32(bech32Address).data);
   } catch (error) {
-    //console.log(error)
+    console.log(error);
   }
 
-  //get missed Blocks  && validators signing info
-  const missedBlocks =
-    chainValidatorsSlashingInfo !== undefined
-      ? chainValidatorsSlashingInfo?.val_signing_info?.missed_blocks_counter
-      : null;
-
-  //uptimeByBlocksHeights
+  //uptimeByBlocksHeights and convert to consensus(valcons) Operator Address
   const convertedSignatures = getUptimeByBlocksHeights?.map((data) => {
     const convertedSigs = data.signatures?.map((sig) => {
       return toBech32("cosmosvalcons", fromHex(sig?.validator_address));
     });
     return convertedSigs;
   });
+
   //check if validator address contained in the signatures equals bech32Address
   let totalSignedBlocks = 0;
   let totalBlocks = 0;
   const getUptime = convertedSignatures.map((sigs, index) => {
     totalBlocks++;
-    if (!sigs?.includes(bech32Address)) {
-      return { noUpTime: getUptimeByBlocksHeights[index] };
+    if (validatorsDetails === null) {
+      //set noUpTime and upTime to empty string when data is still loading
+      return { noUpTime: "", upTime: "" };
+    } else {
+      if (!sigs?.includes(bech32Address)) {
+        return { noUpTime: getUptimeByBlocksHeights[index] };
+      }
+
+      totalSignedBlocks++;
+
+      return { upTime: getUptimeByBlocksHeights[index] };
     }
-    totalSignedBlocks++;
-    return { upTime: getUptimeByBlocksHeights[index] };
   });
 
   //get the percentage from total signed blocks and total blocks
@@ -105,25 +107,27 @@ function ValidatorsDetailsContent(props) {
       ? (totalSignedBlocks / totalBlocks) * 100
       : 0;
 
-  //delegators shares
-  const delegatorsShares = (
-    validatorsDetails?.delegator_shares / DENOM
-  ).toFixed(2);
-
   //get total bonded tokens
-  const bondedTokens = poolData?.pool?.bonded_tokens;
+  const bondedTokens = getChainPool?.pool?.bonded_tokens;
   const percentageofVotingPower: number = getPercentageOfValidatorsBondedTokens(
     validatorsDetails?.tokens,
     bondedTokens
   );
 
-  //get validatorsDelegations and pass to delegation component and relegation to get fetch the delegators address
+  //get missed Blocks  && validators signing info
+  const missedBlocks =
+    chainValidatorsSlashingInfo !== undefined
+      ? chainValidatorsSlashingInfo?.val_signing_info?.missed_blocks_counter
+      : null;
+
+  //get validatorsDelegations and pass to delegation and Undelegation component
   let validatorsDelegations, unDelegations;
   try {
     validatorsDelegations = chainValidatorDelegations;
-    //get UnDelegations and pass to delegation component
     unDelegations = chainValidatorUnDelegations;
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 
   return (
     <div className={darkMode ? "dark-mode" : ""}>
@@ -149,7 +153,6 @@ function ValidatorsDetailsContent(props) {
             }
           >
             {operatorAddress}
-            {/* <CopyClip value={operatorAddress} /> */}
           </small>
         </div>
         <div className="my-3">
@@ -246,12 +249,24 @@ function ValidatorsDetailsContent(props) {
             <strong>Voting Power</strong>
           </div>
           <small>
-            {" "}
             {validatorsDetails?.tokens
               ? roundValidatorsVotingPowerToWholeNumber(
                   validatorsDetails?.tokens
-                )
+                ) +
+                " " +
+                COIN
               : null}
+          </small>
+        </div>
+        <div className="my-3">
+          <div>
+            <strong>Percentage of VP</strong>
+          </div>
+          <small>
+            {getChainPool?.pool?.bonded_tokens && validatorsDetails?.tokens
+              ? percentageofVotingPower.toFixed(2)
+              : 0}
+            %
           </small>
         </div>
         <div className="my-3">
@@ -283,7 +298,7 @@ function ValidatorsDetailsContent(props) {
         <GridItemSeven className={darkMode ? "dark-mode" : ""}>
           <FlexColumn>
             <Flex className="p-3">
-              <div>Uptime by 50 latest blocks</div>
+              <div>Uptime by 100 latest blocks</div>
               <div style={{ marginLeft: "20px" }}>
                 Missed Blocks <Badge bg="danger">{missedBlocks}</Badge>
               </div>
@@ -303,7 +318,7 @@ function ValidatorsDetailsContent(props) {
                           ? "bg-success"
                           : data.noUpTime?.height
                           ? "bg-danger"
-                          : null
+                          : "bg-dark"
                       }
                     >
                       <Tooltip>
@@ -463,157 +478,18 @@ const Block = styled.div`
 const Flex = styled.div`
   display: flex;
 `;
-const FlexBetween = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
+
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const FlexXCenter = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-const ImageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: red;
-  width: 90px;
-  height: 90px;
-  background-color: #5e2bca;
-`;
 
-const FlexCenter = styled.div`
-  display: flex;
-  align-items: center !important;
-  justify-content: center;
-`;
 const Grid = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px;
   @media screen and (max-width: 906px) {
-  }
-`;
-const GridItemOne = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 1 / span 2;
-  grid-row: 1 / 3;
-  @media screen and (max-width: 906px) {
-    grid-column: 1 / span 4;
-  }
-  @media screen and (max-width: 625px) {
-    grid-column: 1 / span 4;
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
-  }
-`;
-
-const GridItemTwo = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 3 / span 2;
-  height: 150px;
-  @media screen and (max-width: 906px) {
-    grid-column: 1 / span 2;
-    grid-row: 3 / span 1;
-  }
-  @media screen and (max-width: 625px) {
-    grid-column: 1 / span 4;
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
-  }
-`;
-
-const GridItemThree = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 3 / span 2;
-  height: 150px;
-  @media screen and (max-width: 906px) {
-    grid-column: 3 / span 2;
-    grid-row: 3 / span 1;
-  }
-  @media screen and (max-width: 625px) {
-    grid-column: 1 / span 4;
-    grid-row: 4 / span 1;
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
-  }
-`;
-
-const GridItemFour = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 1 / span 1;
-  grid-row: 3 / 6;
-  @media screen and (max-width: 906px) {
-    grid-column: 1 / span 2;
-    grid-row: 4 / 7;
-    height: fit-content;
-    padding-bottom: 20px;
-    @media screen and (max-width: 625px) {
-      grid-column: 1 / span 4;
-      grid-row: 5 / span 1;
-    }
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
-  }
-`;
-
-const GridItemFive = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 2 / span 1;
-  grid-row: 3 / 6;
-  @media screen and (max-width: 906px) {
-    grid-column: 3 / span 2;
-    grid-row: 4 / 7;
-    height: fit-content;
-    padding-bottom: 20px;
-  }
-  @media screen and (max-width: 625px) {
-    grid-column: 1 / span 4;
-    grid-row: 6 / span 1;
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
-  }
-`;
-
-const GridItemSix = styled.div`
-  box-shadow: 0px 7px 30px #0015da29;
-  border-radius: 20px;
-  grid-column: 3 / span 2;
-  grid-row: 3 / 6;
-  height: 300px;
-  @media screen and (max-width: 906px) {
-    grid-column: 1 / span 4;
-    grid-row: 7 / span 6;
-    height: fit-content;
-    padding-bottom: 20px;
-  }
-  @media screen and (max-width: 625px) {
-    grid-column: 1 / span 4;
-    grid-row: 7 / span 1;
-  }
-  &.dark-mode {
-    background-color: #19172d !important;
-    box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
 `;
 

@@ -31,7 +31,7 @@ function ValidatorsDetails(props) {
 
   //get uptime by blocks
   //get blocks
-  const queryTotalBlocks = 50;
+  const queryTotalBlocks = 100;
   useEffect(() => {
     axios
       .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
@@ -68,19 +68,19 @@ function ValidatorsDetails(props) {
   const bech32Address = Bech32.encode("cosmosvalcons", addressData);
 
   //get validator slashing signing Info Details
-  useEffect(() => {
-    axios
-      .get(
-        BaseChainApi() +
-          chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)
-      )
-      .then((response) => {
+  axios
+    .get(
+      BaseChainApi() +
+        chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)
+    )
+    .then((response) => {
+      if (getValidatorSlashingSigningInfos === null) {
         setValidatorSlashingSigningInfos(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.address]);
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   //get each validators delegations
   useEffect(() => {
@@ -117,14 +117,14 @@ function ValidatorsDetails(props) {
         console.log(error);
       });
   }, []);
-  console.log(getValidatorSlashingSigningInfos);
+
   const data = {
     getValidatorDetails: getValidatorDetails,
     getUptimeByBlocksHeights: uptimeByBlocksHeights,
     chainValidatorsSlashingInfo: getValidatorSlashingSigningInfos,
     chainValidatorDelegations: getValidatorDelegations,
     chainValidatorUnDelegations: getValidatorUnDelegations,
-    getChainPool,
+    getChainPool: getChainPool,
     chain_id: chain_id,
   };
 

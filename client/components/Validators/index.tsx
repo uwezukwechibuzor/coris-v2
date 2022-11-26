@@ -6,12 +6,7 @@ import {
   sortValidatorsByVotingPower,
   toDay,
 } from "../../lib/Util/format";
-import {
-  Bech32,
-  fromBase64,
-  fromHex,
-  toBech32,
-} from "@cosmjs/encoding";
+import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
 import { sha256 } from "@cosmjs/crypto";
 import styled from "styled-components";
 import Tabs from "react-bootstrap/Tabs";
@@ -59,7 +54,7 @@ function ValidatorsContent(props) {
     return convertedSigs;
   });
 
-  activeValidatorsData?.map(validator => {
+  activeValidatorsData?.map((validator) => {
     //convert operator address to valcons address from validators query using consensus pubkey
     //check if query is still fetching and if still fetching, set to empty string
     const consensusPubkey =
@@ -76,7 +71,8 @@ function ValidatorsContent(props) {
       totalBlocks++;
       if (data?.includes(bech32Address)) {
         totalSignedBlocks++;
-        validator.upTime = (totalSignedBlocks / totalBlocks) * 100;
+        const uptime = (totalSignedBlocks / totalBlocks)*100;
+        validator.upTime = uptime.toFixed(2)
         return validator;
       }
     });
@@ -246,7 +242,7 @@ function ValidatorsContent(props) {
                             </div>
                           </td>
                           <td>{commission.toFixed(2) + "%"}</td>
-                          <td>{data.upTime}%</td>
+                          <td>{data.upTime? data.upTime : 0}%</td>
                           <td>
                             {data.status === "BOND_STATUS_BONDED"
                               ? "Bonded"
@@ -256,8 +252,10 @@ function ValidatorsContent(props) {
                           </td>
                           <td>{data?.jailed === false ? "No" : "Yes"}</td>
                           <td>{data?.unbonding_height}</td>
-                          <td>{toDay(data?.unbonding_time, 'date')}</td>
-                          <td>{toDay(data?.commission?.update_time, 'from')}</td>
+                          <td>{toDay(data?.unbonding_time, "date")}</td>
+                          <td>
+                            {toDay(data?.commission?.update_time, "from")}
+                          </td>
                           <td>
                             <DelegateButton className={""} />
                           </td>
@@ -426,8 +424,10 @@ function ValidatorsContent(props) {
                           </td>
                           <td>{data?.jailed === false ? "No" : "Yes"}</td>
                           <td>{data?.unbonding_height}</td>
-                          <td>{toDay(data?.unbonding_time, 'date')}</td>
-                          <td>{toDay(data?.commission?.update_time, 'from')}</td>
+                          <td>{toDay(data?.unbonding_time, "date")}</td>
+                          <td>
+                            {toDay(data?.commission?.update_time, "from")}
+                          </td>
                           <td>
                             <DelegateButton className={""} />
                           </td>

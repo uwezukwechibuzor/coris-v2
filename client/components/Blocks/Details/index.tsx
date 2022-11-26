@@ -176,7 +176,7 @@ function BlockHeightContent(props: any) {
                 <td>Proposer</td>
                 <td>
                   <Link
-                    href="/[chain_id]/validators[address]"
+                    href="/[chain_id]/validators/[address]"
                     as={`/${chain_id}/validators/${proposerName?.validator?.operator_address}`}
                   >
                     <a>
