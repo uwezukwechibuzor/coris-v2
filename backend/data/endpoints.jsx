@@ -10,8 +10,8 @@ module.exports = {
     chainTxsByHash:  (hash) =>  `/cosmos/tx/v1beta1/txs/${hash}`,
     chainValidatorsDetails: (address) => `/cosmos/staking/v1beta1/validators/${address}`,
     chainValidatorsSlashingSigningInfosDetails: (cons_address) => `/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
-    chainValidatorDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
-    chainValidatorUnDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.key=hhhh&pagination.limit=500&pagination.reverse=true`,
+    chainValidatorDelegations: (validator_adddress) => `/cosmos/staking/v1beta1/validators/${validator_adddress}/delegations?pagination.limit=500&pagination.reverse=true`,
+    chainValidatorUnDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.limit=500&pagination.reverse=true`,
     chainValidatorReDelegations: (delegator_addr) => `/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`,
     consensusState: '/consensus_state?',
     mintingParams: `/cosmos/mint/v1beta1/params`,
@@ -26,9 +26,11 @@ module.exports = {
     proposalTallyOptions: (id) =>  `/cosmos/gov/v1beta1/proposals/${id}/tally`,
     proposalDeposits: (id) => `/cosmos/gov/v1beta1/proposals/${id}/deposits`,
     authAccount: (address) => `/cosmos/auth/v1beta1/accounts/${address}`,
+    accountTxsByEvents: (address) => `/cosmos/tx/v1beta1/txs?events=message.sender='${address}'&pagination.reverse=true&order_by=ORDER_BY_DESC`,
     accountBalance: (address) => `/cosmos/bank/v1beta1/balances/${address}`,
     accountDelegationRewards: (delegator_address) =>  `/cosmos/distribution/v1beta1/delegators/${delegator_address}/rewards`,
     accountDelegations:  (delegator_address) => `/cosmos/staking/v1beta1/delegations/${delegator_address}`,
     accountReDelegations:  (delegator_address) =>  `/cosmos/staking/v1beta1/delegators/${delegator_address}/redelegations`,
     accountUnDelegations:  (delegator_address) => `/cosmos/staking/v1beta1/delegators/${delegator_address}/unbonding_delegations`,
 }
+

@@ -264,10 +264,10 @@ app.get("/umee/chain_validator_details/:address", async (req, res) => {
 
 //get chain validators Slashing Signing Info Details
 app.get(
-  "/umee/chain_validator_slashing_signing_info_details",
+  "/umee/chain_validator_slashing_signing_info_details/:cons_adddress",
   async (req, res) => {
     try {
-      const cons_adddress = req.query.cons_adddress;
+      const cons_adddress = req.params.cons_adddress;
       const response = await fetch(
         `${
           process.env.UMEE_REST_API
@@ -291,9 +291,8 @@ app.get(
     try {
       const validator_adddress = req.params.validator_adddress;
       const response = await fetch(
-        `${process.env.UMEE_REST_API}${endPoints.chainValidatorDelegations(
-          validator_adddress
-        )}`
+        process.env.UMEE_REST_API +
+          endPoints.chainValidatorDelegations(validator_adddress)
       );
       if (response.status !== 200 || !response) {
         throw "Error Querying Chain API";
@@ -550,9 +549,26 @@ app.get("/umee/chain_proposal_deposits", async (req, res) => {
 //get chain auth account
 app.get("/umee/chain_auth_account", async (req, res) => {
   try {
-    const address = req.query.adddress;
+    const address = req.query.address;
     const response = await fetch(
       `${process.env.UMEE_REST_API}${endPoints.authAccount(address)}`
+    );
+    if (response.status !== 200 || !response) {
+      throw "Error Querying Chain API";
+    }
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+//get chain account Txs by Events
+app.get("/umee/chain_account_txs_by_events/:address", async (req, res) => {
+  try {
+    const address = req.params.address;
+    const response = await fetch(
+      `${process.env.UMEE_REST_API}${endPoints.accountTxsByEvents(address)}`
     );
     if (response.status !== 200 || !response) {
       throw "Error Querying Chain API";
@@ -567,7 +583,7 @@ app.get("/umee/chain_auth_account", async (req, res) => {
 //get chain account balance
 app.get("/umee/chain_account_balance", async (req, res) => {
   try {
-    const address = req.query.adddress;
+    const address = req.query.address;
     const response = await fetch(
       `${process.env.UMEE_REST_API}${endPoints.accountBalance(address)}`
     );
