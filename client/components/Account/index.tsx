@@ -7,11 +7,11 @@ import AccountRedelegationsContent from "./Details/Redelegations";
 import AccountUndelegationsContent from "./Details/Undelegations";
 import { useAppSelector } from "../../lib/hooks";
 import Doughnut from "./Doughnut";
-import ReactPaginate from "react-paginate";
 import { COIN, DENOM } from "../../lib/Util/constants";
 import { abbrMessage } from "../../lib/Util/format";
 import { useRouter } from "next/router";
-import CopyClip from "../Validators/Details/CopyClip";
+//import CopyClip from "../Validators/Details/CopyClip";
+import TxsByHeightEvent from "../Blocks/Details/tsxByHeightOrEvent";
 
 function AccountContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -27,11 +27,10 @@ function AccountContents(props) {
     accountDelegations,
     accountReledelgations,
     accountUnboundingDelegations,
-    getAllTxs,
+    getAllAccountTxsByEvents,
     chain_id,
   } = props;
 
-  // const balance =  Number(accountBalance?.balances[0]?.amount)
   const balance = 10;
 
   let totalRewards = 0;
@@ -448,53 +447,7 @@ function AccountContents(props) {
 
       <Container className="my-3">
         <h4>Transactions</h4>
-        <Card
-          className={darkMode ? "dark-mode " : ""}
-          style={{ padding: "10px" }}
-        >
-          <Responsive>
-            <table className={darkMode ? "w-100 mt-3 dark-mode" : "w-100 mt-3"}>
-              <thead>
-                <tr>
-                  <th>
-                    <h4>Hash</h4>
-                  </th>
-                  <th>
-                    <h4>Height</h4>
-                  </th>
-                  <th>
-                    <h4>Status</h4>
-                  </th>
-                  <th>
-                    <h4>Type</h4>
-                  </th>
-                  <th>
-                    <h4>Time</h4>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="striped">
-                  <td>sdsd</td>
-                  <td>sdasd</td>
-                  <td>asdadsda</td>
-                  <td>sdasdasdasdas</td>
-                  <td>sdasdasdasdas</td>
-                </tr>
-              </tbody>
-            </table>
-          </Responsive>
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel="next"
-            onPageChange={() => {}}
-            pageRangeDisplayed={2}
-            pageCount={20}
-            previousLabel="prev"
-            renderOnZeroPageCount={null}
-            className="pagination"
-          />
-        </Card>
+        <TxsByHeightEvent txs={getAllAccountTxsByEvents} chain_id={chain_id} />
       </Container>
     </>
   );
@@ -569,22 +522,6 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const InLineFlex = styled.div`
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Grid = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto;
-  grid-gap: 30px;
-  @media screen and (max-width: 1018px) {
-    grid-template-columns: auto;
-  }
-`;
-
 const Grid1 = styled.div`
   display: grid;
   grid-template-columns: 400px auto;
@@ -596,24 +533,6 @@ const Grid1 = styled.div`
 
 const Container = styled.div`
   display: block;
-`;
-
-const Responsive = styled.div`
-  width: 100%;
-  overflow-x: auto;
-  @media screen and (max-width: 1074px) {
-    width: calc(100vw - 70px);
-  }
-  @media (min-width: 1074px) and (max-width: 1334px) {
-    width: calc(100vw - 200px);
-  }
-`;
-
-const Circle = styled.div`
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: red;
 `;
 
 const Title = styled.h1`

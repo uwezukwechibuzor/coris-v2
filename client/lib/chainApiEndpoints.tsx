@@ -68,6 +68,9 @@ export const proposalDepositsEndpoint = (id) =>
 export const authAccountEndpoint = (address) =>
   `/chain_auth_account?address=${address}`;
 
+export const accountTxsByEventsEndpoint = (address) =>
+  `/chain_account_txs_by_events/${address}`;
+
 export const accountBalanceEndpoint = (address) =>
   `/chain_account_balance?address=${address}`;
 

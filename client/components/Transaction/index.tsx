@@ -10,7 +10,6 @@ function TransactionContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const [isFormattedView, toggleView] = useState(true);
   const txDetails = props;
-  //console.log(txDetails?.txDetails?.tx_response.tx.body.messages)
 
   const rawJSON = JSON.stringify(txDetails?.txDetails, null, 1);
   const rawJSONMessages = JSON.stringify(

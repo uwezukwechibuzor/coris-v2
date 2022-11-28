@@ -1,26 +1,21 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import {
-  abbrMessage,
-  formatHash,
-  getValidatorsLogoFromWebsites,
-  toDay,
-} from "../../../lib/Util/format";
+import { getValidatorsLogoFromWebsites, toDay } from "../../../lib/Util/format";
 import { UrbanistBoldBlack40px } from "../../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
 import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
 import Link from "next/link";
 import { useAppSelector } from "../../../lib/hooks";
 import ReactPaginate from "react-paginate";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { COIN } from "../../../lib/Util/constants";
 import router from "next/router";
+import TxsByHeightEvent from "./tsxByHeightOrEvent";
 
 function BlockHeightContent(props: any) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const { title, blockData, txs, activeValidators, chain_id } = props;
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [currentTxsPage, setCurrentTxsPage] = useState(0);
 
   //convert single proposer address
   const proposerToBech32FromBlockQuery =
@@ -80,18 +75,6 @@ function BlockHeightContent(props: any) {
           : null;
       })
     : null;
-
-  //add pagination to TXS
-  const txsPER_PAGE = 5;
-  const offsetTxs = currentTxsPage * txsPER_PAGE;
-  const currentTxsData = txs?.tx_responses?.slice(
-    offsetTxs,
-    offsetTxs + PER_PAGE
-  );
-  const txspageCount = Math.ceil(txs?.tx_responses?.length / txsPER_PAGE);
-  function handleTxsPageClick({ selected: selectedPage }) {
-    setCurrentTxsPage(selectedPage);
-  }
 
   return (
     <div className={darkMode ? "dark-mode" : ""}>
@@ -298,81 +281,7 @@ function BlockHeightContent(props: any) {
 
       <Container className="w-100">
         <h5>Transactions</h5>
-        <Card className={darkMode ? "dark-mode w-100" : "w-100"}>
-          <Responsive className="p-3">
-            <table
-              className={
-                darkMode
-                  ? "dark-mode w-100 mt-3 table table-responsive"
-                  : "w-100 mt-3 table table-responsive"
-              }
-            >
-              <thead>
-                <tr style={{ fontWeight: "bold" }}>
-                  <th>Tx hash</th>
-                  <th>Height</th>
-                  <th>Status</th>
-                  <th>Fee</th>
-                  <th>Message</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              {currentTxsData?.length !== 0 ? (
-                currentTxsData?.map((tx) => (
-                  <tbody>
-                    <tr>
-                      <td
-                        onClick={() =>
-                          router.push(`/${chain_id}/transaction/${tx.txhash}`)
-                        }
-                      >
-                        {formatHash(tx?.txhash, 20, "..")}
-                      </td>
-                      <td>{tx?.height}</td>
-                      <td
-                        className={
-                          tx.code === 0 ? "text-success" : "text-danger"
-                        }
-                      >
-                        {tx.code === 0 ? "Success" : "failed"}
-                      </td>
-                      <td>
-                        {tx?.tx?.auth_info?.fee?.amount[0]?.amount / DENOM}{" "}
-                        {COIN}
-                      </td>
-                      <td>{abbrMessage(tx.tx.body.messages)}</td>
-                      <td>{toDay(tx?.timestamp, "from")}</td>
-                    </tr>
-                  </tbody>
-                ))
-              ) : (
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td>No Txs</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              )}
-            </table>
-          </Responsive>
-          {currentTxsData?.length !== 0 ? (
-            <ReactPaginate
-              previousLabel={"←"}
-              nextLabel={"→"}
-              pageCount={txspageCount}
-              onPageChange={handleTxsPageClick}
-              containerClassName={"pagination"}
-              previousLinkClassName={"pagination__link"}
-              nextLinkClassName={"pagination__link"}
-              disabledClassName={"pagination__link--disabled"}
-              activeClassName={"pagination__link--active"}
-            />
-          ) : null}
-        </Card>
+        <TxsByHeightEvent txs={txs} chain_id={chain_id} />
       </Container>
     </div>
   );

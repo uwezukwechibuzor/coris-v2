@@ -4,6 +4,7 @@ import ValidatorsDetailsContent from "../../../components/Validators/Details";
 import { useRouter } from "next/router";
 import axios from "axios";
 import {
+  accountTxsByEventsEndpoint,
   chainPoolEndpoint,
   chainValidatorDelegationsEndpoint,
   chainValidatorsDetailsEndpoint,
@@ -11,7 +12,14 @@ import {
   chainValidatorUnDelegationsEndpoint,
   latestBlocksEndpoint,
 } from "../../../lib/chainApiEndpoints";
-import { Bech32, fromBase64 } from "@cosmjs/encoding";
+import {
+  Bech32,
+  fromBase64,
+  fromBech32,
+  fromHex,
+  toBech32,
+  toHex,
+} from "@cosmjs/encoding";
 import { sha256 } from "@cosmjs/crypto";
 import { BaseChainApi } from "../../../lib/baseChainApi";
 
@@ -23,6 +31,7 @@ function ValidatorsDetails(props) {
   const [getValidatorDelegations, setValidatorDelegations] = useState(null);
   const [getValidatorUnDelegations, setValidatorUnDelegations] = useState(null);
   const [getChainPool, setChainPool] = useState(null);
+  const [getValidatorTxsByEvents, setValidatorTxsByEvents] = useState(null);
 
   const chain_id = props?.chain_id?.chain_id;
 
@@ -59,13 +68,29 @@ function ValidatorsDetails(props) {
       });
   }, [query.address]);
 
-  const consensusPubkey =
-    getValidatorDetails?.validator?.consensus_pubkey?.key !== undefined
-      ? getValidatorDetails?.validator?.consensus_pubkey?.key
-      : "";
-  const ed25519PubkeyRaw = fromBase64(consensusPubkey);
-  const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-  const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+  var accountAddress, hexAddress, operatorAddress, bech32Address;
+  try {
+    const consensusPubkey =
+      getValidatorDetails?.validator?.consensus_pubkey?.key !== undefined
+        ? getValidatorDetails?.validator?.consensus_pubkey?.key
+        : "";
+    const ed25519PubkeyRaw = fromBase64(consensusPubkey);
+    const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+    bech32Address = Bech32.encode("cosmosvalcons", addressData);
+
+    //get operator address to get account address and hex address
+    operatorAddress =
+      getValidatorDetails?.validator !== undefined
+        ? getValidatorDetails?.validator?.operator_address
+        : " ";
+
+    accountAddress = toBech32(
+      "cosmos",
+      fromHex(toHex(fromBech32(operatorAddress).data))
+    );
+
+    hexAddress = toHex(fromBech32(bech32Address).data);
+  } catch (error) {}
 
   //get validator slashing signing Info Details
   axios
@@ -77,6 +102,16 @@ function ValidatorsDetails(props) {
       if (getValidatorSlashingSigningInfos === null) {
         setValidatorSlashingSigningInfos(response.data);
       }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  //get account Txs By Events
+  axios
+    .get(BaseChainApi() + accountTxsByEventsEndpoint(accountAddress))
+    .then((response) => {
+      setValidatorTxsByEvents(response.data);
     })
     .catch((error) => {
       console.log(error);
@@ -125,6 +160,11 @@ function ValidatorsDetails(props) {
     chainValidatorDelegations: getValidatorDelegations,
     chainValidatorUnDelegations: getValidatorUnDelegations,
     getChainPool: getChainPool,
+    getValidatorTxsByEvents: getValidatorTxsByEvents,
+    accountAddress: accountAddress,
+    hexAddress: hexAddress,
+    operatorAddress: operatorAddress,
+    bech32Address: bech32Address,
     chain_id: chain_id,
   };
 

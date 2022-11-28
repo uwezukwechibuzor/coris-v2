@@ -11,21 +11,14 @@ import Link from "next/link";
 import UndelegationsContent from "./Undelegations";
 import DelegationsContent from "./Delegation";
 import { useState } from "react";
-import { sha256 } from "@cosmjs/crypto";
-import {
-  Bech32,
-  fromBase64,
-  fromBech32,
-  fromHex,
-  toBech32,
-  toHex,
-} from "@cosmjs/encoding";
+import { fromHex, toBech32 } from "@cosmjs/encoding";
 import Badge from "react-bootstrap/Badge";
 import { useAppSelector } from "../../../lib/hooks";
-import CopyClip from "./CopyClip";
+//import CopyClip from "./CopyClip";
 import { COIN } from "../../../lib/Util/constants";
 import "react-circular-progressbar/dist/styles.css";
 import router from "next/router";
+import TxsByHeightEvent from "../../Blocks/Details/tsxByHeightOrEvent";
 
 function ValidatorsDetailsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -36,43 +29,20 @@ function ValidatorsDetailsContent(props) {
     chainValidatorDelegations,
     chainValidatorUnDelegations,
     getChainPool,
+    getValidatorTxsByEvents,
+    accountAddress,
+    hexAddress,
+    operatorAddress,
+    bech32Address,
     chain_id,
   } = props;
-
+ 
   const [selectedDelegations, setDelegationPage] = useState("delegations");
 
   const validatorsDetails =
     getValidatorDetails?.validator !== undefined
       ? getValidatorDetails?.validator
       : null;
-
-  //get operator Address, Hex Address and Account Address
-  let operatorAddress, accountAddress, hexAddress, bech32Address;
-  try {
-    //convert operator address to valcons address from validators query using consensus pubkey
-    //check if query is still fetching and set to empty string
-    const consensusPubkey =
-      validatorsDetails?.consensus_pubkey?.key !== undefined
-        ? validatorsDetails?.consensus_pubkey?.key
-        : "";
-    const ed25519PubkeyRaw = fromBase64(consensusPubkey);
-    const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-    bech32Address = Bech32.encode("cosmosvalcons", addressData);
-
-    operatorAddress =
-      validatorsDetails?.operator_address !== undefined
-        ? validatorsDetails?.operator_address
-        : " ";
-
-    accountAddress = toBech32(
-      "cosmos",
-      fromHex(toHex(fromBech32(operatorAddress).data))
-    );
-
-    hexAddress = toHex(fromBech32(bech32Address).data);
-  } catch (error) {
-    console.log(error);
-  }
 
   //uptimeByBlocksHeights and convert to consensus(valcons) Operator Address
   const convertedSignatures = getUptimeByBlocksHeights?.map((data) => {
@@ -378,6 +348,10 @@ function ValidatorsDetailsContent(props) {
           )}
         </div>
       </Card>
+      <Container className="my-3">
+        <h4>Transactions By Validators</h4>
+        <TxsByHeightEvent txs={getValidatorTxsByEvents} chain_id={chain_id} />
+      </Container>
       <style jsx>{`
         .inActive {
           color: red;
@@ -400,6 +374,10 @@ function ValidatorsDetailsContent(props) {
     </div>
   );
 }
+
+const Container = styled.div`
+  display: block;
+`;
 
 const TabToggler = styled.div`
   background: #e9ebfe;

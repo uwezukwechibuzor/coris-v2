@@ -7,15 +7,15 @@ import {
   accountDelegationRewardsEndpoint,
   accountDelegationsEndpoint,
   accountReDelegationsEndpoint,
+  accountTxsByEventsEndpoint,
   accountUnDelegationsEndpoint,
-  allTxsEndpoint,
   authAccountEndpoint,
 } from "../../../lib/chainApiEndpoints";
 import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
 
 function AccountDetails(props) {
-  const [getAllTxs, setAllTxs] = useState([]);
+  const [getAllAccountTxsByEvents, setAllAccountTxsByEvents] = useState([]);
   const [getAuthAccount, setAuthAccount] = useState([]);
   const [getAccountBalance, setAccountBalance] = useState([]);
   const [getDelegatorRewards, setDelegationReward] = useState([]);
@@ -28,25 +28,24 @@ function AccountDetails(props) {
 
   const chain_id = props?.chain_id?.chain_id;
 
-  //query all transactions and check to return all transactions that equals the query address
-  const queryTotalTxs = 600;
-  useEffect(() => {
-    axios
-      .get(BaseChainApi() + allTxsEndpoint(queryTotalTxs))
-      .then((response) => {
-        setAllTxs(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getAllTxs]);
-
   //get auth account
   useEffect(() => {
     axios
       .get(BaseChainApi() + authAccountEndpoint(query.address))
       .then((response) => {
         setAuthAccount(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [query.address]);
+
+  //get account Txs By Events
+  useEffect(() => {
+    axios
+      .get(BaseChainApi() + accountTxsByEventsEndpoint(query.address))
+      .then((response) => {
+        setAllAccountTxsByEvents(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -120,7 +119,7 @@ function AccountDetails(props) {
     accountDelegations: getAccountDelegations,
     accountReledelgations: getAccountReDelegations,
     accountUnboundingDelegations: getAccountUnDelegations,
-    getAllTxs: getAllTxs,
+    getAllAccountTxsByEvents: getAllAccountTxsByEvents,
     chain_id: chain_id,
   };
 
