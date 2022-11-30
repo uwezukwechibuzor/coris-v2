@@ -57,7 +57,7 @@ function SideNavBar(props) {
         <Clicker onClick={() => navigate("/cosmos")}>
           <Logo />
         </Clicker>
-        <SearchBar src={searchBarData.src} className="mobile" />
+       <SearchBar src={searchBarData.src} className="mobile" />
         <Wrapper>
           <Clicker onClick={() => navigate("/cosmos")} title="Overview">
             <a className="m-24">

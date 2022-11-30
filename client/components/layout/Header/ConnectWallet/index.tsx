@@ -4,10 +4,6 @@ import { useAppSelector } from "../../../../lib/hooks";
 
 function ConnectWallet(props) {
   const {
-    asset62,
-    asset72,
-    asset63,
-    asset73,
     outlineMediaShuffle,
     outlineMediaShuffleWhite,
     className,
@@ -81,18 +77,6 @@ const ConnectWallet1 = styled.div`
     background-color: #0b0a15 !important;
     box-shadow: 0px -1px 20px 0px #23232329 !important;
   }
-`;
-
-const Asset62 = styled.img`
-  width: 30px;
-  margin-bottom: 1px;
-  object-fit: cover;
-`;
-
-const Asset72 = styled.img`
-  width: 45px;
-  margin-bottom: 1px;
-  object-fit: cover;
 `;
 
 const OutlineMediaShuffle = styled.img`

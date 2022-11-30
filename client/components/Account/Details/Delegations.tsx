@@ -6,9 +6,9 @@ import { COIN, DENOM } from "../../../lib/Util/constants";
 import { formatHash } from "../../../lib/Util/format";
 
 function AccountDelegationsContent(props) {
-  const  delegations = props;
-  
-  //add pagination to signatures
+  const delegations = props;
+
+  //add pagination to delegations
   const [currentPage, setCurrentPage] = useState(0);
 
   const PER_PAGE = 5;

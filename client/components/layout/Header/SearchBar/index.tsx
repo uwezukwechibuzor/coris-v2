@@ -1,11 +1,23 @@
+import axios from "axios";
+import { useRouter } from "next/router";
 import React, { MutableRefObject, useRef, useState } from "react";
 import { ListGroup } from "react-bootstrap";
 import styled from "styled-components";
+import { BaseChainApi } from "../../../../lib/baseChainApi";
+import {
+  authAccountEndpoint,
+  chainBlockHeightDetailsEndpont,
+  chainTxsByHashEndpoint,
+} from "../../../../lib/chainApiEndpoints";
 import { useAppSelector } from "../../../../lib/hooks";
 
 export function SearchBar(props) {
   const chain_id = props?.chain_id?.chain_id;
   const [searchResult, setSearchResult] = useState([] as any);
+  const [query, setQuery] = useState([] as any);
+  const [searchTxsByHash, setSearchTxsByHash] = useState([] as any);
+  const [searchBlockHeight, setSearchBlockHeight] = useState([] as any);
+  const [searchAccountAddress, setSearchAccountAddress] = useState([] as any);
 
   const searchBar: MutableRefObject<HTMLDivElement> = useRef();
 
@@ -13,7 +25,6 @@ export function SearchBar(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
   //search button functionalities
-  const [query, setQuery] = useState("");
   const searchingValidators = props?.allValidators
     ? props?.allValidators?.map((data) => data)
     : null;
@@ -21,33 +32,85 @@ export function SearchBar(props) {
   let searchedData;
   let err;
   searchingValidators?.filter((data) => {
-    if (query === "") {
-    } else if (
-      query !== data.operator_address &&
-      query !== data?.description?.moniker
-    ) {
+    if (query.length === 0) {
+    } else if (query !== data.operator_address) {
       err = "No Data Found";
     } else if (
-      data?.operator_address
-        ?.toLowerCase()
-        .includes(query.toLocaleLowerCase()) ||
-      data?.description?.moniker
-        ?.toLowerCase()
-        .includes(query.toLocaleLowerCase())
+      data?.operator_address?.toLowerCase().includes(query.toLocaleLowerCase())
     ) {
-      data?.operator_address === query
-        ? (searchedData = (
-            <a href={`/${chain_id}/validators/${data.operator_address}`}>
-              {data?.operator_address}
-            </a>
-          ))
-        : (searchedData = (
-            <a href={`/${chain_id}/validators/${data.operator_address}`}>
-              {data?.description?.moniker}
-            </a>
-          ));
+      searchedData = (
+        <a href={`/${chain_id}/validators/${data.operator_address}`}>
+          {data?.operator_address}
+        </a>
+      );
     }
   });
+
+  //search query for tranactions Hash
+  axios
+    .get(BaseChainApi() + chainTxsByHashEndpoint(query))
+    .then((response) => {
+      setSearchTxsByHash(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  //search query for Block Heights
+  axios
+    .get(BaseChainApi() + chainBlockHeightDetailsEndpont(query))
+    .then((response) => {
+      setSearchBlockHeight(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  //search query for Account Address
+  axios
+    .get(BaseChainApi() + authAccountEndpoint(query))
+    .then((response) => {
+      setSearchAccountAddress(response.data);
+      console.log(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  if (query.length === 0) {
+  } else if (
+    searchTxsByHash?.tx_response?.txhash === query ||
+    searchBlockHeight?.block?.header?.height === query ||
+    searchAccountAddress?.account?.address === query
+  ) {
+    searchTxsByHash?.tx_response?.txhash === query
+      ? (searchedData = (
+          <a
+            href={`/${chain_id}/transaction/${searchTxsByHash?.tx_response?.txhash}`}
+          >
+            {searchTxsByHash?.tx_response?.txhash}
+          </a>
+        ))
+      : searchBlockHeight?.block?.header?.height === query
+      ? (searchedData = (
+          <a
+            href={`/${chain_id}/blocks/${searchBlockHeight?.block?.header?.height}`}
+          >
+            {searchBlockHeight?.block?.header?.height}
+          </a>
+        ))
+      : searchAccountAddress?.account?.address === query
+      ? (searchedData = (
+          <a
+            href={`/${chain_id}/account/${searchAccountAddress?.account?.address}`}
+          >
+            {searchAccountAddress?.account?.address}
+          </a>
+        ))
+      : "Nothing Found";
+  } else {
+    err = "No Data Found";
+  }
 
   const handleWindowsClick = (e) => {
     if (!searchBar?.current?.contains(e.target)) {
@@ -86,7 +149,7 @@ export function SearchBar(props) {
             />
           </svg>
           <TextInput
-            placeholder="Search by Validator/Valoper Address ..."
+            placeholder="Block Height, TxHash, Valoper Address, Account Address"
             type="text"
             className={darkMode ? "dark-mode" : " "}
             onChange={(event) => setQuery(event.target.value)}
@@ -164,6 +227,9 @@ const TextInput = styled.input`
   }
   &.mobile.dark-mode {
     background: transparent;
+  }
+  @media screen and (max-width: 775px) {
+    font-size: 11px;
   }
 `;
 

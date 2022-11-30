@@ -88,13 +88,6 @@ const Wrapper = styled.div`
     background-color: #0b0a15 !important;
   }
 `;
-const Parent = styled.div`
-  width: 100%;
-  height: 100%;
-  &.dark-mode {
-    background-color: #0b0a15 !important;
-  }
-`;
 
 const MainParent = styled.div`
   &.dark-mode {

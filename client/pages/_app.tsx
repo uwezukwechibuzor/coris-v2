@@ -11,7 +11,7 @@ import Error from "next/error";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { ErrorFallback } from "../components/ErrorFallback";
 import { BaseChainApi } from "../lib/baseChainApi";
-import { ChainAllValidatorsEndpoint } from "../lib/chainApiEndpoints";
+import { ChainAllValidatorsEndpoint, chainTxsByHashEndpoint } from "../lib/chainApiEndpoints";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -45,6 +45,9 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
+  const router = useRouter();
+  const query = router.query;
+
   const [getAllValidators, setAllValidators] = useState([]);
 
   //general query for all components
@@ -61,10 +64,7 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
   }, []);
 
   const allValidators = getAllValidators ? getAllValidators : null;
-
-  const router = useRouter();
-  const query = router.query;
-
+ 
   return getLayout(
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <SSRProvider>

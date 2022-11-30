@@ -144,8 +144,8 @@ function AccountContents(props) {
                 {accountBalance?.balances?.map((data) => (
                   <h6>
                     {data?.denom == "uatom"
-                      ? data?.amount / DENOM + " " + COIN
-                      : data.amount / DENOM +
+                      ? (data?.amount / DENOM).toFixed(2) + " " + COIN
+                      : (data.amount / DENOM).toFixed(2) +
                         " " +
                         formatHash(data?.denom, 10, "...")}
                     <br />
