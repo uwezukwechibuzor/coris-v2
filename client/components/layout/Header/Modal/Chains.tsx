@@ -22,7 +22,7 @@ const Chain = ({ chainName, chainImage, chain_id }) => {
       })
     );
     dispatch(toggleConnectWalletModal(false));
-    router.push(`/${chain_id}`);
+    router.push(`/${chain_id}/`);
   };
   return (
     <GridItem

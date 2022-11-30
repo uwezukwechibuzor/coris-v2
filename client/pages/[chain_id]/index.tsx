@@ -175,7 +175,7 @@ function Home(props) {
     poolData: chainPool,
     coinData: coinData,
     priceChart: priceChart,
-    chain_id: chain_id
+    chain_id: chain_id,
   };
 
   return (
