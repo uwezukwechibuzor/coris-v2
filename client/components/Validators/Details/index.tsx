@@ -36,7 +36,7 @@ function ValidatorsDetailsContent(props) {
     bech32Address,
     chain_id,
   } = props;
- 
+
   const [selectedDelegations, setDelegationPage] = useState("delegations");
 
   const validatorsDetails =
@@ -349,7 +349,7 @@ function ValidatorsDetailsContent(props) {
         </div>
       </Card>
       <Container className="my-3">
-        <h4>Transactions By Validators</h4>
+        <h4>Transactions By Validator</h4>
         <TxsByHeightEvent txs={getValidatorTxsByEvents} chain_id={chain_id} />
       </Container>
       <style jsx>{`

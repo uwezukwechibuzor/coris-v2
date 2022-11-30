@@ -8,7 +8,7 @@ import { formatHash, toDay } from "../../../lib/Util/format";
 function AccountUndelegationsContent(props) {
   const unDelegations = props;
 
-  //add pagination to signatures
+  //add pagination to UnDelegations
   const [currentPage, setCurrentPage] = useState(0);
 
   const PER_PAGE = 5;
@@ -54,7 +54,7 @@ function AccountUndelegationsContent(props) {
                 <tbody>
                   <tr className="striped">
                     <Link
-                      href="/[chain_id]/account[address]"
+                      href="/[chain_id]/account/[address]"
                       as={`/${props?.chain_id}/account/${data.delegator_address}`}
                     >
                       <a>
@@ -126,7 +126,7 @@ function AccountUndelegationsContent(props) {
               <tbody>
                 <tr>
                   <td></td>
-                  <td>NO Undelegations</td>
+                  <td>No Unbonding</td>
                   <td></td>
                   <td></td>
                 </tr>

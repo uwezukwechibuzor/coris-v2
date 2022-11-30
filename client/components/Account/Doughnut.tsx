@@ -1,51 +1,67 @@
-import { Doughnut as Chart } from 'react-chartjs-2';
-import 'chart.js/auto'
-import styled from 'styled-components';
+import { Doughnut as Chart } from "react-chartjs-2";
+import "chart.js/auto";
+import styled from "styled-components";
+import { useAppSelector } from "../../lib/hooks";
 
-const Doughnut = () => {
-    
-    const chartData = {
-        labels: ["s", 's'],
-        datasets: [
-            {
-                labels: ['sdsd', 'sdsd'],
-                data: [50, 50],
-                backgroundColor: ["red", "blue"],
-                borderWidth: 1,
-                datalabels: {
-                    color: 'white',
-                },
-                hoverOffset: 10,
-                hoverBorderWidth: 10,
-                hoverBorderJoinStyle: 'miter',
-            },
+const Doughnut = (props) => {
+  const darkMode = useAppSelector((state) => state.general.darkMode);
+
+  const {
+    percentageOfAccountDelegations,
+    percentageOfAccountRedelegations,
+    percentageOfAccountRewards,
+    percentageOfAccountUnboundings,
+  } = props;
+
+  const chartData = {
+    labels: ["Reward", "Delegation", "Redelegation", "Unbonding"],
+    datasets: [
+      {
+        labels: ["sdsd", "sdsd"],
+        data: [
+          percentageOfAccountRewards,
+          percentageOfAccountDelegations,
+          percentageOfAccountRedelegations,
+          percentageOfAccountUnboundings,
         ],
-    }
-
-    const options = {
-        plugins: {
-            legend: {
-                display: false,
-            },
+        backgroundColor: [
+          darkMode ? "red" : "red",
+          darkMode ? "blue" : "#402782",
+          darkMode ? "lightblue" : "lightblue",
+          darkMode ? "darkblue" : "darkblue",
+        ],
+        borderWidth: 1,
+        datalabels: {
+          color: "white",
         },
-        layout: {
-            padding: 20,
-        },
-    }
+        hoverOffset: 10,
+        hoverBorderWidth: 10,
+        hoverBorderJoinStyle: "miter",
+      },
+    ],
+  };
 
-    return (
-        <ChartContainer>
-            <Chart
-            data={chartData} options={options as any}
-        />
-        </ChartContainer>
-        
-    )
-}
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    layout: {
+      padding: 20,
+    },
+  };
+
+  return (
+    <ChartContainer>
+      <Chart data={chartData} options={options as any} />
+    </ChartContainer>
+  );
+};
 
 const ChartContainer = styled.div`
-    width: 300px;
-    height: 300px;
-`
+  width: 300px;
+  height: 300px;
+`;
 
-export default Doughnut
+export default Doughnut;

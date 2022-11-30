@@ -7,19 +7,18 @@ import { formatHash, formatTimeDateYear } from "../../../lib/Util/format";
 const denom = "uatom";
 
 function AccountRedelegationsContent(props) {
-  const redelegations = props;
-
-  //add pagination to signatures
+  //add pagination to Redelegations
   const [currentPage, setCurrentPage] = useState(0);
 
   const PER_PAGE = 5;
   const offset = currentPage * PER_PAGE;
-  const currentredelegations = redelegations?.redelegation_responses?.slice(
-    offset,
-    offset + PER_PAGE
-  );
+  const currentredelegations =
+    props?.Redelegations?.redelegation_responses?.slice(
+      offset,
+      offset + PER_PAGE
+    );
   const pageCount = Math.ceil(
-    redelegations?.redelegation_responses?.length / PER_PAGE
+    props?.Redelegations?.redelegation_responses?.length / PER_PAGE
   );
   function handlePageClick({ selected: selectedPage }) {
     setCurrentPage(selectedPage);
@@ -46,13 +45,14 @@ function AccountRedelegationsContent(props) {
                 </th>
               </tr>
             </thead>
-            {currentredelegations?.length !== 0 ? (
+            {currentredelegations?.length !== 0 &&
+            currentredelegations !== undefined ? (
               currentredelegations?.map((data) => (
                 <tbody>
                   <tr className="striped">
                     <td>
                       <Link
-                        href="/[chain_id]/account[address]"
+                        href="/[chain_id]/account/[address]"
                         as={`/${props?.chain_id}/account/${data.redelegation.delegator_address}`}
                       >
                         <a>
@@ -140,7 +140,7 @@ function AccountRedelegationsContent(props) {
               <tbody>
                 <tr>
                   <td></td>
-                  <td>No Redelegations</td>
+                  <td>No Redelegation</td>
                   <td></td>
                   <td></td>
                 </tr>
@@ -148,7 +148,8 @@ function AccountRedelegationsContent(props) {
             )}
           </table>
         </Responsive>
-        {currentredelegations?.length !== 0 ? (
+        {currentredelegations?.length !== 0 &&
+        currentredelegations !== undefined ? (
           <ReactPaginate
             previousLabel={"←"}
             nextLabel={"→"}

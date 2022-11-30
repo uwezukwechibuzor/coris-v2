@@ -119,13 +119,13 @@ function ConsensusDetails(props) {
                               )
                             : 0}
                           <div style={{ color: "red" }} className="sub">
-                            {data[index]?.tokens
+                            {data[index]?.tokens !== Infinity
                               ? percentageOfVotingPower.toFixed(2) + "%"
                               : 0}
                           </div>
                         </td>
                         <td>
-                          {data[index]?.tokens
+                          {data[index]?.tokens !== Infinity
                             ? activeValidatorsCumulativeShare.toFixed(2) + "%"
                             : 0}
                         </td>

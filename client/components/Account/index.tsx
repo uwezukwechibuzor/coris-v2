@@ -8,10 +8,11 @@ import AccountUndelegationsContent from "./Details/Undelegations";
 import { useAppSelector } from "../../lib/hooks";
 import Doughnut from "./Doughnut";
 import { COIN, DENOM } from "../../lib/Util/constants";
-import { abbrMessage } from "../../lib/Util/format";
+import { abbrMessage, formatHash } from "../../lib/Util/format";
 import { useRouter } from "next/router";
 //import CopyClip from "../Validators/Details/CopyClip";
 import TxsByHeightEvent from "../Blocks/Details/tsxByHeightOrEvent";
+import CopyClip from "../Validators/Details/CopyClip";
 
 function AccountContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -19,19 +20,18 @@ function AccountContents(props) {
 
   const router = useRouter();
   const query = router.query;
+  const accountAddress: any = query.address;
 
   const {
     authAccount,
     accountBalance,
     delegationRewards,
     accountDelegations,
-    accountReledelgations,
+    accountRedelegations,
     accountUnboundingDelegations,
     getAllAccountTxsByEvents,
     chain_id,
   } = props;
-
-  const balance = 10;
 
   let totalRewards = 0;
   delegationRewards?.rewards?.map((data) => {
@@ -44,15 +44,43 @@ function AccountContents(props) {
     totalDelegationsAmount += Number(data?.balance?.amount);
   });
 
-  let totalReledegationsAmount = 0;
-  accountReledelgations?.redelegation_responses?.map((data) => {
-    totalReledegationsAmount += Number(data?.entries[0]?.balance);
+  let totalRedegationsAmount = 0;
+  accountRedelegations?.redelegation_responses?.map((data) => {
+    totalRedegationsAmount += Number(data?.entries[0]?.balance);
   });
 
   let totalUnboundingDelegationsAmount = 0;
   accountUnboundingDelegations?.unbonding_responses?.map((data) => {
-    totalUnboundingDelegationsAmount += Number(data.entries[0].balance);
+    totalUnboundingDelegationsAmount += Number(data?.entries[0]?.balance);
   });
+
+  //get total value
+  const totalValue =
+    totalRewards +
+    totalDelegationsAmount +
+    totalRedegationsAmount +
+    totalUnboundingDelegationsAmount;
+  const percentageOfAccountRewards =
+    totalRewards !== 0 ? (totalRewards / totalValue) * 100 : 0;
+  const percentageOfAccountDelegations =
+    totalDelegationsAmount !== 0
+      ? (totalDelegationsAmount / totalValue) * 100
+      : 0;
+  const percentageOfAccountRedelegations =
+    totalRedegationsAmount !== 0
+      ? (totalRedegationsAmount / totalValue) * 100
+      : 0;
+  const percentageOfAccountUnboundings =
+    totalUnboundingDelegationsAmount !== 0
+      ? (totalUnboundingDelegationsAmount / totalValue) * 100
+      : 0;
+
+  const percentageData = {
+    percentageOfAccountRewards,
+    percentageOfAccountDelegations,
+    percentageOfAccountRedelegations,
+    percentageOfAccountUnboundings,
+  };
 
   return (
     <>
@@ -69,7 +97,7 @@ function AccountContents(props) {
             <FlexMiddle className="mt-3">Address</FlexMiddle>
             <FlexMiddle>
               <h5>{query.address}</h5>
-              {/*<CopyClip value={query.address} /> */}
+              <CopyClip value={accountAddress} />
             </FlexMiddle>
             <hr style={{ border: "1px solid rgb(199 199 199)" }} />
             <FlexMiddle>
@@ -110,13 +138,19 @@ function AccountContents(props) {
               <div>
                 <div>
                   <span style={{ marginLeft: "70px" }}>
-                    <FlexMiddle>Reward Address</FlexMiddle>
+                    <FlexMiddle>Balance</FlexMiddle>
                   </span>
                 </div>
-                <h6>
-                  ******
-                  <br />
-                </h6>
+                {accountBalance?.balances?.map((data) => (
+                  <h6>
+                    {data?.denom == "uatom"
+                      ? data?.amount / DENOM + " " + COIN
+                      : data.amount / DENOM +
+                        " " +
+                        formatHash(data?.denom, 10, "...")}
+                    <br />
+                  </h6>
+                ))}
               </div>
             </FlexMiddle>
           </Card>
@@ -133,7 +167,7 @@ function AccountContents(props) {
             >
               <Flex className="w-40 w-100-sm justify-content-center align-items-center">
                 <div>
-                  <Doughnut />
+                  <Doughnut {...percentageData} />
                 </div>
               </Flex>
               <Flex className="pt-3 w-100" style={{ flexDirection: "column" }}>
@@ -146,28 +180,13 @@ function AccountContents(props) {
                     }}
                   >
                     <Flex>
-                      <Box />
-                      <h5 className="ml-3">Balance</h5>
-                    </Flex>
-                    <Flex className="ml-3">
-                      <h5>
-                        <strong>
-                          {accountBalance ? (balance / DENOM).toFixed(4) : 0}{" "}
-                          {COIN}
-                        </strong>
+                      <Box className="reward" />
+                      <h5 className="ml-3">
+                        Reward{" "}
+                        <small style={{ fontSize: "12px" }}>
+                          {percentageOfAccountRewards.toFixed(2) + "%"}
+                        </small>
                       </h5>
-                    </Flex>
-                  </Flex>
-                  <Flex
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <Flex>
-                      <Box />
-                      <h5 className="ml-3">Reward</h5>
                     </Flex>
                     <Flex>
                       <h5>
@@ -188,8 +207,13 @@ function AccountContents(props) {
                     }}
                   >
                     <Flex>
-                      <Box />
-                      <h5 className="ml-3">Delegation</h5>
+                      <Box className="delegations" />
+                      <h5 className="ml-3">
+                        Delegation{" "}
+                        <small style={{ fontSize: "12px" }}>
+                          {percentageOfAccountDelegations.toFixed(2) + "%"}
+                        </small>
+                      </h5>
                     </Flex>
                     <Flex>
                       <h5>
@@ -210,14 +234,19 @@ function AccountContents(props) {
                     }}
                   >
                     <Flex>
-                      <Box />
-                      <h5 className="ml-3">Redelegation</h5>
+                      <Box className="redelegations" />
+                      <h5 className="ml-3">
+                        Redelegation{" "}
+                        <small style={{ fontSize: "12px" }}>
+                          {percentageOfAccountRedelegations.toFixed(2) + "%"}
+                        </small>
+                      </h5>
                     </Flex>
                     <Flex>
                       <h5>
                         <strong>
-                          {accountReledelgations?.redelegation_responses
-                            ? (totalReledegationsAmount / DENOM).toFixed(4)
+                          {accountRedelegations?.redelegation_responses
+                            ? (totalRedegationsAmount / DENOM).toFixed(4)
                             : 0}{" "}
                           {COIN}
                         </strong>
@@ -232,8 +261,13 @@ function AccountContents(props) {
                     }}
                   >
                     <Flex>
-                      <Box />
-                      <h5 className="ml-3">Undelegation</h5>
+                      <Box className="unbondings" />
+                      <h5 className="ml-3">
+                        Unbondings{" "}
+                        <small style={{ fontSize: "12px" }}>
+                          {percentageOfAccountUnboundings.toFixed(2) + "%"}
+                        </small>
+                      </h5>
                     </Flex>
                     <Flex>
                       <h5>
@@ -254,61 +288,6 @@ function AccountContents(props) {
           </Card>
         </Container>
       </Grid1>
-
-      {/*<Container className="my-3">
-                <h5>Tokens</h5>
-                <Card className={darkMode ? 'dark-mode' : ''} style={{ padding: "10px" }}>
-                    <Responsive>
-                        <table className="w-100">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <h4>Name</h4>
-                                    </th>
-                                    <th>
-                                        <h4>Amount</h4>
-                                    </th>
-                                    <th>
-                                        <h4> Total Value</h4>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="striped">
-                                    <td>
-                                        <Flex style={{ alignItems: 'center' }}>
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" fill="none">
-                                                    <path fillRule="evenodd" clip-rule="evenodd" d="M15.619 16.7619C10.9367 16.7619 7.04364 20.1409 6.24514 24.5934C4.22535 22.3024 3 19.2943 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16C29 19.6408 27.5033 22.9321 25.0916 25.292C24.5948 20.4992 20.5433 16.7619 15.619 16.7619ZM16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32ZM16 16.7619C18.9455 16.7619 21.3333 14.3741 21.3333 11.4286C21.3333 8.48305 18.9455 6.09524 16 6.09524C13.0545 6.09524 10.6667 8.48305 10.6667 11.4286C10.6667 14.3741 13.0545 16.7619 16 16.7619Z" fill="#C4C4C4" />
-                                                </svg>
-                                            </div>
-                                            <div className="ml-3 text-primary">cosmos</div>
-                                        </Flex>
-                                    </td>
-                                    <td>
-                                        1000
-                                    </td>
-                                    <td>
-                                        300000
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </Responsive>
-                    <ReactPaginate
-                        breakLabel="..."
-                        nextLabel="next"
-                        onPageChange={() => { }}
-                        pageRangeDisplayed={2}
-                        pageCount={20}
-                        previousLabel="prev"
-                        renderOnZeroPageCount={null}
-                        className="pagination"
-                    />
-                </Card>
-            </Container>
-    */}
-
       <Container className="my-3">
         <h5>Delegations</h5>
         <Card
@@ -349,7 +328,7 @@ function AccountContents(props) {
               />
             ) : selectedDelegations === "redelegations" ? (
               <AccountRedelegationsContent
-                {...accountReledelgations}
+                Redelegations={accountRedelegations}
                 chain_id={chain_id}
               />
             ) : (
@@ -361,90 +340,6 @@ function AccountContents(props) {
           </div>
         </Card>
       </Container>
-
-      {/*  <Container>
-                <h5>Total Vesting</h5>
-                <Grid style={{ marginBottom: "30px" }}>
-                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <h5>Continuous Vesting</h5>
-                        </Flex>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <span>
-                                Your tokens are unlocked every block
-                            </span>
-                        </Flex>
-                    </Card>
-                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <h5>Continuous Vesting</h5>
-                        </Flex>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <span>
-                                Your tokens are unlocked every block
-                            </span>
-                        </Flex>
-                    </Card>
-                    <Card className={darkMode ? 'dark-mode p-3' : 'p-3'}>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <h5>Continuous Vesting</h5>
-                        </Flex>
-                        <Flex className="text-center w-100" style={{ justifyContent: 'center' }}>
-                            <span>
-                                Your tokens are unlocked every block
-                            </span>
-                        </Flex>
-                    </Card>
-                </Grid>
-            </Container>
-
-            <Container className="my-3">
-                <Card className={darkMode ? 'dark-mode ' : ''} style={{ padding: "10px" }}>
-                    <Responsive>
-                        <table className={darkMode ? 'w-100 mt-3 dark-mode' : 'w-100 mt-3'}>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <h4>Type</h4>
-                                    </th>
-                                    <th>
-                                        <h4>Days Remaining</h4>
-                                    </th>
-                                    <th>
-                                        <h4>Still Locked</h4>
-                                    </th>
-                                    <th>
-                                        <h4>Historically Unlocked</h4>
-                                    </th>
-                                    <th>
-                                        <h4>Full Unlocked</h4>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr className="striped">
-                                    <td>sdsd</td>
-                                    <td>sdasd</td>
-                                    <td>asdadsda</td>
-                                    <td>sdasdasdasdas</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </Responsive>
-                    <ReactPaginate
-                        breakLabel="..."
-                        nextLabel="next"
-                        onPageChange={() => { }}
-                        pageRangeDisplayed={2}
-                        pageCount={20}
-                        previousLabel="prev"
-                        renderOnZeroPageCount={null}
-                        className="pagination"
-                    />
-                </Card>
-            </Container>
-                    */}
-
       <Container className="my-3">
         <h4>Transactions</h4>
         <TxsByHeightEvent txs={getAllAccountTxsByEvents} chain_id={chain_id} />
@@ -457,7 +352,18 @@ const Box = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 3px;
-  background: red;
+  &.delegations {
+    background: blue !important;
+  }
+  &.reward {
+    background: red !important;
+  }
+  &.redelegations {
+    background: lightblue !important;
+  }
+  &.unbondings {
+    background: darkblue !important;
+  }
 `;
 
 const TabToggler = styled.div`

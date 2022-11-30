@@ -13,6 +13,7 @@ import {
 } from "../../../lib/chainApiEndpoints";
 import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
+import { fromBech32, fromHex, toBech32, toHex } from "@cosmjs/encoding";
 
 function AccountDetails(props) {
   const [getAllAccountTxsByEvents, setAllAccountTxsByEvents] = useState([]);
@@ -99,7 +100,7 @@ function AccountDetails(props) {
         console.log(error);
       });
   }, [query.address]);
-
+ 
   //get Acccount UnDelegations
   useEffect(() => {
     axios
@@ -112,12 +113,13 @@ function AccountDetails(props) {
       });
   }, [query.address]);
 
+
   const accountDetails = {
     authAccount: getAuthAccount,
     accountBalance: getAccountBalance,
     delegationRewards: getDelegatorRewards,
     accountDelegations: getAccountDelegations,
-    accountReledelgations: getAccountReDelegations,
+    accountRedelegations: getAccountReDelegations,
     accountUnboundingDelegations: getAccountUnDelegations,
     getAllAccountTxsByEvents: getAllAccountTxsByEvents,
     chain_id: chain_id,

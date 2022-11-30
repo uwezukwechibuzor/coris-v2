@@ -96,7 +96,7 @@ function ProposalsContent(props) {
                 <table>
                   <thead>
                     <TableRow>
-                      <TableData style={{ width: "110px" }}>Proposer</TableData>
+                      <TableData style={{ width: "110px" }}>Type</TableData>
                       <TableData>
                         <b>
                           {data?.content ? abbrMessage(data?.content) : null}
