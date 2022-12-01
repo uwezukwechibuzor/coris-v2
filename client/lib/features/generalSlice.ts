@@ -16,7 +16,7 @@ const initialState: {
   chain: {
     name: "COSMOS",
     id: "COSMOS",
-    image: "https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp",
+    image: "https://assets.coingecko.com/coins/images/1481/large/cosmos_hub.png?1555657960",
   },
 };
 

@@ -49,34 +49,44 @@ export function ModalContent({ toggle }) {
                   <h4 className="text-center">Mainnets</h4>
                   <Grid>
                     <Chain
+                      chain_id={"agoric"}
+                      chainName="AGORIC"
+                      chainImage="https://assets.coingecko.com/coins/images/24487/large/bld-logo.png?1664066088"
+                    />
+                    <Chain
+                      chain_id={"akash-network"}
+                      chainName="AKASH"
+                      chainImage="https://assets.coingecko.com/coins/images/12785/large/akash-logo.png?1615447676"
+                    />
+                    <Chain
+                      chain_id={"chihuahua"}
+                      chainName="CHIHUAHUA"
+                      chainImage="https://assets.coingecko.com/coins/images/22485/large/logo_transparent_notext.png?1641901839"
+                    />
+                    <Chain
                       chain_id={"cosmos"}
                       chainName="COSMOS"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                      chainImage="https://assets.coingecko.com/coins/images/1481/large/cosmos_hub.png?1555657960"
+                    />
+                    <Chain
+                      chain_id={"crescent-network"}
+                      chainName="CRESCENT"
+                      chainImage="https://assets.coingecko.com/coins/images/25061/large/logo_200x200.png?1649943220"
+                    />
+                    <Chain
+                      chain_id={"juno-network"}
+                      chainName="JUNO"
+                      chainImage="https://assets.coingecko.com/coins/images/19249/large/juno.png?1642838082"
+                    />
+                    <Chain
+                      chain_id={"stargaze"}
+                      chainName="STARGAZE"
+                      chainImage="https://assets.coingecko.com/coins/images/22363/large/stars.png?1645256657"
                     />
                     <Chain
                       chain_id={"umee"}
                       chainName="UMEE"
-                      chainImage="https://miro.medium.com/max/1400/1*1522ubTJNkRNK7Fmn9FtzQ.png"
-                    />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="Chian A "
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
-                    />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="Chain B"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
-                    />
-                    <Chain
-                      chain_id={"Chain C"}
-                      chainName="UMEE"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
-                    />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="Chain D"
-                      chainImage="https://cdn.vectorstock.com/i/1000x1000/32/29/atom-logo-icon-vector-22623229.webp"
+                      chainImage="https://assets.coingecko.com/coins/images/20635/large/1Ab_Umee_Brand_Icon_Full_Color.png?1645018295"
                     />
                   </Grid>
                 </Container>

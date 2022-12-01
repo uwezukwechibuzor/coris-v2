@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { HYDRATE } from "next-redux-wrapper";
 import { ChainAllValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
-import { chainURL } from "./interfaces/chainsURL";
+import { chainURL } from "./Util/chainsURL";
 
 const baseChainAPI =  chainURL.UMEE_API
 

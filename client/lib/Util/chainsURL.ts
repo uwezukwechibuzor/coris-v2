@@ -1,0 +1,11 @@
+
+export const chainURL = {
+    COSMOS_API: process.env.NEXT_PUBLIC_COSMOS_API,
+    UMEE_API:  process.env.NEXT_PUBLIC_UMEE_API,
+    AGORIC_API: process.env.NEXT_PUBLIC_AGORIC_API,
+    AKASH_API: process.env.NEXT_PUBLIC_AKASH_API,
+    CRESCENT_API: process.env.NEXT_PUBLIC_CRESCENT_API,
+    CHIHUAHUA_API: process.env.NEXT_PUBLIC_CHIHUAHUA_API,
+    JUNO_API: process.env.NEXT_PUBLIC_JUNO_API,
+    STARGAZE_API: process.env.NEXT_PUBLIC_STARGAZE_API,
+}
