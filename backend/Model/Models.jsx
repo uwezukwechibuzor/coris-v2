@@ -63,10 +63,55 @@ const umeeTransactions = mongoose.model("umee-Transactions", TxsSchema);
 const cosmosBlocks = mongoose.model("cosmos-Blocks", BlockSchema);
 const cosmosTransactions = mongoose.model("cosmos-Transactions", TxsSchema);
 
+//set agoric chain schema
+const agoricBlocks = mongoose.model("agoric-Blocks", BlockSchema);
+const agoricTransactions = mongoose.model("agoric-Transactions", TxsSchema);
+
+//set akash chain schema
+const akashBlocks = mongoose.model("akash-Blocks", BlockSchema);
+const akashTransactions = mongoose.model("akash-Transactions", TxsSchema);
+
+//set crescent chain schema
+const crescentBlocks = mongoose.model("crescent-Blocks", BlockSchema);
+const crescentTransactions = mongoose.model("crescent-Transactions", TxsSchema);
+
+//set chihuahua chain schema
+const chihuahuaBlocks = mongoose.model("chihuahua-Blocks", BlockSchema);
+const chihuahuaTransactions = mongoose.model("chihuahua-Transactions", TxsSchema);
+
+//set juno chain schema
+const junoBlocks = mongoose.model("juno-Blocks", BlockSchema);
+const junoTransactions = mongoose.model("juno-Transactions", TxsSchema);
+
+
+//set stargaze chain schema
+const stargazeBlocks = mongoose.model("stargaze-Blocks", BlockSchema);
+const stargazeTransactions = mongoose.model("stargaze-Transactions", TxsSchema);
+
 
 module.exports = {
   umeeBlockModel: umeeBlocks,
   umeeTxsModel: umeeTransactions,
+  
   cosmosBlockModel: cosmosBlocks,
   cosmosTxsModel: cosmosTransactions,
+  
+  agoricBlockModel: agoricBlocks,
+  agoricTxsModel: agoricTransactions,
+
+  akashBlockModel: akashBlocks,
+  akashTxsModel: akashTransactions,
+
+  crescentBlockModel: crescentBlocks,
+  crescentTxsModel: crescentTransactions,
+
+  chihuahuaBlockModel: chihuahuaBlocks,
+  chihuahuaTxsModel: chihuahuaTransactions,
+
+  junoBlockModel: junoBlocks,
+  junoTxsModel: junoTransactions,
+
+  stargazeBlockModel: stargazeBlocks,
+  stargazeTxsModel: stargazeTransactions,
+
 };

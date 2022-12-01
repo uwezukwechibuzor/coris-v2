@@ -1,5 +1,6 @@
 module.exports = {
     latestBlocks: '/blocks/latest',
+    latestBlocksRecentVersion: '/cosmos/base/tendermint/v1beta1/blocks/latest',
     allChainValidators: '/cosmos/staking/v1beta1/validators?pagination.limit=500',
     activeChainValidators: '/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500',
     chainInflation: '/cosmos/mint/v1beta1/inflation',
