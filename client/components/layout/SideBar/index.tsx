@@ -20,7 +20,7 @@ import Logo from "./Logo";
 function SideNavBar(props) {
   const { sidebarToggled, darkMode } = useAppSelector((state) => state.general);
   const [selectedPage, setSelectedPage] = useState(
-    `/${props?.chain_id?.chain_id}/`
+    `/${props?.chain_id?.chain_id}`
   );
   const dispatch = useAppDispatch();
   const [isToggled, toggle] = useState(false);
@@ -55,13 +55,13 @@ function SideNavBar(props) {
       className={`${sidebarToggled && "show"} ${darkMode && "dark-mode"}`}
     >
       <Close onClick={() => dispatch(toggleSidebar(false))}>&times;</Close>
-      <Clicker onClick={() => navigate(`/${chain_id?.chain_id}/`)}>
+      <Clicker onClick={() => navigate(`/${chain_id?.chain_id}`)}>
         <Logo />
       </Clicker>
       <SearchBar src={searchBarData.src} className="mobile" />
       <Wrapper>
         <Clicker
-          onClick={() => navigate(`/${chain_id?.chain_id}/`)}
+          onClick={() => navigate(`/${chain_id?.chain_id}`)}
           title="Overview"
         >
           <a className="m-24">
@@ -72,8 +72,7 @@ function SideNavBar(props) {
               <FlexCell>
                 <Overview
                   style={{
-                    color:
-                      selectedPage === `/${chain_id?.chain_id}/` && "white",
+                    color: selectedPage === `/${chain_id?.chain_id}` && "white",
                   }}
                 >
                   {overview}

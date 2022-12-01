@@ -31,12 +31,6 @@ function Home(props) {
   const queryTotalBlocks = 5;
   const queryTotalTxs = 5;
 
-  let coinID;
-
-  props?.chain_id?.chain_id === "cosmos"
-    ? (coinID = "cosmos")
-    : (coinID = "umee");
-
   const chain_id = props?.chain_id?.chain_id;
 
   //fetch latest Blocks
@@ -123,19 +117,19 @@ function Home(props) {
   //function to get coin details
   useEffect(() => {
     axios
-      .get(coinsAPI(coinID))
+      .get(coinsAPI(chain_id))
       .then((response) => {
         setCoin(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id, coinData]);
 
   //get price data and pass to price chart component
   useEffect(() => {
     axios
-      .get(coinsPriceChart(coinID))
+      .get(coinsPriceChart(chain_id))
       .then((response) => {
         const getPrice = response.data.prices;
         setPriceChart(getPrice);
@@ -143,7 +137,7 @@ function Home(props) {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id, priceChart]);
 
   const homePageData = {
     title: "Overview",

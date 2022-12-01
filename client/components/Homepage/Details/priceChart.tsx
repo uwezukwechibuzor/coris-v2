@@ -9,13 +9,6 @@ const PriceChart = (props) => {
 
   const getPriceData = props;
 
-  let y = [];
-  let x = [];
-  for (const i in getPriceData) {
-    x.push(getPriceData[i][0]);
-    y.push(getPriceData[i][1]);
-  }
-
   var config = {
     chart: {
       zoomType: "x",
@@ -31,13 +24,13 @@ const PriceChart = (props) => {
     //: "Pinch the chart to zoom in",
     //},
     xAxis: {
-      type: "datetime",
+      type: "",
       zoomEnabled: true,
-      categories: x,
+      categories: getPriceData?.priceChart?.map((data) => data?.map((y) => y)),
       tickInterval: 60,
       labels: {
         formatter: function () {
-          return Highcharts.dateFormat("%Y-%m-%d %I:%M:%S %p", this.value);
+          return Highcharts.dateFormat("%Y-%m-%d", this.value);
         },
       },
     },
@@ -86,7 +79,7 @@ const PriceChart = (props) => {
       {
         type: "area",
         name: "USD",
-        data: y,
+        data: getPriceData?.priceChart?.map((data) => data?.map((y) => y)),
       },
     ],
   };

@@ -210,7 +210,7 @@ function HomePageContent(props) {
             </Flex>
           </Stat>
           <br />
-          <PriceChart {...priceChart} />
+          <PriceChart priceChart={priceChart} />
         </GridItem>
         <GridItem
           className={darkMode ? "dark-mode second-item p-3" : "second-item p-3"}
