@@ -31,6 +31,7 @@ services:
     container_name: coris-backend
     restart: unless-stopped
     environment:
+     MONGOOSE_URL: mongodb://admin:12345@db:27017
      COSMOS_REST_API: https://api-cosmoshub-ia.cosmosia.notional.ventures
      COSMOS_RPC_API: https://rpc.cosmos.network
      AGORIC_REST_API: https://api-agoric.nodes.guru
