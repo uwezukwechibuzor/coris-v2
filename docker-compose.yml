@@ -31,12 +31,21 @@ services:
     container_name: coris-backend
     restart: unless-stopped
     environment:
-      MONGOOSE_URL: mongodb://admin:12345@db:27017
-      COSMOS_REST: https://cosmos.api.ping.pub
-      COSMOS_RPC_API: https://rpc.cosmos.network
-      UMEE_REST_API: https://cosmos.api.ping.pub
-      UMEE_RPC_API: https://rpc.cosmos.network
-      PORT: 5000
+     COSMOS_REST_API: https://api-cosmoshub-ia.cosmosia.notional.ventures
+     COSMOS_RPC_API: https://rpc.cosmos.network
+     AGORIC_REST_API: https://api-agoric.nodes.guru
+     AGORIC_RPC_API: https://main.rpc.agoric.net:443
+     AKASH_REST_API: https://api-akash-ia.cosmosia.notional.ventures
+     AKASH_RPC_API: https://rpc-akash-ia.cosmosia.notional.ventures
+     CRESCENT_REST_API: https://crescent-api.polkachu.com
+     CRESCENT_RPC_API: https://mainnet.crescent.network:26657
+     CHIHUAHUA_REST_API: https://chihuahua-api.polkachu.com
+     CHIHUAHUA_RPC_API: https://chihuahua-rpc.polkachu.com:443
+     JUNO_REST_API: https://api-juno-ia.cosmosia.notional.ventures
+     JUNO_RPC_API: https://rpc-juno-ia.cosmosia.notional.ventures:443
+     STARGAZE_REST_API: https://stargaze-api.polkachu.com
+     STARGAZE_RPC_API: https://stargaze-rpc.polkachu.com
+     PORT: 5001
     command: npm run dev
     depends_on:
       - db
@@ -44,9 +53,9 @@ services:
       - ./backend:/usr/app/backend
       - backend-ignore:/usr/app/backend/node_modules
     expose:
-      - "5000"
+      - "5001"
     ports:
-      - "5000:5000"
+      - "5001:5001"
     networks:
       - coris
 
@@ -58,9 +67,14 @@ services:
     container_name: coris-client
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_Cosmos_API: http://localhost:5000/umee
-      NEXT_PUBLIC_UMEE_API: http://localhost:5000/umee
-      NEXT_PUBLIC_COIN_ID: umee
+      NEXT_PUBLIC_COSMOS_API: http://localhost:5001/cosmos
+      NEXT_PUBLIC_AGORIC_API: http://localhost:5001/agoric
+      NEXT_PUBLIC_AKASH_API: http://localhost:5001/akash
+      NEXT_PUBLIC_CRESCENT_API: http://localhost:5001/crescent
+      NEXT_PUBLIC_CHIHUAHUA_API: http://localhost:5001/chihuahua
+      NEXT_PUBLIC_JUNO_API: http://localhost:5001/juno
+      NEXT_PUBLIC_STARGAZE_API: http://localhost:5001/stargaze
+      
     volumes:
       - ./client:/usr/app/client
       - client-ignore:/usr/app/client/node_modules
