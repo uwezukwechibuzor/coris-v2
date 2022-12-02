@@ -16,7 +16,7 @@ function ConsensusDetails(props) {
   const { validators, totalBondedTokens, consensusState, chain_id } = props;
 
   let activeVal = [];
-  validators?.map((data) => {
+  validators?.validators?.map((data) => {
     if (data.status === "BOND_STATUS_BONDED" && data !== undefined) {
       activeVal.push(data);
     } else {

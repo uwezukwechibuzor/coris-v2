@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useAppSelector } from "../../lib/hooks";
 import { abbrMessage, formatHash, toDay } from "../../lib/Util/format";
 import router from "next/router";
+import { assetSymbol } from "../../lib/Util/constants";
 
 const denom = 1000000;
-const coin = "ATOM";
 
 const TxsData = (props) => {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -12,9 +12,7 @@ const TxsData = (props) => {
   const allTxs = props?.getAllTxs;
 
   return (
-    <table
-      className={darkMode ? "mt-3 dark-mode w-100" : "w-100 mt-3"} 
-    >
+    <table className={darkMode ? "mt-3 dark-mode w-100" : "w-100 mt-3"}>
       <thead>
         <tr>
           <th>Tx Hash</th>
@@ -38,7 +36,11 @@ const TxsData = (props) => {
           <td className={tx.result === 0 ? "text-success" : "text-danger"}>
             {tx.result === 0 ? "Success" : "failed"}
           </td>
-          <td>{tx?.fee[0] ? tx?.fee[0].amount / denom + " " + coin : null}</td>
+          <td>
+            {tx?.fee[0]
+              ? tx?.fee[0].amount / denom + " " + assetSymbol(props?.chain_id)
+              : null}
+          </td>
           <td>{tx.height}</td>
           <td>{toDay(tx.time, "from")}</td>
         </tr>

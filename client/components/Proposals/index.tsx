@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
 import ReactPaginate from "react-paginate";
 import { Button, ProgressBar } from "react-bootstrap";
-import { COIN, DENOM } from "../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../lib/Util/constants";
 import SearchButton from "./SearchButton";
 
 function ProposalsContent(props) {
@@ -214,7 +214,7 @@ function ProposalsContent(props) {
                           {data?.tally?.tally?.yes != null
                             ? (data?.tally?.tally?.yes / DENOM).toFixed(2)
                             : 0}
-                          {COIN})
+                          {assetSymbol(chain_id)})
                         </div>
                       </Container>
                       <Container>
@@ -232,7 +232,7 @@ function ProposalsContent(props) {
                           {data?.tally?.tally?.no != null
                             ? (data?.tally?.tally?.no / DENOM).toFixed(2)
                             : 0}
-                          {COIN})
+                          {assetSymbol(chain_id)})
                         </div>
                       </Container>
                       <Container>
@@ -254,7 +254,7 @@ function ProposalsContent(props) {
                                 data?.tally?.tally?.no_with_veto / DENOM
                               ).toFixed(2)
                             : 0}{" "}
-                          {COIN})
+                          {assetSymbol(chain_id)})
                         </div>
                       </Container>
                       <Container>
@@ -274,7 +274,7 @@ function ProposalsContent(props) {
                           {data?.tally?.tally?.abstain != null
                             ? (data?.tally?.tally?.abstain / DENOM).toFixed(2)
                             : 0}
-                          {COIN})
+                          {assetSymbol(chain_id)})
                         </div>
                       </Container>
                     </Grid>
@@ -402,7 +402,7 @@ function ProposalsContent(props) {
                   <td>{toDay(proposal.voting_end_time)}</td>
                   <td>
                     {(proposal.total_deposit[0].amount / DENOM).toFixed(2)}{" "}
-                    {COIN}
+                    {assetSymbol(chain_id)}
                   </td>
                 </tr>
               ))}

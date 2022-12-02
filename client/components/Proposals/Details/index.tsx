@@ -9,7 +9,7 @@ import AbstainVoteOptions from "./Votes/Abstain";
 import Link from "next/link";
 import VetoVoteOptions from "./Votes/Veto";
 import { useAppSelector } from "../../../lib/hooks";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
 
 function ProposalDetailsContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -32,7 +32,7 @@ function ProposalDetailsContents(props) {
     Number(getTally?.tally?.no) +
     Number(getTally?.tally?.no_with_veto) +
     Number(getTally?.tally?.abstain);
-  
+
   const tallyPercentage = (tallyResult: number) =>
     (tallyResult / finalTallySum) * 100;
 
@@ -108,10 +108,8 @@ function ProposalDetailsContents(props) {
             <span>{total}</span>
             <Container style={{ marginLeft: "40px" }}>
               <strong>
-                {finalTallySum
-                  ? (finalTallySum / DENOM).toFixed(2)
-                  : ""}
-                {COIN}
+                {finalTallySum ? (finalTallySum / DENOM).toFixed(2) : ""}
+                {assetSymbol(chain_id)}
               </strong>
             </Container>
           </Flex>
@@ -119,33 +117,21 @@ function ProposalDetailsContents(props) {
             <ProgressBar
               striped
               variant="success"
-              now={
-                getTally?.tally
-                  ? tallyPercentage(getTally?.tally?.yes)
-                  : 0
-              }
+              now={getTally?.tally ? tallyPercentage(getTally?.tally?.yes) : 0}
               key={1}
               label={
                 getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.yes
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.yes).toFixed(2) + "%"
                   : 0
               }
             />
             <ProgressBar
               variant="danger"
-              now={
-                getTally?.tally
-                  ? tallyPercentage(getTally?.tally?.no)
-                  : 0
-              }
+              now={getTally?.tally ? tallyPercentage(getTally?.tally?.no) : 0}
               key={2}
               label={
                 getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.no
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.no).toFixed(2) + "%"
                   : 0
               }
             />
@@ -154,17 +140,14 @@ function ProposalDetailsContents(props) {
               variant="warning"
               now={
                 getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.no_with_veto
-                    )
+                  ? tallyPercentage(getTally?.tally?.no_with_veto)
                   : 0
               }
               key={3}
               label={
                 getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.no_with_veto
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.no_with_veto).toFixed(2) +
+                    "%"
                   : 0
               }
             />
@@ -172,18 +155,12 @@ function ProposalDetailsContents(props) {
               striped
               style={{ background: "gray" }}
               now={
-                getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.abstain
-                    )
-                  : 0
+                getTally?.tally ? tallyPercentage(getTally?.tally?.abstain) : 0
               }
               key={4}
               label={
                 getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.abstain
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.abstain).toFixed(2) + "%"
                   : 0
               }
             />
@@ -198,17 +175,13 @@ function ProposalDetailsContents(props) {
               </Flex>
               <div>
                 {getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.yes
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.yes).toFixed(2) + "%"
                   : 0}{" "}
                 (
                 {getTally?.tally?.yes
-                  ? (getTally?.tally?.yes / DENOM).toFixed(
-                      2
-                    )
+                  ? (getTally?.tally?.yes / DENOM).toFixed(2)
                   : 0}
-                {COIN})
+                {assetSymbol(chain_id)})
               </div>
             </Container>
             <Container>
@@ -218,17 +191,13 @@ function ProposalDetailsContents(props) {
               </Flex>
               <div>
                 {getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.no
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.no).toFixed(2) + "%"
                   : 0}
                 (
                 {getTally?.tally?.no
-                  ? (getTally?.tally?.no / DENOM).toFixed(
-                      2
-                    )
+                  ? (getTally?.tally?.no / DENOM).toFixed(2)
                   : 0}
-                {COIN})
+                {assetSymbol(chain_id)})
               </div>
             </Container>
             <Container>
@@ -238,17 +207,14 @@ function ProposalDetailsContents(props) {
               </Flex>
               <div>
                 {getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.no_with_veto
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.no_with_veto).toFixed(2) +
+                    "%"
                   : 0}
                 (
                 {getTally?.tally?.no_with_veto
-                  ? (
-                    getTally?.tally?.no_with_veto / DENOM
-                    ).toFixed(2)
+                  ? (getTally?.tally?.no_with_veto / DENOM).toFixed(2)
                   : 0}
-                {COIN})
+                {assetSymbol(chain_id)})
               </div>
             </Container>
             <Container>
@@ -258,17 +224,13 @@ function ProposalDetailsContents(props) {
               </Flex>
               <div>
                 {getTally?.tally
-                  ? tallyPercentage(
-                    getTally?.tally?.abstain
-                    ).toFixed(2) + "%"
+                  ? tallyPercentage(getTally?.tally?.abstain).toFixed(2) + "%"
                   : 0}
                 (
                 {getTally?.tally?.abstain
-                  ? (
-                    getTally?.tally?.abstain / DENOM
-                    ).toFixed(2)
+                  ? (getTally?.tally?.abstain / DENOM).toFixed(2)
                   : 0}
-                {COIN})
+                {assetSymbol(chain_id)})
               </div>
             </Container>
           </Grid>
@@ -303,7 +265,7 @@ function ProposalDetailsContents(props) {
               {proposal?.proposal.total_deposit
                 ? (proposal.proposal.total_deposit[0].amount / DENOM).toFixed(2)
                 : null}{" "}
-              {COIN}
+              {assetSymbol(chain_id)}
             </strong>
           </Container>
         </FlexBetween>

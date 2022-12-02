@@ -51,7 +51,7 @@ function HomePageContent(props) {
     chain_id,
   } = props;
 
-  getBlocks.map((block) => {
+  getBlocks?.map((block) => {
     //convert proposer address to cosmosvalcons
     const proposerToBech32 = toBech32(
       "cosmosvalcons",
@@ -87,7 +87,9 @@ function HomePageContent(props) {
 
   //get voting power and the active validators
   const totalValidators =
-    chainAllValidators !== undefined ? chainAllValidators?.length : null;
+    chainAllValidators?.validators !== undefined
+      ? chainAllValidators?.validators?.length
+      : null;
   const totalActiveValidators = activeValidators?.validators?.length;
 
   //percentage of active Validators
@@ -98,8 +100,8 @@ function HomePageContent(props) {
 
   //get the validators total voting power
   let totalVotingPower = 0;
-  chainAllValidators !== undefined
-    ? chainAllValidators?.map((validatorsDetails) => {
+  chainAllValidators?.validators !== undefined
+    ? chainAllValidators?.validators?.map((validatorsDetails) => {
         totalVotingPower += Number(validatorsDetails.tokens / DENOM);
         return totalVotingPower;
       })

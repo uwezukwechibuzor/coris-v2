@@ -17,14 +17,14 @@ function TransactionDetails(props) {
   //fetch Txs By Hash
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainTxsByHashEndpoint(query?.hash))
+      .get(BaseChainApi(chain_id) + chainTxsByHashEndpoint(query?.hash))
       .then((response) => {
         setChainTxsByHash(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [query.hash]);
+  }, [query.hash, chain_id]);
 
   return (
     <>

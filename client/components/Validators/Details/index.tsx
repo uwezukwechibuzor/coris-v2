@@ -15,10 +15,10 @@ import { fromHex, toBech32 } from "@cosmjs/encoding";
 import Badge from "react-bootstrap/Badge";
 import { useAppSelector } from "../../../lib/hooks";
 //import CopyClip from "./CopyClip";
-import { COIN } from "../../../lib/Util/constants";
 import "react-circular-progressbar/dist/styles.css";
 import router from "next/router";
 import TxsByHeightEvent from "../../Blocks/Details/tsxByHeightOrEvent";
+import { assetSymbol } from "../../../lib/Util/constants";
 
 function ValidatorsDetailsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -224,7 +224,7 @@ function ValidatorsDetailsContent(props) {
                   validatorsDetails?.tokens
                 ) +
                 " " +
-                COIN
+                assetSymbol(chain_id)
               : null}
           </small>
         </div>

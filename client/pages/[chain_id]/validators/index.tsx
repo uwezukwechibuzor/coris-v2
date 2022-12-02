@@ -4,6 +4,7 @@ import Layout from "../../../components/layout/Layout";
 import ValidatorsContent from "../../../components/Validators";
 import { BaseChainApi } from "../../../lib/baseChainApi";
 import {
+  ChainAllValidatorsEndpoint,
   chainPoolEndpoint,
   latestBlocksEndpoint,
 } from "../../../lib/chainApiEndpoints";
@@ -11,22 +12,33 @@ import {
 function Validators(props) {
   const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);
   const [getChainPool, setChainPool] = useState(null);
+  const [getAllValidators, setAllValidators] = useState(null);
 
-  //get all chain validators from props
-  const chainAllValidators = props?.getAllValidators;
   const chain_id = props?.chain_id?.chain_id;
+
+  //all validators
+  useEffect(() => {
+    axios
+      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
+      .then((response) => {
+        setAllValidators(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [chain_id]);
 
   //get Pool
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainPoolEndpoint)
+      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
       .then((response) => {
         setChainPool(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
 
   //get total bonded tokens
   const bondedTokensFromPool =
@@ -37,14 +49,14 @@ function Validators(props) {
   const queryTotalBlocks = 100;
   useEffect(() => {
     axios
-      .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
+      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
       .then((response) => {
         setUptimeByBlocksHeights(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [getUptimeByBlocksHeights]);
+  }, [getUptimeByBlocksHeights, chain_id]);
 
   const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(
     (uptimeByBlocksHeights) => uptimeByBlocksHeights
@@ -53,7 +65,7 @@ function Validators(props) {
   const validatorsDetails = {
     totalBondedTokens: bondedTokensFromPool,
     uptimeByBlocksHeights: uptimeByBlocksHeights,
-    chainAllValidators: chainAllValidators,
+    chainAllValidators: getAllValidators,
   };
 
   return (

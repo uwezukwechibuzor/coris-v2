@@ -9,9 +9,6 @@ import { useAppSelector } from "../../lib/hooks";
 const Layout = ({ children }) => {
   const { darkMode } = useAppSelector((state) => state.general);
 
-  //get validators data
-  const getAllValidators = children?.props?.children?.props?.children?.props;
-
   //get url Path
   const chain_id = children?.props?.children?.props?.children?.props.chain_id;
 
@@ -31,7 +28,7 @@ const Layout = ({ children }) => {
               darkMode && "dark-mode"
             } d-table-row w-100 main-header`}
           >
-            <Header {...getAllValidators} chain_id={chain_id} />
+            <Header chain_id={chain_id} />
           </div>
           <div className="d-table-row w-100 h-100">
             <div className="d-table w-100 h-100">

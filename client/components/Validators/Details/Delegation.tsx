@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
 import { useAppSelector } from "../../../lib/hooks";
-import { COIN, DENOM } from "../../../lib/Util/constants";
-import {sortDelegatorsByAmount } from "../../../lib/Util/format";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
+import { sortDelegatorsByAmount } from "../../../lib/Util/format";
 
 function DelegationsContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -86,7 +86,7 @@ function DelegationsContent(props) {
                       {data.balance
                         ? (data.balance.amount / DENOM).toFixed(2)
                         : null}{" "}
-                      {COIN}
+                      {assetSymbol(props?.chain_id)}
                     </td>
                   </tr>
                 ))

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useRouter } from "next/router";
 import React, { MutableRefObject, useRef, useState } from "react";
 import { ListGroup } from "react-bootstrap";
 import styled from "styled-components";
@@ -25,30 +24,12 @@ export function SearchBar(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
   //search button functionalities
-  const searchingValidators = props?.allValidators
-    ? props?.allValidators?.map((data) => data)
-    : null;
 
   let searchedData;
   let err;
-  searchingValidators?.filter((data) => {
-    if (query.length === 0) {
-    } else if (query !== data.operator_address) {
-      err = "No Data Found";
-    } else if (
-      data?.operator_address?.toLowerCase().includes(query.toLocaleLowerCase())
-    ) {
-      searchedData = (
-        <a href={`/${chain_id}/validators/${data.operator_address}`}>
-          {data?.operator_address}
-        </a>
-      );
-    }
-  });
-
   //search query for tranactions Hash
   axios
-    .get(BaseChainApi() + chainTxsByHashEndpoint(query))
+    .get(BaseChainApi(chain_id) + chainTxsByHashEndpoint(query))
     .then((response) => {
       setSearchTxsByHash(response.data);
     })
@@ -58,7 +39,7 @@ export function SearchBar(props) {
 
   //search query for Block Heights
   axios
-    .get(BaseChainApi() + chainBlockHeightDetailsEndpont(query))
+    .get(BaseChainApi(chain_id) + chainBlockHeightDetailsEndpont(query))
     .then((response) => {
       setSearchBlockHeight(response.data);
     })
@@ -68,7 +49,7 @@ export function SearchBar(props) {
 
   //search query for Account Address
   axios
-    .get(BaseChainApi() + authAccountEndpoint(query))
+    .get(BaseChainApi(chain_id) + authAccountEndpoint(query))
     .then((response) => {
       setSearchAccountAddress(response.data);
       console.log(response.data);
@@ -149,7 +130,7 @@ export function SearchBar(props) {
             />
           </svg>
           <TextInput
-            placeholder="Block Height, TxHash, Valoper Address, Account Address"
+            placeholder="Block Height, TxHash, Account Address"
             type="text"
             className={darkMode ? "dark-mode" : " "}
             onChange={(event) => setQuery(event.target.value)}

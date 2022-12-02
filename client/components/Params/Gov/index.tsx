@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { periodsInDays } from "../../../lib/Util/format";
 import { useAppSelector } from "../../../lib/hooks";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
 
 function GovParams(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -22,7 +22,7 @@ function GovParams(props) {
                   ? govDepositParams?.deposit_params?.min_deposit[0]?.amount /
                     DENOM
                   : null}{" "}
-                {COIN}
+                {assetSymbol(props?.chain_id)}
               </strong>
             </FlexBetween>
             <FlexBetween>

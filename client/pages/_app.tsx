@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { AppProps } from "next/app";
 import "../styles/global.css";
-import { ReactElement, ReactNode, useEffect, useState } from "react";
+import { ReactElement, ReactNode } from "react";
 const { default: AbortController } = require("abort-controller");
 const { default: fetch, Headers, Request, Response } = require("node-fetch");
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -10,9 +10,6 @@ import { wrapper } from "../lib/store";
 import Error from "next/error";
 import ErrorBoundary from "../components/ErrorBoundary";
 import { ErrorFallback } from "../components/ErrorFallback";
-import { BaseChainApi } from "../lib/baseChainApi";
-import { ChainAllValidatorsEndpoint, chainTxsByHashEndpoint } from "../lib/chainApiEndpoints";
-import axios from "axios";
 import { useRouter } from "next/router";
 
 Object.assign(globalThis, {
@@ -48,29 +45,11 @@ export function App({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
   const query = router.query;
 
-  const [getAllValidators, setAllValidators] = useState([]);
-
-  //general query for all components
-  //get all validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi() + ChainAllValidatorsEndpoint)
-      .then((response) => {
-        setAllValidators(response?.data?.validators);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  const allValidators = getAllValidators ? getAllValidators : null;
- 
   return getLayout(
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <SSRProvider>
         <Component
           {...pageProps}
-          getAllValidators={allValidators}
           chain_id={query}
         />
       </SSRProvider>

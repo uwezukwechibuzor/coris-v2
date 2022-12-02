@@ -17,14 +17,14 @@ function Proposals(props) {
 
   useEffect(() => {
     axios
-      .get(BaseChainApi() + proposalsEndpoint)
+      .get(BaseChainApi(chain_id) + proposalsEndpoint)
       .then((response) => {
         setProposals(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
 
   //get proposals in Array form
   const getFirstFourActiveProposals = getProposals?.proposals?.map(
@@ -41,7 +41,7 @@ function Proposals(props) {
   for (const i in getFirstFourActiveProposalsSlice) {
     axios
       .get(
-        BaseChainApi() +
+        BaseChainApi(chain_id) +
           proposalTallyOptionsEndpoint(
             getFirstFourActiveProposalsSlice[i]?.proposal_id
           )
@@ -58,7 +58,7 @@ function Proposals(props) {
         console.log(error);
       });
   }
-  
+
   const proposalsData = {
     id: "#ID",
     title2: "Title",

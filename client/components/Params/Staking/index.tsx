@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { periodsInDays } from "../../../lib/Util/format";
 import { useAppSelector } from "../../../lib/hooks";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
 
 function StakingParams(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -49,7 +49,7 @@ function StakingParams(props) {
             </FlexBetween>
             <FlexBetween>
               <span>Bond Demon</span>
-              <strong>{COIN}</strong>
+              <strong>{assetSymbol(props?.chain_id)}</strong>
             </FlexBetween>
           </Card>
         </FlexColumn>

@@ -7,9 +7,9 @@ import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
 import Link from "next/link";
 import { useAppSelector } from "../../../lib/hooks";
 import ReactPaginate from "react-paginate";
-import { COIN } from "../../../lib/Util/constants";
 import router from "next/router";
 import TxsByHeightEvent from "./tsxByHeightOrEvent";
+import { assetSymbol } from "../../../lib/Util/constants";
 
 function BlockHeightContent(props: any) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -29,7 +29,7 @@ function BlockHeightContent(props: any) {
     (validatorSignatureData: any) => {
       //convert proposer address from signatures to cosmosvalcons
       const proposerToBech32 = toBech32(
-        "cosmosvalcons",
+        "umeevalcons",
         fromHex(validatorSignatureData.validator_address)
       );
       activeValidators?.validators?.map((validator: any) => {
@@ -37,7 +37,7 @@ function BlockHeightContent(props: any) {
         //get the consensus pubkey
         const ed25519PubkeyRaw = fromBase64(validator.consensus_pubkey.key);
         const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-        const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+        const bech32Address = Bech32.encode("umeevalcons", addressData);
         if (bech32Address?.includes(proposerToBech32)) {
           //append validator data to  validatorSignatureData
           validatorSignatureData.validator = validator;
@@ -139,7 +139,7 @@ function BlockHeightContent(props: any) {
               <tr>
                 <td>Txs Total Fee</td>
                 <td>
-                  {totalTxsFee} {COIN}
+                  {totalTxsFee} {assetSymbol(chain_id)}
                 </td>
               </tr>
               <tr>

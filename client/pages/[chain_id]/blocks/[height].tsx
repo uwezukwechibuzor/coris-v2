@@ -22,38 +22,40 @@ function BlocksDetails(props) {
 
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainBlockHeightDetailsEndpont(query?.height))
+      .get(
+        BaseChainApi(chain_id) + chainBlockHeightDetailsEndpont(query?.height)
+      )
       .then((response) => {
         setBlockHeightDetails(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [query.height]);
+  }, [query.height, chain_id]);
 
   //fetch Transactions in a Block Height
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainBlockHeightTxsEndpoint(query.height))
+      .get(BaseChainApi(chain_id) + chainBlockHeightTxsEndpoint(query.height))
       .then((response) => {
         setTxsByHeight(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [query.height]);
+  }, [query.height, chain_id]);
 
   //active validators
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainActiveValidatorsEndpoint)
+      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
       .then((response) => {
         setActiveValidators(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [query.height]);
+  }, [query.height, chain_id]);
 
   const blockDetailsData = {
     title: "Block Details",

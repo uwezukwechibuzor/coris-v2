@@ -21,7 +21,7 @@ function Blocks(props) {
 
   useEffect(() => {
     axios
-      .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
+      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
       .then((response) => {
         setBlocks(response.data);
       })
@@ -32,7 +32,7 @@ function Blocks(props) {
 
   useEffect(() => {
     axios
-      .get(BaseChainApi() + allTxsEndpoint(queryTotalTxs))
+      .get(BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs))
       .then((response) => {
         setAllTxs(response.data);
       })
@@ -43,7 +43,7 @@ function Blocks(props) {
 
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainActiveValidatorsEndpoint)
+      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
       .then((response) => {
         setActiveValidators(response.data);
       })

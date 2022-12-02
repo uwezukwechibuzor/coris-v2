@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { UrbanistBoldBlack40px } from "../../styledMixins";
 import { sha256 } from "@cosmjs/crypto";
-import { Bech32, fromBase64, toHex, fromHex, toBech32 } from "@cosmjs/encoding";
+import { Bech32, fromBase64, fromHex, toBech32 } from "@cosmjs/encoding";
 import { useAppSelector } from "../../lib/hooks";
 import { Tab, Tabs } from "react-bootstrap";
 import TxsData from "./Txs";
@@ -12,18 +12,16 @@ function BlocksContent(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const { getBlocks, getAllTxs, activeValidators, chain_id } = props;
 
-  getBlocks.map((block) => {
+  getBlocks?.map((block) => {
     //convert proposer address to cosmosvalcons
-    const proposerToBech32 = toBech32(
-      "cosmosvalcons",
-      fromHex(block?.proposer)
-    );
+    const proposerToBech32 = toBech32("umeevalcons", fromHex(block?.proposer));
+
     activeValidators?.validators?.map((validator) => {
       //fetch just the active validators
       //get the consensus pubkey
       const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
       const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-      const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+      const bech32Address = Bech32.encode("umeevalcons", addressData);
 
       //attached validators details to the blocks they proposed
       if (bech32Address?.includes(proposerToBech32)) {

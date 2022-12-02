@@ -9,101 +9,110 @@ import {
   inflationEndpoint,
   latestBlocksEndpoint,
   allTxsEndpoint,
+  ChainAllValidatorsEndpoint,
 } from "../../lib/chainApiEndpoints";
 import { DENOM } from "../../lib/Util/constants";
 import { BaseChainApi } from "../../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../../lib/coingeckoAPI";
 
 function Home(props) {
-  //console.log(props)
   const [getBlocks, setBlocks] = useState([]);
   const [getAllTxs, setAllTxs] = useState([]);
   const [getInflation, setInflation] = useState(null);
   const [getCommunityPool, setCommunityPool] = useState(null);
+  const [getAllValidators, setAllValidators] = useState(null);
   const [getActiveValidators, setActiveValidators] = useState([]);
   const [getChainPool, setChainPool] = useState(null);
   const [coinData, setCoin]: any = useState([]);
   const [priceChart, setPriceChart]: any = useState([]);
-
-  //get all chain validators from props
-  const getAllValidators = props?.getAllValidators;
 
   const queryTotalBlocks = 5;
   const queryTotalTxs = 5;
 
   const chain_id = props?.chain_id?.chain_id;
 
-  //fetch latest Blocks
   useEffect(() => {
     axios
-      .get(BaseChainApi() + latestBlocksEndpoint(queryTotalBlocks))
+      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
       .then((response) => {
         setBlocks(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [getBlocks]);
+  }, [getBlocks, chain_id]);
 
   //get all latest transactions
   useEffect(() => {
     axios
-      .get(BaseChainApi() + allTxsEndpoint(queryTotalTxs))
+      .get(BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs))
       .then((response) => {
         setAllTxs(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [getAllTxs]);
+  }, [getAllTxs, chain_id]);
 
   //get inflation percentage
   useEffect(() => {
     axios
-      .get(BaseChainApi() + inflationEndpoint)
+      .get(BaseChainApi(chain_id) + inflationEndpoint)
       .then((response) => {
         setInflation(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
 
   //get Community Pool
   useEffect(() => {
     axios
-      .get(BaseChainApi() + communityPoolEndpoint)
+      .get(BaseChainApi(chain_id) + communityPoolEndpoint)
       .then((response) => {
         setCommunityPool(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
 
   //active validators
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainActiveValidatorsEndpoint)
+      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
       .then((response) => {
         setActiveValidators(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
+
+  //all validators
+  useEffect(() => {
+    axios
+      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
+      .then((response) => {
+        setAllValidators(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [chain_id]);
 
   //get Pool
   useEffect(() => {
     axios
-      .get(BaseChainApi() + chainPoolEndpoint)
+      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
       .then((response) => {
         setChainPool(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [chain_id]);
 
   //checks for these states
   const inflation = getInflation

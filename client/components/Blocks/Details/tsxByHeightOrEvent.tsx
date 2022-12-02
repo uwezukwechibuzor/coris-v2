@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import router from "next/router";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
 import { useAppSelector } from "../../../lib/hooks";
 import { abbrMessage, formatHash, toDay } from "../../../lib/Util/format";
 import styled from "styled-components";
@@ -67,7 +67,7 @@ const TxsByHeightEvent = (props) => {
                       </td>
                       <td>
                         {tx?.tx?.auth_info?.fee?.amount[0]?.amount / DENOM}{" "}
-                        {COIN}
+                        {assetSymbol(chain_id)}
                       </td>
                       <td>{abbrMessage(tx.tx.body.messages)}</td>
                       <td>{toDay(tx?.timestamp, "from")}</td>

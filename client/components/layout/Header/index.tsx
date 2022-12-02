@@ -18,9 +18,6 @@ function Header(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
   const [isToggled, toggle] = useState(false);
 
-  //get all validators
-  const allValidators = props?.getAllValidators;
-
   return (
     <TopNavBar className={darkMode && "dark-mode"}>
       <FlexBetween>
@@ -48,7 +45,6 @@ function Header(props) {
         </MobileSideBarToggler>
         <SearchBar
           src={searchBarData.src}
-          allValidators={allValidators}
           chain_id={props?.chain_id}
         />
 

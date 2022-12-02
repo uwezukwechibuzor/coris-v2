@@ -83,11 +83,6 @@ export function ModalContent({ toggle }) {
                       chainName="STARGAZE"
                       chainImage="https://assets.coingecko.com/coins/images/22363/large/stars.png?1645256657"
                     />
-                    <Chain
-                      chain_id={"umee"}
-                      chainName="UMEE"
-                      chainImage="https://assets.coingecko.com/coins/images/20635/large/1Ab_Umee_Brand_Icon_Full_Color.png?1645018295"
-                    />
                   </Grid>
                 </Container>
                 {/* <Container className="mt-3">

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { abbrMessage, toDay } from "../../lib/Util/format";
 import { UrbanistBoldBlack40px } from "../../styledMixins";
 import { useAppSelector } from "../../lib/hooks";
-import { COIN, DENOM } from "../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../lib/Util/constants";
 
 function TransactionContents(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
@@ -129,7 +129,7 @@ function TransactionContents(props) {
                         ? txDetails?.txDetails?.tx_response?.tx?.auth_info?.fee
                             ?.amount[0]?.amount /
                             DENOM +
-                          COIN
+                          assetSymbol(props?.chain_id)
                         : null}
                     </td>
                   </tr>

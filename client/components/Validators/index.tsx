@@ -32,7 +32,7 @@ function ValidatorsContent(props) {
 
   var activeValidatorsData = [];
   var inActiveValidatorsData = [];
-  chainAllValidators?.map((data) =>
+  chainAllValidators?.validators?.map((data) =>
     data.status === "BOND_STATUS_BONDED"
       ? activeValidatorsData.push(data)
       : inActiveValidatorsData.push(data)
@@ -71,8 +71,8 @@ function ValidatorsContent(props) {
       totalBlocks++;
       if (data?.includes(bech32Address)) {
         totalSignedBlocks++;
-        const uptime = (totalSignedBlocks / totalBlocks)*100;
-        validator.upTime = uptime.toFixed(2)
+        const uptime = (totalSignedBlocks / totalBlocks) * 100;
+        validator.upTime = uptime.toFixed(2);
         return validator;
       }
     });
@@ -242,7 +242,7 @@ function ValidatorsContent(props) {
                             </div>
                           </td>
                           <td>{commission.toFixed(2) + "%"}</td>
-                          <td>{data.upTime? data.upTime : 0}%</td>
+                          <td>{data.upTime ? data.upTime : 0}%</td>
                           <td>
                             {data.status === "BOND_STATUS_BONDED"
                               ? "Bonded"
@@ -370,7 +370,7 @@ function ValidatorsContent(props) {
                           </td>
                           <td>
                             <div style={{ color: "red" }} className="sub">
-                              {data?.tokens
+                              {percentageOfVotingPower !== Infinity
                                 ? percentageOfVotingPower.toFixed(2) + "%"
                                 : 0}
                             </div>
@@ -389,7 +389,7 @@ function ValidatorsContent(props) {
                                 paddingRight: "20px",
                               }}
                             >
-                              {data?.tokens
+                              {inActiveValidatorsCumulativeShare !== Infinity
                                 ? inActiveValidatorsCumulativeShare.toFixed(2) +
                                   "%"
                                 : 0}

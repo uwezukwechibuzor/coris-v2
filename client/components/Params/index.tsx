@@ -28,12 +28,18 @@ function ParamsContent(props) {
     <>
       <Title className={darkMode ? "dark-mode" : ""}>Parameters</Title>
       <Grid>
-        <MintParams {...govMintingParams} />
-        <GovParams {...govParamtersData} />
-        <SlashingParams {...govSlashingParams} />
-        <StakingParams govStakingParams={govStakingParams} />
-        <DistributionParams {...govDistributionParams} />
-        <NodeInfoParams {...chainNodeInfo} />
+        <MintParams {...govMintingParams} chain_id={props?.chain_id} />
+        <GovParams {...govParamtersData} chain_id={props?.chain_id} />
+        <SlashingParams {...govSlashingParams} chain_id={props?.chain_id} />
+        <StakingParams
+          govStakingParams={govStakingParams}
+          chain_id={props?.chain_id}
+        />
+        <DistributionParams
+          {...govDistributionParams}
+          chain_id={props?.chain_id}
+        />
+        <NodeInfoParams {...chainNodeInfo} chain_id={props?.chain_id} />
       </Grid>
     </>
   );

@@ -3,7 +3,7 @@ import router from "next/router";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { assetSymbol, DENOM } from "../../../lib/Util/constants";
 import {
   formatHash,
   sortUnDelegationsByBalance,
@@ -99,7 +99,7 @@ function UndelegationsContent(props) {
                             DENOM
                           ).toFixed(2)
                         : null}{" "}
-                      {COIN}
+                      {assetSymbol(props?.chain_id)}
                     </td>
                     <td>
                       {data?.entries
