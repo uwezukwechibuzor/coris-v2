@@ -228,6 +228,7 @@ function SideNavBar(props) {
           </a>
         </Clicker>
         <br />
+        {/*
         <Clicker
           onClick={() => navigate(`/${chain_id?.chain_id}/relayers`)}
           title="Assets"
@@ -251,6 +252,7 @@ function SideNavBar(props) {
             </FlexRow>
           </a>
         </Clicker>
+                */}
       </Wrapper>
       <ConnectWallet
         className="mobile"
