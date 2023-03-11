@@ -23,7 +23,10 @@ A community-built Blockchain explorer for the cosmos ecosystem, brought to you b
   ``` 
   docker compose up -d
   ```
-  
+  Stop and remove the containers: 
+  ``` 
+  docker compose down
+  ```
   You can view your images created with 
   ```
   docker images
