@@ -88,6 +88,10 @@ const junoTransactions = mongoose.model("juno-Transactions", TxsSchema);
 const stargazeBlocks = mongoose.model("stargaze-Blocks", BlockSchema);
 const stargazeTransactions = mongoose.model("stargaze-Transactions", TxsSchema);
 
+//set neutron chain schema
+const neutronBlocks = mongoose.model("neutron-Blocks", BlockSchema);
+const neutronTransactions = mongoose.model("neutron-Transactions", TxsSchema);
+
 
 module.exports = {
   umeeBlockModel: umeeBlocks,
@@ -113,5 +117,7 @@ module.exports = {
 
   stargazeBlockModel: stargazeBlocks,
   stargazeTxsModel: stargazeTransactions,
-
+  
+  neutronBlockModel: neutronBlocks,
+  neutronTxsModel: neutronTransactions,
 };
