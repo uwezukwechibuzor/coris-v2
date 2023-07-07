@@ -7,13 +7,13 @@ const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("../../../../data/endpoints.jsx");
 
+const API = process.env.AKASH_REST_API;
+const RPC = process.env.AKASH_RPC_API;
+
 cron.schedule("*/3 * * * * *", function () {
   //cron to run at every 5sec to get latest blocks
   getBlocksAsync();
 });
-
-const API = process.env.AKASH_REST_API;
-const RPC = process.env.AKASH_RPC_API;
 
 async function getBlocksAsync() {
   try {
