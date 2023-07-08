@@ -6,6 +6,17 @@ const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("../../../../data/endpoints.jsx");
+const {
+  getAllValidators,
+  getActiveValidators,
+  getChainInflation,
+  getChainCommunityPool,
+  getChainPool,
+  getChainBlockHeightDetails,
+  getChainBlockHeightTxs,
+  getChainTxsByHash,
+  getChainValidatorsDetails,
+} = require("../../../../data/chainQueries/index.js");
 
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
@@ -116,117 +127,20 @@ app.get("/agoric/txs", async function (req, res) {
 //get all chain validators
 app.get("/agoric/all_validators", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.allChainValidators);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getAllValidators(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get active validators
 app.get("/agoric/active_validators", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.activeChainValidators);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getActiveValidators(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain inflation
-app.get("/agoric/chain_inflation", async (req, res) => {
-  try {
-    const response = await fetch(API + endPoints.chainInflation);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain community pool
-app.get("/agoric/chain_community_pool", async (req, res) => {
-  try {
-    const response = await fetch(API + endPoints.chainCommunityPool);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain pool
-app.get("/agoric/chain_pool", async (req, res) => {
-  try {
-    const response = await fetch(API + endPoints.chainPool);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain block height details
-app.get("/agoric/block_height_details", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const response = await fetch(
-      API + endPoints.chainBlockHeightDetails(height)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain block height Txs
-app.get("/agoric/block_height_txs", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const response = await fetch(API + endPoints.chainBlockHeightTxs(height));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain Txs by Hash
-app.get("/agoric/chain_txs_hash", async (req, res) => {
-  try {
-    const hash = req.query.hash;
-    const response = await fetch(API + endPoints.chainTxsByHash(hash));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -234,16 +148,73 @@ app.get("/agoric/chain_txs_hash", async (req, res) => {
 app.get("/agoric/chain_validator_details/:address", async (req, res) => {
   try {
     const adddress = req.params.address;
-    const response = await fetch(
-      API + endPoints.chainValidatorsDetails(adddress)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainValidatorsDetails(API, adddress);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain inflation
+app.get("/agoric/chain_inflation", async (req, res) => {
+  try {
+    const data = await getChainInflation(API);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain community pool
+app.get("/agoric/chain_community_pool", async (req, res) => {
+  try {
+    const data = await getChainCommunityPool(API);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain pool
+app.get("/agoric/chain_pool", async (req, res) => {
+  try {
+    const data = await getChainPool(API);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain block height details
+app.get("/agoric/block_height_details", async (req, res) => {
+  try {
+    const height = req.query.height;
+    const data = await getChainBlockHeightDetails(API, height);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain block height Txs
+app.get("/agoric/block_height_txs", async (req, res) => {
+  try {
+    const height = req.query.height;
+    const data = await getChainBlockHeightTxs(API, height);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//get chain Txs by Hash
+app.get("/agoric/chain_txs_hash", async (req, res) => {
+  try {
+    const hash = req.query.hash;
+    const data = await getChainTxsByHash(API, hash);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
