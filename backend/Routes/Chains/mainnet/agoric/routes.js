@@ -7,7 +7,6 @@ const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("../../../../data/endpoints.jsx");
 const {
-  getAllValidators,
   getActiveValidators,
   getChainInflation,
   getChainCommunityPool,
@@ -16,7 +15,31 @@ const {
   getChainBlockHeightTxs,
   getChainTxsByHash,
   getChainValidatorsDetails,
+  getChainValidatorsSlashingSigningInfosDetails,
+  getChainValidatorDelegations,
+  getChainValidatorUnDelegations,
+  getChainValidatorReDelegations,
+  getChainConsensusState,
+  getChainMintingParams,
+  getChainGovParams,
+  getChainSlashingParams,
+  getChainstakingParams,
+  getChainDistributionParams,
+  getChainNodeInfo,
+  getChainProposals,
+  getChainProposalDetails,
+  getChainProposalVotingOptions,
+  getChainProposalTallyOptions,
+  getChainProposalDeposits,
+  getChainAuthAccount,
+  getChainAccountTxsByEvents,
+  getChainAccountBalance,
+  getChainAccountDelegationRewards,
+  getChainAccountDelegations,
+  getChainAccountReDelegations,
+  getChainAccountUnDelegations,
 } = require("../../../../data/chainQueries/index.js");
+const { getAllValidatorsHandler } = require("../../../../data/handlers.js");
 
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
@@ -125,14 +148,17 @@ app.get("/agoric/txs", async function (req, res) {
 
 //Reverse Proxy For all the chain endpoints
 //get all chain validators
-app.get("/agoric/all_validators", async (req, res) => {
-  try {
-    const data = await getAllValidators(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+//app.get("/agoric/all_validators", async (req, res) => {
+//try {
+//const data = await getAllValidators(API);
+//res.json(data);
+//} catch (error) {
+//res.status(500).json({ error: error.message });
+//}
+
+//});
+
+app.get("/agoric/all_validators", getAllValidatorsHandler(API));
 
 //get active validators
 app.get("/agoric/active_validators", async (req, res) => {
@@ -224,17 +250,13 @@ app.get(
   async (req, res) => {
     try {
       const cons_adddress = req.params.cons_adddress;
-      const response = await fetch(
-        API +
-          endPoints.chainValidatorsSlashingSigningInfosDetails(cons_adddress)
+      const data = await getChainValidatorsSlashingSigningInfosDetails(
+        API,
+        cons_adddress
       );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
       res.json(data);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -245,16 +267,10 @@ app.get(
   async (req, res) => {
     try {
       const validator_adddress = req.params.validator_adddress;
-      const response = await fetch(
-        API + endPoints.chainValidatorDelegations(validator_adddress)
-      );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
+      const data = await getChainValidatorDelegations(API, validator_adddress);
       res.json(data);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -265,16 +281,13 @@ app.get(
   async (req, res) => {
     try {
       const validator_adddress = req.params.validator_adddress;
-      const response = await fetch(
-        API + endPoints.chainValidatorUnDelegations(validator_adddress)
+      const data = await getChainValidatorUnDelegations(
+        API,
+        validator_adddress
       );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
       res.json(data);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -285,16 +298,13 @@ app.get(
   async (req, res) => {
     try {
       const delegator_adddress = req.params.delegator_adddress;
-      const response = await fetch(
-        API + endPoints.chainValidatorReDelegations(delegator_adddress)
+      const data = await getChainValidatorReDelegations(
+        API,
+        delegator_adddress
       );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
       res.json(data);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ error: error.message });
     }
   }
 );
@@ -302,28 +312,20 @@ app.get(
 //get chain validators consensus state
 app.get("/agoric/chain_consensus", async (req, res) => {
   try {
-    const response = await fetch(RPC + endPoints.consensusState);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainConsensusState(RPC);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain minting params
 app.get("/agoric/chain_minting_params", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.mintingParams);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainMintingParams(api);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -331,84 +333,60 @@ app.get("/agoric/chain_minting_params", async (req, res) => {
 app.get("/agoric/chain_gov_params", async (req, res) => {
   try {
     const params_type = req.query.params_type;
-    const response = await fetch(API + endPoints.govParams(params_type));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainGovParams(API, params_type);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain slashing params
 app.get("/agoric/chain_slashing_params", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.slashingParams);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainSlashingParams(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain staking params
 app.get("/agoric/chain_staking_params", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.stakingParams);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainstakingParams(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain distribution params
 app.get("/agoric/chain_distribution_params", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.distributionParams);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainDistributionParams(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain node info
 app.get("/agoric/chain_node_info", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.nodeInfo);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainNodeInfo(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain proposals
 app.get("/agoric/chain_proposals", async (req, res) => {
   try {
-    const response = await fetch(API + endPoints.proposals);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainProposals(API);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -416,14 +394,10 @@ app.get("/agoric/chain_proposals", async (req, res) => {
 app.get("/agoric/chain_proposal_details", async (req, res) => {
   try {
     const proposal_id = req.query.proposal_id;
-    const response = await fetch(API + endPoints.proposalDetails(proposal_id));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainProposalDetails(API, proposal_id);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -431,14 +405,10 @@ app.get("/agoric/chain_proposal_details", async (req, res) => {
 app.get("/agoric/chain_proposal_voting_options", async (req, res) => {
   try {
     const id = req.query.id;
-    const response = await fetch(API + endPoints.proposalVotingOptions(id));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainProposalVotingOptions(API, id);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -446,14 +416,10 @@ app.get("/agoric/chain_proposal_voting_options", async (req, res) => {
 app.get("/agoric/chain_proposal_tally_options", async (req, res) => {
   try {
     const id = req.query.id;
-    const response = await fetch(API + endPoints.proposalTallyOptions(id));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainProposalTallyOptions(API, id);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -461,14 +427,10 @@ app.get("/agoric/chain_proposal_tally_options", async (req, res) => {
 app.get("/agoric/chain_proposal_deposits", async (req, res) => {
   try {
     const id = req.query.id;
-    const response = await fetch(API + endPoints.proposalDeposits(id));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainProposalDeposits(API, id);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -476,29 +438,21 @@ app.get("/agoric/chain_proposal_deposits", async (req, res) => {
 app.get("/agoric/chain_auth_account", async (req, res) => {
   try {
     const address = req.query.address;
-    const response = await fetch(API + endPoints.authAccount(address));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAuthAccount(API, address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
 //get chain account Txs by Events
 app.get("/agoric/chain_account_txs_by_events/:address", async (req, res) => {
   try {
-    const address = req.params.address;
-    const response = await fetch(API + endPoints.accountTxsByEvents(address));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const address = req.query.address;
+    const data = await getChainAccountTxsByEvents(API, address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -506,14 +460,10 @@ app.get("/agoric/chain_account_txs_by_events/:address", async (req, res) => {
 app.get("/agoric/chain_account_balance", async (req, res) => {
   try {
     const address = req.query.address;
-    const response = await fetch(API + endPoints.accountBalance(address));
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAccountBalance(API, address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -521,16 +471,10 @@ app.get("/agoric/chain_account_balance", async (req, res) => {
 app.get("/agoric/chain_account_delegation_rewaards", async (req, res) => {
   try {
     const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      API + endPoints.accountDelegationRewards(delegator_address)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAccountDelegationRewards(API, delegator_address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -538,16 +482,10 @@ app.get("/agoric/chain_account_delegation_rewaards", async (req, res) => {
 app.get("/agoric/chain_account_delegations", async (req, res) => {
   try {
     const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      API + endPoints.accountDelegations(delegator_address)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAccountDelegations(API, delegator_address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -555,16 +493,10 @@ app.get("/agoric/chain_account_delegations", async (req, res) => {
 app.get("/agoric/chain_account_redelegations", async (req, res) => {
   try {
     const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      API + endPoints.accountReDelegations(delegator_address)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAccountReDelegations(API, delegator_address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -572,16 +504,10 @@ app.get("/agoric/chain_account_redelegations", async (req, res) => {
 app.get("/agoric/chain_account_undelegations", async (req, res) => {
   try {
     const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      API + endPoints.accountUnDelegations(delegator_address)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
+    const data = await getChainAccountUnDelegations(API, delegator_address);
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 
