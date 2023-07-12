@@ -7,39 +7,13 @@ const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("../../../../data/endpoints.jsx");
 const {
-  getActiveValidators,
-  getChainInflation,
-  getChainCommunityPool,
-  getChainPool,
-  getChainBlockHeightDetails,
-  getChainBlockHeightTxs,
-  getChainTxsByHash,
-  getChainValidatorsDetails,
-  getChainValidatorsSlashingSigningInfosDetails,
-  getChainValidatorDelegations,
-  getChainValidatorUnDelegations,
-  getChainValidatorReDelegations,
-  getChainConsensusState,
-  getChainMintingParams,
-  getChainGovParams,
-  getChainSlashingParams,
-  getChainstakingParams,
-  getChainDistributionParams,
-  getChainNodeInfo,
-  getChainProposals,
-  getChainProposalDetails,
-  getChainProposalVotingOptions,
-  getChainProposalTallyOptions,
-  getChainProposalDeposits,
-  getChainAuthAccount,
-  getChainAccountTxsByEvents,
-  getChainAccountBalance,
-  getChainAccountDelegationRewards,
-  getChainAccountDelegations,
-  getChainAccountReDelegations,
-  getChainAccountUnDelegations,
-} = require("../../../../data/chainQueries/index.js");
-const { getAllValidatorsHandler } = require("../../../../data/handlers.js");
+  allValidatorsHandler,
+  activeValidatorsHandler,
+  chainValidatorsDetailsHandler,
+  chainInflationHandler,
+  chainCommunityPoolHandler,
+  chainPoolHandler,
+} = require("../../../../data/handlers.js");
 
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
@@ -147,69 +121,20 @@ app.get("/agoric/txs", async function (req, res) {
 });
 
 //Reverse Proxy For all the chain endpoints
-//get all chain validators
-//app.get("/agoric/all_validators", async (req, res) => {
-//try {
-//const data = await getAllValidators(API);
-//res.json(data);
-//} catch (error) {
-//res.status(500).json({ error: error.message });
-//}
+app.get("/agoric/all_validators", allValidatorsHandler(API));
 
-//});
+app.get("/agoric/active_validators", activeValidatorsHandler(API));
 
-app.get("/agoric/all_validators", getAllValidatorsHandler(API));
+app.get(
+  "/agoric/chain_validator_details/:address",
+  chainValidatorsDetailsHandler(API)
+);
 
-//get active validators
-app.get("/agoric/active_validators", async (req, res) => {
-  try {
-    const data = await getActiveValidators(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+app.get("/agoric/chain_inflation", chainInflationHandler(API));
 
-//get chain validators details
-app.get("/agoric/chain_validator_details/:address", async (req, res) => {
-  try {
-    const adddress = req.params.address;
-    const data = await getChainValidatorsDetails(API, adddress);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+app.get("/agoric/chain_community_pool", chainCommunityPoolHandler(API));
 
-//get chain inflation
-app.get("/agoric/chain_inflation", async (req, res) => {
-  try {
-    const data = await getChainInflation(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain community pool
-app.get("/agoric/chain_community_pool", async (req, res) => {
-  try {
-    const data = await getChainCommunityPool(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain pool
-app.get("/agoric/chain_pool", async (req, res) => {
-  try {
-    const data = await getChainPool(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+app.get("/agoric/chain_pool", chainPoolHandler(API));
 
 //get chain block height details
 app.get("/agoric/block_height_details", async (req, res) => {
