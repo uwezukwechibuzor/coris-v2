@@ -1,0 +1,42 @@
+name: Backend and Client Lint
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  backend-client-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install backend dependencies
+        run: |
+          cd coris-v2/backend
+          npm ci
+
+      - name: Run backend linter
+        run: |
+          cd coris-v2/backend
+          npm run lint
+
+      - name: Install client dependencies
+        run: |
+          cd coris-v2/client
+          npm ci
+
+      - name: Run client linter
+        run: |
+          cd coris-v2/client
+          npm run lint

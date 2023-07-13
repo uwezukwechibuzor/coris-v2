@@ -58,7 +58,7 @@ async function getBlocksAsync() {
 
     //get transactions data in each blocks
     const getTxs = await fetch(
-      `${API}/${endPoints.chainBlockHeightTxs(block.block.header.height)}`
+      `${API}/${endPoints.chainBlockHeightTxs(block.block.header.height)}`,
     );
     if (!getTxs.ok) throw new Error("unexpected response");
 
@@ -115,7 +115,7 @@ async function getBlocksAsync() {
 app.use(
   cors({
     origin: "*",
-  })
+  }),
 );
 
 //return blocks by specifying the limit
@@ -156,7 +156,7 @@ stargazeRoute("/all_validators", allValidatorsHandler(API));
 stargazeRoute("/active_validators", activeValidatorsHandler(API));
 stargazeRoute(
   "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API)
+  chainValidatorsDetailsHandler(API),
 );
 stargazeRoute("/chain_inflation", chainInflationHandler(API));
 stargazeRoute("/chain_community_pool", chainCommunityPoolHandler(API));
@@ -166,19 +166,19 @@ stargazeRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 stargazeRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 stargazeRoute(
   "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 stargazeRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 stargazeRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -187,41 +187,41 @@ stargazeRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
 stargazeRoute("/chain_staking_params", chainStakingParamsHandler(API));
 stargazeRoute(
   "/chain_distribution_params",
-  chainDistributionParamsHandler(API)
+  chainDistributionParamsHandler(API),
 );
 stargazeRoute("/chain_node_info", chainNodeInfoHandler(API));
 stargazeRoute("/chain_proposals", chainProposalsHandler(API));
 stargazeRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 stargazeRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 stargazeRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 stargazeRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 stargazeRoute("/chain_auth_account", chainAuthAccountHandler(API));
 stargazeRoute(
   "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 stargazeRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 stargazeRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 stargazeRoute(
   "/chain_account_delegations",
-  chainAccountDelegationsHandler(API)
+  chainAccountDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;
