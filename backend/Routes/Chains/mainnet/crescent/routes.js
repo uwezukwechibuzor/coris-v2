@@ -6,6 +6,40 @@ const cron = require("node-cron");
 const fetch = require("node-fetch");
 require("dotenv").config();
 var endPoints = require("../../../../data/endpoints.jsx");
+const {
+  allValidatorsHandler,
+  activeValidatorsHandler,
+  chainValidatorsDetailsHandler,
+  chainInflationHandler,
+  chainCommunityPoolHandler,
+  chainPoolHandler,
+  chainBlockHeightDetailsHandler,
+  chainBlockHeightTxsHandler,
+  chainTxsByHashHandler,
+  chainValidatorsSlashingSigningInfosDetailsHandler,
+  chainValidatorDelegationsHandler,
+  chainValidatorUnDelegationsHandler,
+  chainValidatorReDelegationsHandler,
+  chainConsensusStateHandler,
+  chainMintingParamsHandler,
+  chainGovParamsHandler,
+  chainSlashingParamsHandler,
+  chainStakingParamsHandler,
+  chainDistributionParamsHandler,
+  chainNodeInfoHandler,
+  chainProposalsHandler,
+  chainProposalDetailsHandler,
+  chainProposalVotingOptionsHandler,
+  chainProposalTallyOptionsHandler,
+  chainProposalDepositsHandler,
+  chainAuthAccountHandler,
+  chainAccountTxsByEventsHandler,
+  chainAccountBalanceHandler,
+  chainAccountDelegationRewardsHandler,
+  chainAccountDelegationsHandler,
+  chainAccountReDelegationsHandler,
+  chainAccountUnDelegationsHandler,
+} = require("../../../../data/handlers.js");
 
 const API = process.env.CRESCENT_REST_API;
 const RPC = process.env.CRESCENT_RPC_API;
@@ -112,515 +146,82 @@ app.get("/crescent/txs", async function (req, res) {
   }
 });
 
-//Reverse Proxy For all the chain endpoints
-//get all chain validators
-app.get("/crescent/all_validators", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.allChainValidators}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+// Define a helper function to prefix the routes with "/crescent"
+function crescentRoute(path, handler) {
+  return app.get(`/crescent${path}`, handler);
+}
 
-//get active validators
-app.get("/crescent/active_validators", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.activeChainValidators}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain inflation
-app.get("/crescent/chain_inflation", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.chainInflation}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain community pool
-app.get("/crescent/chain_community_pool", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.chainCommunityPool}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain pool
-app.get("/crescent/chain_pool", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.chainPool}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain block height details
-app.get("/crescent/block_height_details", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const response = await fetch(
-      API + endPoints.chainBlockHeightDetails(height)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain block height Txs
-app.get("/crescent/block_height_txs", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const response = await fetch(
-      `${API}${endPoints.chainBlockHeightTxs(height)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain Txs by Hash
-app.get("/crescent/chain_txs_hash", async (req, res) => {
-  try {
-    const hash = req.query.hash;
-    const response = await fetch(`${API}${endPoints.chainTxsByHash(hash)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain validators details
-app.get("/crescent/chain_validator_details/:address", async (req, res) => {
-  try {
-    const adddress = req.params.address;
-    const response = await fetch(
-      API + endPoints.chainValidatorsDetails(adddress)
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain validators Slashing Signing Info Details
-app.get(
-  "/crescent/chain_validator_slashing_signing_info_details/:cons_adddress",
-  async (req, res) => {
-    try {
-      const cons_adddress = req.params.cons_adddress;
-      const response = await fetch(
-        `${API}${endPoints.chainValidatorsSlashingSigningInfosDetails(
-          cons_adddress
-        )}`
-      );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+// Define the routes
+crescentRoute("/all_validators", allValidatorsHandler(API));
+crescentRoute("/active_validators", activeValidatorsHandler(API));
+crescentRoute(
+  "/chain_validator_details/:address",
+  chainValidatorsDetailsHandler(API)
 );
-
-//get chain validators delegations
-app.get(
-  "/crescent/chain_validator_delegations/:validator_adddress",
-  async (req, res) => {
-    try {
-      const validator_adddress = req.params.validator_adddress;
-      const response = await fetch(
-        API + endPoints.chainValidatorDelegations(validator_adddress)
-      );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+crescentRoute("/chain_inflation", chainInflationHandler(API));
+crescentRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+crescentRoute("/chain_pool", chainPoolHandler(API));
+crescentRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
+crescentRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
+crescentRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+crescentRoute(
+  "/chain_validator_slashing_signing_info_details/:cons_address",
+  chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
-
-//get chain validators undelegations
-app.get(
-  "/crescent/chain_validator_undelegations/:validator_adddress",
-  async (req, res) => {
-    try {
-      const validator_adddress = req.params.validator_adddress;
-      const response = await fetch(
-        `${API}${endPoints.chainValidatorUnDelegations(validator_adddress)}`
-      );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+crescentRoute(
+  "/chain_validator_delegations/:validator_address",
+  chainValidatorDelegationsHandler(API)
 );
-
-//get chain validators redelegations
-app.get(
-  "/crescent/chain_validator_undelegations/:delegator_adddress",
-  async (req, res) => {
-    try {
-      const delegator_adddress = req.params.delegator_adddress;
-      const response = await fetch(
-        `${API}${endPoints.chainValidatorReDelegations(delegator_adddress)}`
-      );
-      if (response.status !== 200 || !response) {
-        throw "Error Querying Chain API";
-      }
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  }
+crescentRoute(
+  "/chain_validator_undelegations/:validator_address",
+  chainValidatorUnDelegationsHandler(API)
 );
-
-//get chain validators consensus state
-app.get("/crescent/chain_consensus", async (req, res) => {
-  try {
-    const response = await fetch(`${RPC}${endPoints.consensusState}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain minting params
-app.get("/crescent/chain_minting_params", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.mintingParams}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain governance params
-app.get("/crescent/chain_gov_params", async (req, res) => {
-  try {
-    const params_type = req.query.params_type;
-    const response = await fetch(`${API}${endPoints.govParams(params_type)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain slashing params
-app.get("/crescent/chain_slashing_params", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.slashingParams}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain staking params
-app.get("/crescent/chain_staking_params", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.stakingParams}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain distribution params
-app.get("/crescent/chain_distribution_params", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.distributionParams}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain node info
-app.get("/crescent/chain_node_info", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.nodeInfo}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain proposals
-app.get("/crescent/chain_proposals", async (req, res) => {
-  try {
-    const response = await fetch(`${API}${endPoints.proposals}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain proposal details
-app.get("/crescent/chain_proposal_details", async (req, res) => {
-  try {
-    const proposal_id = req.query.proposal_id;
-    const response = await fetch(
-      `${API}${endPoints.proposalDetails(proposal_id)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain proposal voting options
-app.get("/crescent/chain_proposal_voting_options", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const response = await fetch(
-      `${API}${endPoints.proposalVotingOptions(id)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain proposal Tally options
-app.get("/crescent/chain_proposal_tally_options", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const response = await fetch(`${API}${endPoints.proposalTallyOptions(id)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain proposal deposits
-app.get("/crescent/chain_proposal_deposits", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const response = await fetch(`${API}${endPoints.proposalDeposits(id)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain auth account
-app.get("/crescent/chain_auth_account", async (req, res) => {
-  try {
-    const address = req.query.address;
-    const response = await fetch(`${API}${endPoints.authAccount(address)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account Txs by Events
-app.get("/crescent/chain_account_txs_by_events/:address", async (req, res) => {
-  try {
-    const address = req.params.address;
-    const response = await fetch(
-      `${API}${endPoints.accountTxsByEvents(address)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account balance
-app.get("/crescent/chain_account_balance", async (req, res) => {
-  try {
-    const address = req.query.address;
-    const response = await fetch(`${API}${endPoints.accountBalance(address)}`);
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account delegation rewards
-app.get("/crescent/chain_account_delegation_rewaards", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      `${API}${endPoints.accountDelegationRewards(delegator_address)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account delegations
-app.get("/crescent/chain_account_delegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      `${API}${endPoints.accountDelegations(delegator_address)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account redelegations
-app.get("/crescentchain_account_redelegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      `${API}${endPoints.accountReDelegations(delegator_address)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get chain account undelegations
-app.get("/crescent/chain_account_undelegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const response = await fetch(
-      `${API}${endPoints.accountUnDelegations(delegator_address)}`
-    );
-    if (response.status !== 200 || !response) {
-      throw "Error Querying Chain API";
-    }
-    const data = await response.json();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+crescentRoute(
+  "/chain_validator_redelegations/:delegator_address",
+  chainValidatorReDelegationsHandler(API)
+);
+crescentRoute("/chain_consensus", chainConsensusStateHandler(RPC));
+crescentRoute("/chain_minting_params", chainMintingParamsHandler(API));
+crescentRoute("/chain_gov_params", chainGovParamsHandler(API));
+crescentRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+crescentRoute("/chain_staking_params", chainStakingParamsHandler(API));
+crescentRoute(
+  "/chain_distribution_params",
+  chainDistributionParamsHandler(API)
+);
+crescentRoute("/chain_node_info", chainNodeInfoHandler(API));
+crescentRoute("/chain_proposals", chainProposalsHandler(API));
+crescentRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+crescentRoute(
+  "/chain_proposal_voting_options",
+  chainProposalVotingOptionsHandler(API)
+);
+crescentRoute(
+  "/chain_proposal_tally_options",
+  chainProposalTallyOptionsHandler(API)
+);
+crescentRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
+crescentRoute("/chain_auth_account", chainAuthAccountHandler(API));
+crescentRoute(
+  "/chain_account_txs_by_events/:address",
+  chainAccountTxsByEventsHandler(API)
+);
+crescentRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+crescentRoute(
+  "/chain_account_delegation_rewards",
+  chainAccountDelegationRewardsHandler(API)
+);
+crescentRoute(
+  "/chain_account_delegations",
+  chainAccountDelegationsHandler(API)
+);
+crescentRoute(
+  "/chain_account_redelegations",
+  chainAccountReDelegationsHandler(API)
+);
+crescentRoute(
+  "/chain_account_undelegations",
+  chainAccountUnDelegationsHandler(API)
+);
 
 module.exports = app;
