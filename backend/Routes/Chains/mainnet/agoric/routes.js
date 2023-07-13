@@ -13,6 +13,32 @@ const {
   chainInflationHandler,
   chainCommunityPoolHandler,
   chainPoolHandler,
+  chainBlockHeightDetailsHandler,
+  chainBlockHeightTxsHandler,
+  chainTxsByHashHandler,
+  chainValidatorsSlashingSigningInfosDetailsHandler,
+  chainValidatorDelegationsHandler,
+  chainValidatorUnDelegationsHandler,
+  chainValidatorReDelegationsHandler,
+  chainConsensusStateHandler,
+  chainMintingParamsHandler,
+  chainGovParamsHandler,
+  chainSlashingParamsHandler,
+  chainStakingParamsHandler,
+  chainDistributionParamsHandler,
+  chainNodeInfoHandler,
+  chainProposalsHandler,
+  chainProposalDetailsHandler,
+  chainProposalVotingOptionsHandler,
+  chainProposalTallyOptionsHandler,
+  chainProposalDepositsHandler,
+  chainAuthAccountHandler,
+  chainAccountTxsByEventsHandler,
+  chainAccountBalanceHandler,
+  chainAccountDelegationRewardsHandler,
+  chainAccountDelegationsHandler,
+  chainAccountReDelegationsHandler,
+  chainAccountUnDelegationsHandler,
 } = require("../../../../data/handlers.js");
 
 const API = process.env.AGORIC_REST_API;
@@ -120,320 +146,76 @@ app.get("/agoric/txs", async function (req, res) {
   }
 });
 
-//Reverse Proxy For all the chain endpoints
-app.get("/agoric/all_validators", allValidatorsHandler(API));
+// Define a helper function to prefix the routes with "/agoric"
+function agoricRoute(path, handler) {
+  return app.get(`/agoric${path}`, handler);
+}
 
-app.get("/agoric/active_validators", activeValidatorsHandler(API));
-
-app.get(
-  "/agoric/chain_validator_details/:address",
+// Define the routes
+agoricRoute("/all_validators", allValidatorsHandler(API));
+agoricRoute("/active_validators", activeValidatorsHandler(API));
+agoricRoute(
+  "/chain_validator_details/:address",
   chainValidatorsDetailsHandler(API)
 );
-
-app.get("/agoric/chain_inflation", chainInflationHandler(API));
-
-app.get("/agoric/chain_community_pool", chainCommunityPoolHandler(API));
-
-app.get("/agoric/chain_pool", chainPoolHandler(API));
-
-//get chain block height details
-app.get("/agoric/block_height_details", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const data = await getChainBlockHeightDetails(API, height);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain block height Txs
-app.get("/agoric/block_height_txs", async (req, res) => {
-  try {
-    const height = req.query.height;
-    const data = await getChainBlockHeightTxs(API, height);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain Txs by Hash
-app.get("/agoric/chain_txs_hash", async (req, res) => {
-  try {
-    const hash = req.query.hash;
-    const data = await getChainTxsByHash(API, hash);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain validators Slashing Signing Info Details
-app.get(
-  "/agoric/chain_validator_slashing_signing_info_details/:cons_adddress",
-  async (req, res) => {
-    try {
-      const cons_adddress = req.params.cons_adddress;
-      const data = await getChainValidatorsSlashingSigningInfosDetails(
-        API,
-        cons_adddress
-      );
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+agoricRoute("/chain_inflation", chainInflationHandler(API));
+agoricRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+agoricRoute("/chain_pool", chainPoolHandler(API));
+agoricRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
+agoricRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
+agoricRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+agoricRoute(
+  "/chain_validator_slashing_signing_info_details/:cons_address",
+  chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
-
-//get chain validators delegations
-app.get(
-  "/agoric/chain_validator_delegations/:validator_adddress",
-  async (req, res) => {
-    try {
-      const validator_adddress = req.params.validator_adddress;
-      const data = await getChainValidatorDelegations(API, validator_adddress);
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+agoricRoute(
+  "/chain_validator_delegations/:validator_address",
+  chainValidatorDelegationsHandler(API)
 );
-
-//get chain validators undelegations
-app.get(
-  "/agoric/chain_validator_undelegations/:validator_adddress",
-  async (req, res) => {
-    try {
-      const validator_adddress = req.params.validator_adddress;
-      const data = await getChainValidatorUnDelegations(
-        API,
-        validator_adddress
-      );
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+agoricRoute(
+  "/chain_validator_undelegations/:validator_address",
+  chainValidatorUnDelegationsHandler(API)
 );
-
-//get chain validators redelegations
-app.get(
-  "/agoric/chain_validator_undelegations/:delegator_adddress",
-  async (req, res) => {
-    try {
-      const delegator_adddress = req.params.delegator_adddress;
-      const data = await getChainValidatorReDelegations(
-        API,
-        delegator_adddress
-      );
-      res.json(data);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
+agoricRoute(
+  "/chain_validator_redelegations/:delegator_address",
+  chainValidatorReDelegationsHandler(API)
 );
-
-//get chain validators consensus state
-app.get("/agoric/chain_consensus", async (req, res) => {
-  try {
-    const data = await getChainConsensusState(RPC);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain minting params
-app.get("/agoric/chain_minting_params", async (req, res) => {
-  try {
-    const data = await getChainMintingParams(api);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain governance params
-app.get("/agoric/chain_gov_params", async (req, res) => {
-  try {
-    const params_type = req.query.params_type;
-    const data = await getChainGovParams(API, params_type);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain slashing params
-app.get("/agoric/chain_slashing_params", async (req, res) => {
-  try {
-    const data = await getChainSlashingParams(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain staking params
-app.get("/agoric/chain_staking_params", async (req, res) => {
-  try {
-    const data = await getChainstakingParams(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain distribution params
-app.get("/agoric/chain_distribution_params", async (req, res) => {
-  try {
-    const data = await getChainDistributionParams(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain node info
-app.get("/agoric/chain_node_info", async (req, res) => {
-  try {
-    const data = await getChainNodeInfo(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain proposals
-app.get("/agoric/chain_proposals", async (req, res) => {
-  try {
-    const data = await getChainProposals(API);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain proposal details
-app.get("/agoric/chain_proposal_details", async (req, res) => {
-  try {
-    const proposal_id = req.query.proposal_id;
-    const data = await getChainProposalDetails(API, proposal_id);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain proposal voting options
-app.get("/agoric/chain_proposal_voting_options", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const data = await getChainProposalVotingOptions(API, id);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain proposal Tally options
-app.get("/agoric/chain_proposal_tally_options", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const data = await getChainProposalTallyOptions(API, id);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain proposal deposits
-app.get("/agoric/chain_proposal_deposits", async (req, res) => {
-  try {
-    const id = req.query.id;
-    const data = await getChainProposalDeposits(API, id);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain auth account
-app.get("/agoric/chain_auth_account", async (req, res) => {
-  try {
-    const address = req.query.address;
-    const data = await getChainAuthAccount(API, address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account Txs by Events
-app.get("/agoric/chain_account_txs_by_events/:address", async (req, res) => {
-  try {
-    const address = req.query.address;
-    const data = await getChainAccountTxsByEvents(API, address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account balance
-app.get("/agoric/chain_account_balance", async (req, res) => {
-  try {
-    const address = req.query.address;
-    const data = await getChainAccountBalance(API, address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account delegation rewards
-app.get("/agoric/chain_account_delegation_rewaards", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const data = await getChainAccountDelegationRewards(API, delegator_address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account delegations
-app.get("/agoric/chain_account_delegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const data = await getChainAccountDelegations(API, delegator_address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account redelegations
-app.get("/agoric/chain_account_redelegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const data = await getChainAccountReDelegations(API, delegator_address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-//get chain account undelegations
-app.get("/agoric/chain_account_undelegations", async (req, res) => {
-  try {
-    const delegator_address = req.query.delegator_address;
-    const data = await getChainAccountUnDelegations(API, delegator_address);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+agoricRoute("/chain_consensus", chainConsensusStateHandler(RPC));
+agoricRoute("/chain_minting_params", chainMintingParamsHandler(API));
+agoricRoute("/chain_gov_params", chainGovParamsHandler(API));
+agoricRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+agoricRoute("/chain_staking_params", chainStakingParamsHandler(API));
+agoricRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
+agoricRoute("/chain_node_info", chainNodeInfoHandler(API));
+agoricRoute("/chain_proposals", chainProposalsHandler(API));
+agoricRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+agoricRoute(
+  "/chain_proposal_voting_options",
+  chainProposalVotingOptionsHandler(API)
+);
+agoricRoute(
+  "/chain_proposal_tally_options",
+  chainProposalTallyOptionsHandler(API)
+);
+agoricRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
+agoricRoute("/chain_auth_account", chainAuthAccountHandler(API));
+agoricRoute(
+  "/chain_account_txs_by_events/:address",
+  chainAccountTxsByEventsHandler(API)
+);
+agoricRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+agoricRoute(
+  "/chain_account_delegation_rewards",
+  chainAccountDelegationRewardsHandler(API)
+);
+agoricRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+agoricRoute(
+  "/chain_account_redelegations",
+  chainAccountReDelegationsHandler(API)
+);
+agoricRoute(
+  "/chain_account_undelegations",
+  chainAccountUnDelegationsHandler(API)
+);
 
 module.exports = app;

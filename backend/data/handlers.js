@@ -1,5 +1,5 @@
 const { fetchData } = require("./chainQueries");
-const endpoints = require("./endpoints");
+const endpoints = require("./endpoints.jsx");
 
 const allValidatorsHandler = (api) => async (req, res) => {
   try {
