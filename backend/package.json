@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +18,11 @@
     "node-cron": "^3.0.0",
     "node-fetch": "^2.6.7",
     "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0"
   }
 }
