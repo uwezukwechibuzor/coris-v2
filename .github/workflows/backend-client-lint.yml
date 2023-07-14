@@ -23,20 +23,20 @@ jobs:
 
       - name: Install backend dependencies
         run: |
-          cd coris-v2/backend
+          cd backend
           npm ci
 
       - name: Run backend linter
         run: |
-          cd coris-v2/backend
+          cd backend
           npm run lint
 
       - name: Install client dependencies
         run: |
-          cd coris-v2/client
+          cd client
           npm ci
 
       - name: Run client linter
         run: |
-          cd coris-v2/client
+          cd client
           npm run lint
