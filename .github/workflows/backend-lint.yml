@@ -1,4 +1,4 @@
-name: Backend and Client Lint
+name: Backend Lint
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  backend-client-lint:
+  backend-lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,14 +29,4 @@ jobs:
       - name: Run backend linter
         run: |
           cd backend
-          npm run lint
-
-      - name: Install client dependencies
-        run: |
-          cd client
-          npm ci
-
-      - name: Run client linter
-        run: |
-          cd client
           npm run lint
