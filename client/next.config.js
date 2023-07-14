@@ -1,32 +1,30 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
+  reactStrictMode: true,
+};
 
-  }
-  
-  module.exports = nextConfig
-  
-  module.exports = {
-    // This will build the project as a standalone app inside the Docker image.
-    experimental: {
-      outputStandalone: true,
-    },
+module.exports = nextConfig;
 
-    images: {
-      domains: ['http://www.google.com/s2/favicons?domain=https://stake.fish/'],
-    },
+module.exports = {
+  // This will build the project as a standalone app inside the Docker image.
+  experimental: {
+    outputStandalone: true,
+  },
 
-    module: {
-      rules: [
-          {
-              test: /\.js$/,
-              loader: 'ify-loader'
-          }
-      ]
+  images: {
+    domains: ["http://www.google.com/s2/favicons?domain=https://stake.fish/"],
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: "ify-loader",
+      },
+    ],
   },
 
   output: {
-    globalObject: `typeof self !== 'undefined' ? self : this`
+    globalObject: `typeof self !== 'undefined' ? self : this`,
   },
-
-  }
+};

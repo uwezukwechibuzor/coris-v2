@@ -1,24 +1,21 @@
-import React from 'react';
-import {Pie} from 'react-chartjs-2';
-import 'chart.js/auto';
+import React from "react";
+import { Pie } from "react-chartjs-2";
+import "chart.js/auto";
 
 export default class PoolChart extends React.Component {
   render() {
-  const tokens = this.props
+    const tokens = this.props;
 
-  const state = {
-    labels: [],
-    datasets: [
-      {
-        label: 'Pool',
-        backgroundColor: [
-          '#3a428a',
-          '#d1d6ff'
-        ],
-        data: [tokens.bondedTokens, tokens.notBondedTokens]
-      }
-    ]
-  }
+    const state = {
+      labels: [],
+      datasets: [
+        {
+          label: "Pool",
+          backgroundColor: ["#3a428a", "#d1d6ff"],
+          data: [tokens.bondedTokens, tokens.notBondedTokens],
+        },
+      ],
+    };
     return (
       <div className="pie">
         <Pie
