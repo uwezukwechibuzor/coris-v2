@@ -1,5 +1,24 @@
-const { fetchData } = require("./chainQueries");
+const fetchData = require("./chainQueries");
+const { getLatestBlocks, getAllTxs } = require("./dbQueries");
 const endpoints = require("./endpoints.jsx");
+
+const latestBlocksHandler = (blockModel) => async (req, res) => {
+  try {
+    const data = await getLatestBlocks(req, res, blockModel);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const allTxsHandler = (txModel) => async (req, res) => {
+  try {
+    const data = await getAllTxs(req, res, txModel);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const allValidatorsHandler = (api) => async (req, res) => {
   try {
@@ -332,6 +351,8 @@ const chainAccountUnDelegationsHandler = (api) => async (req, res) => {
 };
 
 module.exports = {
+  latestBlocksHandler,
+  allTxsHandler,
   allValidatorsHandler,
   activeValidatorsHandler,
   chainValidatorsDetailsHandler,
