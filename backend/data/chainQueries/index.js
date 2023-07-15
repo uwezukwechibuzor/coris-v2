@@ -9,6 +9,4 @@ const fetchData = async (url) => {
   return data;
 };
 
-module.exports = {
-  fetchData,
-};
+module.exports = fetchData;
