@@ -37,8 +37,11 @@ const {
   chainAccountDelegationsHandler,
   chainAccountReDelegationsHandler,
   chainAccountUnDelegationsHandler,
+  latestBlocksHandler,
+  allTxsHandler,
 } = require("../../../../data/handlers.js");
 const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
+const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.STARGAZE_REST_API;
 const RPC = process.env.STARGAZE_RPC_API;
@@ -52,46 +55,14 @@ cron.schedule("*/3 * * * * *", function () {
   );
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
-//return blocks by specifying the limit
-app.get("/stargaze/blocks/latest", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const blocks = await Model.stargazeBlockModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(blocks);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get all transactions
-app.get("/stargaze/txs", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const txs = await Model.stargazeTxsModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(txs);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 // Define a helper function to prefix the routes with "/stargaze"
 function stargazeRoute(path, handler) {
-  return app.get(`/stargaze${path}`, handler);
+  return app.get(`/stargaze${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
+stargazeRoute("/blocks/latest", latestBlocksHandler(Model.stargazeBlockModel));
+stargazeRoute("/txs", allTxsHandler(Model.stargazeTxsModel));
 stargazeRoute("/all_validators", allValidatorsHandler(API));
 stargazeRoute("/active_validators", activeValidatorsHandler(API));
 stargazeRoute(

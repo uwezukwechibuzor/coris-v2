@@ -37,8 +37,11 @@ const {
   chainAccountDelegationsHandler,
   chainAccountReDelegationsHandler,
   chainAccountUnDelegationsHandler,
+  latestBlocksHandler,
+  allTxsHandler,
 } = require("../../../../data/handlers.js");
 const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
+const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
@@ -48,46 +51,14 @@ cron.schedule("*/3 * * * * *", function () {
   fetchLatestBlocksAndTxs(API, Model.agoricTxsModel, Model.agoricBlockModel);
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
-//return blocks by specifying the limit
-app.get("/agoric/blocks/latest", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const blocks = await Model.agoricBlockModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(blocks);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get all transactions
-app.get("/agoric/txs", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const txs = await Model.agoricTxsModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(txs);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 // Define a helper function to prefix the routes with "/agoric"
 function agoricRoute(path, handler) {
-  return app.get(`/agoric${path}`, handler);
+  return app.get(`/agoric${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
+agoricRoute("/blocks/latest", latestBlocksHandler(Model.agoricBlockModel));
+agoricRoute("/txs", allTxsHandler(Model.agoricTxsModel));
 agoricRoute("/all_validators", allValidatorsHandler(API));
 agoricRoute("/active_validators", activeValidatorsHandler(API));
 agoricRoute(

@@ -37,8 +37,11 @@ const {
   chainAccountDelegationsHandler,
   chainAccountReDelegationsHandler,
   chainAccountUnDelegationsHandler,
+  latestBlocksHandler,
+  allTxsHandler,
 } = require("../../../../data/handlers.js");
 const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
+const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.COSMOS_REST_API;
 const RPC = process.env.COSMOS_RPC_API;
@@ -48,46 +51,14 @@ cron.schedule("*/3 * * * * *", function () {
   fetchLatestBlocksAndTxs(API, Model.cosmosTxsModel, Model.cosmosBlockModel);
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
-//return blocks by specifying the limit
-app.get("/cosmos/blocks/latest", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const blocks = await Model.cosmosBlockModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(blocks);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get all transactions
-app.get("/cosmos/txs", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const txs = await Model.cosmosTxsModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(txs);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 // Define a helper function to prefix the routes with "/cosmos"
 function cosmosRoute(path, handler) {
-  return app.get(`/cosmos${path}`, handler);
+  return app.get(`/cosmos${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
+cosmosRoute("/blocks/latest", latestBlocksHandler(Model.cosmosBlockModel));
+cosmosRoute("/txs", allTxsHandler(Model.cosmosTxsModel));
 cosmosRoute("/all_validators", allValidatorsHandler(API));
 cosmosRoute("/active_validators", activeValidatorsHandler(API));
 cosmosRoute(

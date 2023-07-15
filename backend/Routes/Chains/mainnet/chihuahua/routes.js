@@ -37,8 +37,11 @@ const {
   chainAccountDelegationsHandler,
   chainAccountReDelegationsHandler,
   chainAccountUnDelegationsHandler,
+  allTxsHandler,
+  latestBlocksHandler,
 } = require("../../../../data/handlers.js");
 const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
+const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.CHIHUAHUA_REST_API;
 const RPC = process.env.CHIHUAHUA_RPC_API;
@@ -52,46 +55,17 @@ cron.schedule("*/3 * * * * *", function () {
   );
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
-//return blocks by specifying the limit
-app.get("/chihuahua/blocks/latest", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const blocks = await Model.chihuahuaBlockModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(blocks);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get all transactions
-app.get("/chihuahua/txs", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const txs = await Model.chihuahuaTxsModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(txs);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 // Define a helper function to prefix the routes with "/chihuahua"
 function chihuahuaRoute(path, handler) {
-  return app.get(`/chihuahua${path}`, handler);
+  return app.get(`/chihuahua${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
+chihuahuaRoute(
+  "/blocks/latest",
+  latestBlocksHandler(Model.chihuahuaBlockModel)
+);
+chihuahuaRoute("/txs", allTxsHandler(Model.chihuahuaTxsModel));
 chihuahuaRoute("/all_validators", allValidatorsHandler(API));
 chihuahuaRoute("/active_validators", activeValidatorsHandler(API));
 chihuahuaRoute(

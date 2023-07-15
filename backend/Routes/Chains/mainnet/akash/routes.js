@@ -37,8 +37,11 @@ const {
   chainAccountDelegationsHandler,
   chainAccountReDelegationsHandler,
   chainAccountUnDelegationsHandler,
+  latestBlocksHandler,
+  allTxsHandler,
 } = require("../../../../data/handlers.js");
 const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
+const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.AKASH_REST_API;
 const RPC = process.env.AKASH_RPC_API;
@@ -48,46 +51,14 @@ cron.schedule("*/3 * * * * *", function () {
   fetchLatestBlocksAndTxs(API, Model.akashTxsModel, Model.akashBlockModel);
 });
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
-
-//return blocks by specifying the limit
-app.get("/akash/blocks/latest", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const blocks = await Model.akashBlockModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(blocks);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-//get all transactions
-app.get("/akash/txs", async function (req, res) {
-  try {
-    const limit = req.query.limit;
-    const txs = await Model.akashTxsModel
-      .find({}, {}, { sort: { _id: -1 } })
-      .limit(limit);
-    res.json(txs);
-    //console.log(blocks)
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
 // Define a helper function to prefix the routes with "/akash"
 function akashRoute(path, handler) {
-  return app.get(`/akash${path}`, handler);
+  return app.get(`/akash${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
+akashRoute("/blocks/latest", latestBlocksHandler(Model.akashBlockModel));
+akashRoute("/txs", allTxsHandler(Model.akashTxsModel));
 akashRoute("/all_validators", allValidatorsHandler(API));
 akashRoute("/active_validators", activeValidatorsHandler(API));
 akashRoute(
