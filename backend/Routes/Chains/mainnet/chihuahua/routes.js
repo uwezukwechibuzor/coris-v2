@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
 const cron = require("node-cron");
@@ -51,7 +50,7 @@ cron.schedule("*/3 * * * * *", function () {
   fetchLatestBlocksAndTxs(
     API,
     Model.chihuahuaTxsModel,
-    Model.chihuahuaBlockModel
+    Model.chihuahuaBlockModel,
   );
 });
 
@@ -63,14 +62,14 @@ function chihuahuaRoute(path, handler) {
 // Define the routes
 chihuahuaRoute(
   "/blocks/latest",
-  latestBlocksHandler(Model.chihuahuaBlockModel)
+  latestBlocksHandler(Model.chihuahuaBlockModel),
 );
 chihuahuaRoute("/txs", allTxsHandler(Model.chihuahuaTxsModel));
 chihuahuaRoute("/all_validators", allValidatorsHandler(API));
 chihuahuaRoute("/active_validators", activeValidatorsHandler(API));
 chihuahuaRoute(
   "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API)
+  chainValidatorsDetailsHandler(API),
 );
 chihuahuaRoute("/chain_inflation", chainInflationHandler(API));
 chihuahuaRoute("/chain_community_pool", chainCommunityPoolHandler(API));
@@ -80,19 +79,19 @@ chihuahuaRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 chihuahuaRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 chihuahuaRoute(
   "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 chihuahuaRoute(
   "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 chihuahuaRoute(
   "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 chihuahuaRoute(
   "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 chihuahuaRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 chihuahuaRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -101,41 +100,41 @@ chihuahuaRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
 chihuahuaRoute("/chain_staking_params", chainStakingParamsHandler(API));
 chihuahuaRoute(
   "/chain_distribution_params",
-  chainDistributionParamsHandler(API)
+  chainDistributionParamsHandler(API),
 );
 chihuahuaRoute("/chain_node_info", chainNodeInfoHandler(API));
 chihuahuaRoute("/chain_proposals", chainProposalsHandler(API));
 chihuahuaRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 chihuahuaRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 chihuahuaRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 chihuahuaRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 chihuahuaRoute("/chain_auth_account", chainAuthAccountHandler(API));
 chihuahuaRoute(
   "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 chihuahuaRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 chihuahuaRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 chihuahuaRoute(
   "/chain_account_delegations",
-  chainAccountDelegationsHandler(API)
+  chainAccountDelegationsHandler(API),
 );
 chihuahuaRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 chihuahuaRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

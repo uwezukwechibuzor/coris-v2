@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
 const cron = require("node-cron");
@@ -63,7 +62,7 @@ cosmosRoute("/all_validators", allValidatorsHandler(API));
 cosmosRoute("/active_validators", activeValidatorsHandler(API));
 cosmosRoute(
   "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API)
+  chainValidatorsDetailsHandler(API),
 );
 cosmosRoute("/chain_inflation", chainInflationHandler(API));
 cosmosRoute("/chain_community_pool", chainCommunityPoolHandler(API));
@@ -73,19 +72,19 @@ cosmosRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 cosmosRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 cosmosRoute(
   "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 cosmosRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 cosmosRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -98,31 +97,31 @@ cosmosRoute("/chain_proposals", chainProposalsHandler(API));
 cosmosRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 cosmosRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 cosmosRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 cosmosRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 cosmosRoute("/chain_auth_account", chainAuthAccountHandler(API));
 cosmosRoute(
   "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 cosmosRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 cosmosRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 cosmosRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 cosmosRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

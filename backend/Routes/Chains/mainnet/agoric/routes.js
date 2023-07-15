@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
 const cron = require("node-cron");
@@ -63,7 +62,7 @@ agoricRoute("/all_validators", allValidatorsHandler(API));
 agoricRoute("/active_validators", activeValidatorsHandler(API));
 agoricRoute(
   "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API)
+  chainValidatorsDetailsHandler(API),
 );
 agoricRoute("/chain_inflation", chainInflationHandler(API));
 agoricRoute("/chain_community_pool", chainCommunityPoolHandler(API));
@@ -73,19 +72,19 @@ agoricRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 agoricRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 agoricRoute(
   "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 agoricRoute(
   "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 agoricRoute(
   "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 agoricRoute(
   "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 agoricRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 agoricRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -98,31 +97,31 @@ agoricRoute("/chain_proposals", chainProposalsHandler(API));
 agoricRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 agoricRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 agoricRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 agoricRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 agoricRoute("/chain_auth_account", chainAuthAccountHandler(API));
 agoricRoute(
   "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 agoricRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 agoricRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 agoricRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 agoricRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 agoricRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

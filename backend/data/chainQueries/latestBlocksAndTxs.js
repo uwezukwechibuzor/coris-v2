@@ -10,7 +10,7 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
 
     // Get transactions data in each block
     const getTxs = await fetch(
-      api + endpoints.chainBlockHeightTxs(block.block.header.height)
+      api + endpoints.chainBlockHeightTxs(block.block.header.height),
     );
     if (!getTxs.ok) throw new Error("unexpected response");
 
@@ -54,7 +54,7 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
         signatures: block.block.last_commit.signatures.map(
           (validatorDetails) => {
             return { validator_address: validatorDetails.validator_address };
-          }
+          },
         ),
       });
 
