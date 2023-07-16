@@ -32,120 +32,143 @@ function Home(props) {
   const chain_id = props?.chain_id?.chain_id;
 
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
-      .then((response) => {
+    const fetchBlocks = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks)
+        );
         setBlocks(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
-  }, [getBlocks, chain_id]);
+      }
+    };
 
-  //get all latest transactions
+    fetchBlocks();
+  }, [chain_id, queryTotalBlocks]);
+
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs))
-      .then((response) => {
+    const fetchAllTxs = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs)
+        );
         setAllTxs(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
-  }, [getAllTxs, chain_id]);
+      }
+    };
 
-  //get inflation percentage
+    fetchAllTxs();
+  }, [chain_id, queryTotalTxs]);
+
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + inflationEndpoint)
-      .then((response) => {
+    const fetchInflation = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + inflationEndpoint
+        );
         setInflation(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchInflation();
   }, [chain_id]);
 
-  //get Community Pool
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + communityPoolEndpoint)
-      .then((response) => {
+    const fetchCommunityPool = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + communityPoolEndpoint
+        );
         setCommunityPool(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchCommunityPool();
   }, [chain_id]);
 
-  //active validators
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
-      .then((response) => {
+    const fetchActiveValidators = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + chainActiveValidatorsEndpoint
+        );
         setActiveValidators(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchActiveValidators();
   }, [chain_id]);
 
-  //all validators
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
-      .then((response) => {
+    const fetchAllValidators = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + ChainAllValidatorsEndpoint
+        );
         setAllValidators(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchAllValidators();
   }, [chain_id]);
 
-  //get Pool
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
-      .then((response) => {
+    const fetchChainPool = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + chainPoolEndpoint
+        );
         setChainPool(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchChainPool();
   }, [chain_id]);
 
-  //checks for these states
-  const inflation = getInflation
+  const inflationValue = getInflation
     ? (getInflation?.inflation * 100).toFixed(2) + "%"
     : null;
-  const communityPool = getCommunityPool
+  const communityPoolValue = getCommunityPool
     ? (getCommunityPool?.pool[0]?.amount / DENOM).toFixed(2)
     : null;
-  const chainPool = getChainPool ? getChainPool : null;
+  const chainPoolValue = getChainPool ? getChainPool : null;
 
-  //function to get coin details
   useEffect(() => {
-    axios
-      .get(coinsAPI(chain_id))
-      .then((response) => {
+    const fetchCoinData = async () => {
+      try {
+        const response = await axios.get(coinsAPI(chain_id));
         setCoin(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchCoinData();
   }, [chain_id, coinData]);
 
-  //get price data and pass to price chart component
   useEffect(() => {
-    axios
-      .get(coinsPriceChart(chain_id))
-      .then((response) => {
+    const fetchPriceChart = async () => {
+      try {
+        const response = await axios.get(coinsPriceChart(chain_id));
         const getPrice = response.data.prices;
         setPriceChart(getPrice);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchPriceChart();
   }, [chain_id, priceChart]);
 
   const homePageData = {
@@ -162,9 +185,9 @@ function Home(props) {
     percent1: "100%",
     percent2: "40%",
     inflation: "Inflation",
-    inflationValue: inflation,
+    inflationValue: inflationValue,
     communityPool: "Community pool",
-    communityPoolValue: communityPool,
+    communityPoolValue: communityPoolValue,
     phone1: "1 234 567 890",
     phone2: "1 234 567 890",
     place3: "supply",
@@ -175,7 +198,7 @@ function Home(props) {
     getAllTxs: getAllTxs,
     activeValidators: getActiveValidators,
     chainAllValidators: getAllValidators,
-    poolData: chainPool,
+    poolData: chainPoolValue,
     coinData: coinData,
     priceChart: priceChart,
     chain_id: chain_id,
