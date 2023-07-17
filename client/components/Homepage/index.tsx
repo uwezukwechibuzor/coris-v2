@@ -34,7 +34,7 @@ function HomePageContent(props) {
   const {
     title,
     aprValue,
-    place1,
+    supply,
     inflation,
     inflationValue,
     communityPool,
@@ -124,9 +124,9 @@ function HomePageContent(props) {
 
   const detailsData = {
     onlineVotingPower: "Online Voting power",
-    x36516M1: totalActiveVotingPower,
+    totalActiveVotingPower: totalActiveVotingPower,
     place: "from",
-    x36516M2: totalVotingPower,
+    totalVotingPower: totalVotingPower,
   };
 
   const details2Data = {
@@ -292,7 +292,7 @@ function HomePageContent(props) {
         >
           <FlexCenter className="h-100">
             <OverlapGroup13>
-              <Place className={darkMode ? "dark-mode" : ""}>{place1}</Place>
+              <Supply className={darkMode ? "dark-mode" : ""}>{supply}</Supply>
               <Address className={darkMode ? "dark-mode" : ""}>
                 {coinData?.market_data?.total_supply !== null
                   ? formatNumbers(coinData?.market_data?.total_supply) +
@@ -307,9 +307,9 @@ function HomePageContent(props) {
           <OnlineVotingPower>
             <Details
               onlineVotingPower={detailsData.onlineVotingPower}
-              x36516M1={detailsData.x36516M1}
+              totalActiveVotingPower={detailsData.totalActiveVotingPower}
               place={detailsData.place}
-              x36516M2={detailsData.x36516M2}
+              totalVotingPower={detailsData.totalVotingPower}
             />
             <OverlapGroup2 style={{ position: "relative" }}>
               <Percent style={{ position: "absolute", right: "10px;" }}>
@@ -356,9 +356,9 @@ function HomePageContent(props) {
         >
           <FlexCenter className="h-100">
             <OverlapGroup14>
-              <Place className={darkMode ? "dark-mode" : ""}>
+              <Supply className={darkMode ? "dark-mode" : ""}>
                 {communityPool}
-              </Place>
+              </Supply>
               <Address className={darkMode ? "dark-mode" : ""}>
                 {communityPoolValue}
               </Address>
@@ -722,7 +722,7 @@ const OverlapGroup13 = styled.div`
   align-items: flex-start;
 `;
 
-const Place = styled.div`
+const Supply = styled.div`
   ${UrbanistNormalBlack24px}
   min-height: 29px;
   margin-top: 5px;
