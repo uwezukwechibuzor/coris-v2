@@ -49,7 +49,7 @@ function ValidatorsContent(props) {
   //uptimeByBlocksHeights
   const convertedSignatures = uptimeByBlocksHeights?.map((data) => {
     const convertedSigs = data.signatures?.map((sig) => {
-      return toBech32("cosmosvalcons", fromHex(sig?.validator_address));
+      return toBech32(chain_id + "valcons", fromHex(sig?.validator_address));
     });
     return convertedSigs;
   });
@@ -63,7 +63,7 @@ function ValidatorsContent(props) {
         : "";
     const ed25519PubkeyRaw = fromBase64(consensusPubkey);
     const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-    const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+    const bech32Address = Bech32.encode(chain_id + "valcons", addressData);
 
     let totalSignedBlocks = 0;
     let totalBlocks = 0;

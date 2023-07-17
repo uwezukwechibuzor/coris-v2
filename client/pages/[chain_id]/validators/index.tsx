@@ -18,26 +18,34 @@ function Validators(props) {
 
   //all validators
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
-      .then((response) => {
+    const fetchAllValidators = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + ChainAllValidatorsEndpoint
+        );
         setAllValidators(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchAllValidators();
   }, [chain_id]);
 
   //get Pool
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
-      .then((response) => {
+    const fetchChainPool = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + chainPoolEndpoint
+        );
         setChainPool(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchChainPool();
   }, [chain_id]);
 
   //get total bonded tokens
@@ -48,14 +56,18 @@ function Validators(props) {
   //get blocks
   const queryTotalBlocks = 100;
   useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
-      .then((response) => {
+    const fetchUptimeByBlocks = async () => {
+      try {
+        const response = await axios.get(
+          BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks)
+        );
         setUptimeByBlocksHeights(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchUptimeByBlocks();
   }, [getUptimeByBlocksHeights, chain_id]);
 
   const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(
