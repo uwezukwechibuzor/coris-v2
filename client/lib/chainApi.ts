@@ -3,7 +3,7 @@ import { HYDRATE } from "next-redux-wrapper";
 import { ChainAllValidatorsEndpoint, allTxsEndpoint, chainBlockHeightDetailsEndpont, latestBlocksEndpoint } from "./chainApiEndpoints";
 import { chainURL } from "./Util/chainsURL";
 
-const baseChainAPI =  chainURL.UMEE_API
+const baseChainAPI =  ""
 
 export const chainApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -40,7 +40,7 @@ export const chainApi = createApi({
       providesTags:  ['Validators'],
     }),  
     getChainActiveValidators: builder.query<any, void>({
-      query: () => `${chainURL.UMEE_API}/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500`,
+      query: () => `/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500`,
       providesTags:  ['ActiveValidators'],
     }),   
     getChainValidatorDetails: builder.query<any, any>({

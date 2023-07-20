@@ -11,7 +11,7 @@ module.exports = {
     chainTxsByHash:  (hash) =>  `/cosmos/tx/v1beta1/txs/${hash}`,
     chainValidatorsDetails: (address) => `/cosmos/staking/v1beta1/validators/${address}`,
     chainValidatorsSlashingSigningInfosDetails: (cons_address) => `/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
-    chainValidatorDelegations: (validator_adddress) => `/cosmos/staking/v1beta1/validators/${validator_adddress}/delegations?pagination.limit=500&pagination.reverse=true`,
+    chainValidatorDelegations: (validator_address) => `/cosmos/staking/v1beta1/validators/${validator_address}/delegations?pagination.limit=500&pagination.reverse=true`,
     chainValidatorUnDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.limit=500&pagination.reverse=true`,
     chainValidatorReDelegations: (delegator_addr) => `/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`,
     consensusState: '/consensus_state?',

@@ -60,10 +60,7 @@ cosmosRoute("/blocks/latest", latestBlocksHandler(Model.cosmosBlockModel));
 cosmosRoute("/txs", allTxsHandler(Model.cosmosTxsModel));
 cosmosRoute("/all_validators", allValidatorsHandler(API));
 cosmosRoute("/active_validators", activeValidatorsHandler(API));
-cosmosRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+cosmosRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 cosmosRoute("/chain_inflation", chainInflationHandler(API));
 cosmosRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 cosmosRoute("/chain_pool", chainPoolHandler(API));
@@ -71,19 +68,19 @@ cosmosRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 cosmosRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 cosmosRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 cosmosRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
+  "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 cosmosRoute(
-  "/chain_validator_delegations/:validator_address",
+  "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API),
 );
 cosmosRoute(
-  "/chain_validator_undelegations/:validator_address",
+  "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API),
 );
 cosmosRoute(
-  "/chain_validator_redelegations/:delegator_address",
+  "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API),
 );
 cosmosRoute("/chain_consensus", chainConsensusStateHandler(RPC));
@@ -106,7 +103,7 @@ cosmosRoute(
 cosmosRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 cosmosRoute("/chain_auth_account", chainAuthAccountHandler(API));
 cosmosRoute(
-  "/chain_account_txs_by_events/:address",
+  "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API),
 );
 cosmosRoute("/chain_account_balance", chainAccountBalanceHandler(API));

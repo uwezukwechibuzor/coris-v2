@@ -64,10 +64,7 @@ crescentRoute("/blocks/latest", latestBlocksHandler(Model.crescentBlockModel));
 crescentRoute("/txs", allTxsHandler(Model.crescentTxsModel));
 crescentRoute("/all_validators", allValidatorsHandler(API));
 crescentRoute("/active_validators", activeValidatorsHandler(API));
-crescentRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+crescentRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 crescentRoute("/chain_inflation", chainInflationHandler(API));
 crescentRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 crescentRoute("/chain_pool", chainPoolHandler(API));
@@ -75,19 +72,19 @@ crescentRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 crescentRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 crescentRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 crescentRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
+  "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 crescentRoute(
-  "/chain_validator_delegations/:validator_address",
+  "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API),
 );
 crescentRoute(
-  "/chain_validator_undelegations/:validator_address",
+  "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API),
 );
 crescentRoute(
-  "/chain_validator_redelegations/:delegator_address",
+  "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API),
 );
 crescentRoute("/chain_consensus", chainConsensusStateHandler(RPC));
@@ -113,7 +110,7 @@ crescentRoute(
 crescentRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 crescentRoute("/chain_auth_account", chainAuthAccountHandler(API));
 crescentRoute(
-  "/chain_account_txs_by_events/:address",
+  "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API),
 );
 crescentRoute("/chain_account_balance", chainAccountBalanceHandler(API));

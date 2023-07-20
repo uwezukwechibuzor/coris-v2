@@ -67,10 +67,7 @@ chihuahuaRoute(
 chihuahuaRoute("/txs", allTxsHandler(Model.chihuahuaTxsModel));
 chihuahuaRoute("/all_validators", allValidatorsHandler(API));
 chihuahuaRoute("/active_validators", activeValidatorsHandler(API));
-chihuahuaRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+chihuahuaRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 chihuahuaRoute("/chain_inflation", chainInflationHandler(API));
 chihuahuaRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 chihuahuaRoute("/chain_pool", chainPoolHandler(API));
@@ -78,19 +75,19 @@ chihuahuaRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 chihuahuaRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 chihuahuaRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 chihuahuaRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
+  "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 chihuahuaRoute(
-  "/chain_validator_delegations/:validator_address",
+  "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API),
 );
 chihuahuaRoute(
-  "/chain_validator_undelegations/:validator_address",
+  "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API),
 );
 chihuahuaRoute(
-  "/chain_validator_redelegations/:delegator_address",
+  "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API),
 );
 chihuahuaRoute("/chain_consensus", chainConsensusStateHandler(RPC));
@@ -116,7 +113,7 @@ chihuahuaRoute(
 chihuahuaRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 chihuahuaRoute("/chain_auth_account", chainAuthAccountHandler(API));
 chihuahuaRoute(
-  "/chain_account_txs_by_events/:address",
+  "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API),
 );
 chihuahuaRoute("/chain_account_balance", chainAccountBalanceHandler(API));

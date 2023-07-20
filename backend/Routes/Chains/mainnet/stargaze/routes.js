@@ -64,10 +64,7 @@ stargazeRoute("/blocks/latest", latestBlocksHandler(Model.stargazeBlockModel));
 stargazeRoute("/txs", allTxsHandler(Model.stargazeTxsModel));
 stargazeRoute("/all_validators", allValidatorsHandler(API));
 stargazeRoute("/active_validators", activeValidatorsHandler(API));
-stargazeRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+stargazeRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 stargazeRoute("/chain_inflation", chainInflationHandler(API));
 stargazeRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 stargazeRoute("/chain_pool", chainPoolHandler(API));
@@ -75,19 +72,19 @@ stargazeRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 stargazeRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 stargazeRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 stargazeRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
+  "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 stargazeRoute(
-  "/chain_validator_delegations/:validator_address",
+  "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API),
 );
 stargazeRoute(
-  "/chain_validator_undelegations/:validator_address",
+  "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API),
 );
 stargazeRoute(
-  "/chain_validator_redelegations/:delegator_address",
+  "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API),
 );
 stargazeRoute("/chain_consensus", chainConsensusStateHandler(RPC));
@@ -113,7 +110,7 @@ stargazeRoute(
 stargazeRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 stargazeRoute("/chain_auth_account", chainAuthAccountHandler(API));
 stargazeRoute(
-  "/chain_account_txs_by_events/:address",
+  "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API),
 );
 stargazeRoute("/chain_account_balance", chainAccountBalanceHandler(API));

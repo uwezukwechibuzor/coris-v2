@@ -21,20 +21,21 @@ export const chainBlockHeightTxsEndpoint = (height) =>
 export const chainTxsByHashEndpoint = (hash) => `/chain_txs_hash?hash=${hash}`;
 
 export const chainValidatorsDetailsEndpoint = (address) =>
-  `/chain_validator_details/${address}`;
+  `/chain_validator_details?address=${address}`;
 
 export const chainValidatorsSlashingSigningInfosDetailsEndpoint = (
   cons_address
-) => `/chain_validator_slashing_signing_info_details/${cons_address}`;
+) =>
+  `/chain_validator_slashing_signing_info_details?cons_address=${cons_address}`;
 
-export const chainValidatorDelegationsEndpoint = (validator_addr) =>
-  `/chain_validator_delegations/${validator_addr}`;
+export const chainValidatorDelegationsEndpoint = (validator_address) =>
+  `/chain_validator_delegations?validator_address=${validator_address}`;
 
-export const chainValidatorUnDelegationsEndpoint = (validator_addr) =>
-  `/chain_validator_undelegations/${validator_addr}`;
+export const chainValidatorUnDelegationsEndpoint = (validator_address) =>
+  `/chain_validator_undelegations?validator_address=${validator_address}`;
 
-export const chainValidatorReDelegationsEndpoint = (delegator_addr) =>
-  `/chain_validator_undelegations/${delegator_addr}`;
+export const chainValidatorReDelegationsEndpoint = (delegator_address) =>
+  `/chain_validator_undelegations?delegator_address=${delegator_address}`;
 
 export const consensusStateEndpoint = `/chain_consensus`;
 
@@ -69,7 +70,7 @@ export const authAccountEndpoint = (address) =>
   `/chain_auth_account?address=${address}`;
 
 export const accountTxsByEventsEndpoint = (address) =>
-  `/chain_account_txs_by_events/${address}`;
+  `/chain_account_txs_by_events?address=${address}`;
 
 export const accountBalanceEndpoint = (address) =>
   `/chain_account_balance?address=${address}`;

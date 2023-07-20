@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import HomePageContent from "../../components/Homepage";
-import axios from "axios";
+import useSWR from "swr";
 import {
   chainActiveValidatorsEndpoint,
   chainPoolEndpoint,
@@ -14,168 +13,88 @@ import {
 import { DENOM } from "../../lib/Util/constants";
 import { BaseChainApi } from "../../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../../lib/coingeckoAPI";
+import { fetcher } from "../../lib/Util/fetcher";
+import { swrOptions } from "../../lib/Util/swrOptions ";
 
 function Home(props) {
-  const [getBlocks, setBlocks] = useState([]);
-  const [getAllTxs, setAllTxs] = useState([]);
-  const [getInflation, setInflation] = useState(null);
-  const [getCommunityPool, setCommunityPool] = useState(null);
-  const [getAllValidators, setAllValidators] = useState(null);
-  const [getActiveValidators, setActiveValidators] = useState([]);
-  const [getChainPool, setChainPool] = useState(null);
-  const [coinData, setCoin]: any = useState([]);
-  const [priceChart, setPriceChart]: any = useState([]);
-
   const queryTotalBlocks = 5;
   const queryTotalTxs = 5;
 
   const chain_id = props?.chain_id?.chain_id;
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
-      .then((response) => {
-        setBlocks(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getBlocks, chain_id]);
+  // Fetch latest blocks data
+  const { data: getBlocks } = useSWR(
+    BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks),
+    fetcher,
+    swrOptions
+  );
 
-  //get all latest transactions
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs))
-      .then((response) => {
-        setAllTxs(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getAllTxs, chain_id]);
+  // Fetch all transactions data
+  const { data: getAllTxs } = useSWR(
+    BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs),
+    fetcher,
+    swrOptions
+  );
 
-  //get inflation percentage
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + inflationEndpoint)
-      .then((response) => {
-        setInflation(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // Fetch inflation data
+  const { data: getInflation } = useSWR(
+    BaseChainApi(chain_id) + inflationEndpoint,
+    fetcher
+  );
 
-  //get Community Pool
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + communityPoolEndpoint)
-      .then((response) => {
-        setCommunityPool(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // Fetch community pool data
+  const { data: getCommunityPool } = useSWR(
+    BaseChainApi(chain_id) + communityPoolEndpoint,
+    fetcher
+  );
 
-  //active validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
-      .then((response) => {
-        setActiveValidators(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // Fetch active validators data
+  const { data: getActiveValidators } = useSWR(
+    BaseChainApi(chain_id) + chainActiveValidatorsEndpoint,
+    fetcher
+  );
 
-  //all validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
-      .then((response) => {
-        setAllValidators(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // Fetch all validators data
+  const { data: getAllValidators } = useSWR(
+    BaseChainApi(chain_id) + ChainAllValidatorsEndpoint,
+    fetcher
+  );
 
-  //get Pool
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
-      .then((response) => {
-        setChainPool(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // Fetch chain pool data
+  const { data: getChainPool } = useSWR(
+    BaseChainApi(chain_id) + chainPoolEndpoint,
+    fetcher
+  );
 
-  //checks for these states
-  const inflation = getInflation
+  // Fetch coin data
+  const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);
+
+  const inflationValue = getInflation
     ? (getInflation?.inflation * 100).toFixed(2) + "%"
     : null;
-  const communityPool = getCommunityPool
+  const communityPoolValue = getCommunityPool
     ? (getCommunityPool?.pool[0]?.amount / DENOM).toFixed(2)
     : null;
-  const chainPool = getChainPool ? getChainPool : null;
+  const chainPoolValue = getChainPool ? getChainPool : null;
 
-  //function to get coin details
-  useEffect(() => {
-    axios
-      .get(coinsAPI(chain_id))
-      .then((response) => {
-        setCoin(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id, coinData]);
-
-  //get price data and pass to price chart component
-  useEffect(() => {
-    axios
-      .get(coinsPriceChart(chain_id))
-      .then((response) => {
-        const getPrice = response.data.prices;
-        setPriceChart(getPrice);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id, priceChart]);
+  // Fetch price chart data
+  const { data } = useSWR(coinsPriceChart(chain_id), fetcher, swrOptions);
+  const priceChart = data ? data?.prices : [];
 
   const homePageData = {
     title: "Overview",
-    text2: "13:00",
-    text3: "17:00",
-    text4: "21:00",
-    text5: "28:00",
-    time: "3:59AM",
-    price: "$376",
-    apr: "Annual Provisions",
-    place1: "Supply",
-    address1: "1 453 930 716.2345 CORIS",
-    percent1: "100%",
-    percent2: "40%",
+    supply: "Supply",
     inflation: "Inflation",
-    inflationValue: inflation,
+    inflationValue: inflationValue,
     communityPool: "Community pool",
-    communityPoolValue: communityPool,
-    phone1: "1 234 567 890",
-    phone2: "1 234 567 890",
-    place3: "supply",
-    percent4: "75%",
+    communityPoolValue: communityPoolValue,
     latestBlocks: "Latest Blocks",
     viewAll: "View all",
     getBlocks: getBlocks,
     getAllTxs: getAllTxs,
     activeValidators: getActiveValidators,
     chainAllValidators: getAllValidators,
-    poolData: chainPool,
+    poolData: chainPoolValue,
     coinData: coinData,
     priceChart: priceChart,
     chain_id: chain_id,

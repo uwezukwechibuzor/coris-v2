@@ -60,10 +60,7 @@ akashRoute("/blocks/latest", latestBlocksHandler(Model.akashBlockModel));
 akashRoute("/txs", allTxsHandler(Model.akashTxsModel));
 akashRoute("/all_validators", allValidatorsHandler(API));
 akashRoute("/active_validators", activeValidatorsHandler(API));
-akashRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+akashRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 akashRoute("/chain_inflation", chainInflationHandler(API));
 akashRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 akashRoute("/chain_pool", chainPoolHandler(API));
@@ -71,19 +68,19 @@ akashRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 akashRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 akashRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 akashRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
+  "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 akashRoute(
-  "/chain_validator_delegations/:validator_address",
+  "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API),
 );
 akashRoute(
-  "/chain_validator_undelegations/:validator_address",
+  "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API),
 );
 akashRoute(
-  "/chain_validator_redelegations/:delegator_address",
+  "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API),
 );
 akashRoute("/chain_consensus", chainConsensusStateHandler(RPC));
@@ -105,10 +102,7 @@ akashRoute(
 );
 akashRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 akashRoute("/chain_auth_account", chainAuthAccountHandler(API));
-akashRoute(
-  "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API),
-);
+akashRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 akashRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 akashRoute(
   "/chain_account_delegation_rewards",

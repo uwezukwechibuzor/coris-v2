@@ -10,7 +10,8 @@ import {
 
 function Details(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
-  const { onlineVotingPower, x36516M1, place, x36516M2 } = props;
+  const { onlineVotingPower, totalActiveVotingPower, place, totalVotingPower } =
+    props;
 
   return (
     <Details1>
@@ -19,9 +20,9 @@ function Details(props) {
       </OnlineVotingPower>
       <Group7328>
         <div>
-          <X36516m className={darkMode ? "dark-mode" : ""}>
-            {formatNumbers(x36516M1)}
-          </X36516m>
+          <TotalActiveVotingPower className={darkMode ? "dark-mode" : ""}>
+            {formatNumbers(totalActiveVotingPower)}
+          </TotalActiveVotingPower>
           <div>
             <Place
               style={{
@@ -31,9 +32,9 @@ function Details(props) {
               {place}
             </Place>
           </div>
-          <X36516m1 className={darkMode ? "dark-mode" : ""}>
-            {formatNumbers(x36516M2)}
-          </X36516m1>
+          <TotalVotingPower className={darkMode ? "dark-mode" : ""}>
+            {formatNumbers(totalVotingPower)}
+          </TotalVotingPower>
         </div>
       </Group7328>
     </Details1>
@@ -65,7 +66,7 @@ const Group7328 = styled.div`
   min-width: 192px;
 `;
 
-const X36516m = styled.div`
+const TotalActiveVotingPower = styled.div`
   ${UrbanistBoldBlack16px}
   min-height: 19px;
   font-size: 14px;
@@ -86,7 +87,7 @@ const Place = styled.div`
   margin-right: 5px;
 `;
 
-const X36516m1 = styled.div`
+const TotalVotingPower = styled.div`
   font-weight: bold;
   min-height: 19px;
   font-size: 14px;

@@ -40,7 +40,7 @@ const activeValidatorsHandler = (api) => async (req, res) => {
 
 const chainValidatorsDetailsHandler = (api) => async (req, res) => {
   try {
-    const address = req.params.address;
+    const address = req.query.address;
     const data = await fetchData(
       api + endpoints.chainValidatorsDetails(address),
     );
@@ -112,10 +112,10 @@ const chainTxsByHashHandler = (api) => async (req, res) => {
 const chainValidatorsSlashingSigningInfosDetailsHandler =
   (api) => async (req, res) => {
     try {
-      const cons_adddress = req.params.cons_adddress;
+      const cons_address = req.query.cons_address;
       const data = await fetchData(
         api +
-          endpoints.chainValidatorsSlashingSigningInfosDetails(cons_adddress),
+          endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address),
       );
       res.json(data);
     } catch (error) {
@@ -125,9 +125,9 @@ const chainValidatorsSlashingSigningInfosDetailsHandler =
 
 const chainValidatorDelegationsHandler = (api) => async (req, res) => {
   try {
-    const validator_adddress = req.params.validator_adddress;
+    const validator_address = req.query.validator_address;
     const data = await fetchData(
-      api + endpoints.chainValidatorDelegations(validator_adddress),
+      api + endpoints.chainValidatorDelegations(validator_address),
     );
     res.json(data);
   } catch (error) {
@@ -137,9 +137,9 @@ const chainValidatorDelegationsHandler = (api) => async (req, res) => {
 
 const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
   try {
-    const validator_adddress = req.params.validator_adddress;
+    const validator_address = req.query.validator_address;
     const data = await fetchData(
-      api + endpoints.chainValidatorUnDelegations(validator_adddress),
+      api + endpoints.chainValidatorUnDelegations(validator_address),
     );
     res.json(data);
   } catch (error) {
@@ -149,9 +149,9 @@ const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
 
 const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
   try {
-    const delegator_adddress = req.params.delegator_adddress;
+    const delegator_address = req.query.delegator_address;
     const data = await fetchData(
-      api + endpoints.chainValidatorReDelegations(delegator_adddress),
+      api + endpoints.chainValidatorReDelegations(delegator_address),
     );
     res.json(data);
   } catch (error) {
