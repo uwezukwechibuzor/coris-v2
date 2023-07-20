@@ -60,10 +60,7 @@ akashRoute("/blocks/latest", latestBlocksHandler(Model.akashBlockModel));
 akashRoute("/txs", allTxsHandler(Model.akashTxsModel));
 akashRoute("/all_validators", allValidatorsHandler(API));
 akashRoute("/active_validators", activeValidatorsHandler(API));
-akashRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+akashRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 akashRoute("/chain_inflation", chainInflationHandler(API));
 akashRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 akashRoute("/chain_pool", chainPoolHandler(API));
@@ -71,20 +68,20 @@ akashRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 akashRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 akashRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 akashRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API),
+  "/chain_validator_slashing_signing_info_details",
+  chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
 akashRoute(
-  "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API),
+  "/chain_validator_delegations",
+  chainValidatorDelegationsHandler(API)
 );
 akashRoute(
-  "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API),
+  "/chain_validator_undelegations",
+  chainValidatorUnDelegationsHandler(API)
 );
 akashRoute(
-  "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API),
+  "/chain_validator_redelegations",
+  chainValidatorReDelegationsHandler(API)
 );
 akashRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 akashRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -97,31 +94,28 @@ akashRoute("/chain_proposals", chainProposalsHandler(API));
 akashRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 akashRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API),
+  chainProposalVotingOptionsHandler(API)
 );
 akashRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API),
+  chainProposalTallyOptionsHandler(API)
 );
 akashRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 akashRoute("/chain_auth_account", chainAuthAccountHandler(API));
-akashRoute(
-  "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API),
-);
+akashRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 akashRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 akashRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API),
+  chainAccountDelegationRewardsHandler(API)
 );
 akashRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 akashRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API),
+  chainAccountReDelegationsHandler(API)
 );
 akashRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API),
+  chainAccountUnDelegationsHandler(API)
 );
 
 module.exports = app;

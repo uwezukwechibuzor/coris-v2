@@ -60,10 +60,7 @@ junoRoute("/blocks/latest", latestBlocksHandler(Model.junoBlockModel));
 junoRoute("/txs", allTxsHandler(Model.junoTxsModel));
 junoRoute("/all_validators", allValidatorsHandler(API));
 junoRoute("/active_validators", activeValidatorsHandler(API));
-junoRoute(
-  "/chain_validator_details/:address",
-  chainValidatorsDetailsHandler(API),
-);
+junoRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
 junoRoute("/chain_inflation", chainInflationHandler(API));
 junoRoute("/chain_community_pool", chainCommunityPoolHandler(API));
 junoRoute("/chain_pool", chainPoolHandler(API));
@@ -71,20 +68,20 @@ junoRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
 junoRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 junoRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 junoRoute(
-  "/chain_validator_slashing_signing_info_details/:cons_address",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API),
+  "/chain_validator_slashing_signing_info_details",
+  chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
 junoRoute(
-  "/chain_validator_delegations/:validator_address",
-  chainValidatorDelegationsHandler(API),
+  "/chain_validator_delegations",
+  chainValidatorDelegationsHandler(API)
 );
 junoRoute(
-  "/chain_validator_undelegations/:validator_address",
-  chainValidatorUnDelegationsHandler(API),
+  "/chain_validator_undelegations",
+  chainValidatorUnDelegationsHandler(API)
 );
 junoRoute(
-  "/chain_validator_redelegations/:delegator_address",
-  chainValidatorReDelegationsHandler(API),
+  "/chain_validator_redelegations",
+  chainValidatorReDelegationsHandler(API)
 );
 junoRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 junoRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -97,31 +94,28 @@ junoRoute("/chain_proposals", chainProposalsHandler(API));
 junoRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 junoRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API),
+  chainProposalVotingOptionsHandler(API)
 );
 junoRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API),
+  chainProposalTallyOptionsHandler(API)
 );
 junoRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 junoRoute("/chain_auth_account", chainAuthAccountHandler(API));
-junoRoute(
-  "/chain_account_txs_by_events/:address",
-  chainAccountTxsByEventsHandler(API),
-);
+junoRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 junoRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 junoRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API),
+  chainAccountDelegationRewardsHandler(API)
 );
 junoRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 junoRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API),
+  chainAccountReDelegationsHandler(API)
 );
 junoRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API),
+  chainAccountUnDelegationsHandler(API)
 );
 
 module.exports = app;
