@@ -69,19 +69,19 @@ akashRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 akashRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 akashRoute(
   "/chain_validator_slashing_signing_info_details",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 akashRoute(
   "/chain_validator_delegations",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 akashRoute(
   "/chain_validator_undelegations",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 akashRoute(
   "/chain_validator_redelegations",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 akashRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 akashRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -94,11 +94,11 @@ akashRoute("/chain_proposals", chainProposalsHandler(API));
 akashRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 akashRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 akashRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 akashRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 akashRoute("/chain_auth_account", chainAuthAccountHandler(API));
@@ -106,16 +106,16 @@ akashRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 akashRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 akashRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 akashRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 akashRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 akashRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

@@ -50,7 +50,7 @@ cron.schedule("*/3 * * * * *", function () {
   fetchLatestBlocksAndTxs(
     API,
     Model.crescentTxsModel,
-    Model.crescentBlockModel
+    Model.crescentBlockModel,
   );
 });
 
@@ -73,19 +73,19 @@ crescentRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 crescentRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 crescentRoute(
   "/chain_validator_slashing_signing_info_details",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 crescentRoute(
   "/chain_validator_delegations",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 crescentRoute(
   "/chain_validator_undelegations",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 crescentRoute(
   "/chain_validator_redelegations",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 crescentRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 crescentRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -94,41 +94,41 @@ crescentRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
 crescentRoute("/chain_staking_params", chainStakingParamsHandler(API));
 crescentRoute(
   "/chain_distribution_params",
-  chainDistributionParamsHandler(API)
+  chainDistributionParamsHandler(API),
 );
 crescentRoute("/chain_node_info", chainNodeInfoHandler(API));
 crescentRoute("/chain_proposals", chainProposalsHandler(API));
 crescentRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 crescentRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 crescentRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 crescentRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 crescentRoute("/chain_auth_account", chainAuthAccountHandler(API));
 crescentRoute(
   "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 crescentRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 crescentRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 crescentRoute(
   "/chain_account_delegations",
-  chainAccountDelegationsHandler(API)
+  chainAccountDelegationsHandler(API),
 );
 crescentRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 crescentRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

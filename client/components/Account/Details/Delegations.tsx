@@ -2,7 +2,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import styled from "styled-components";
-import { COIN, DENOM } from "../../../lib/Util/constants";
+import { DENOM, assetSymbol } from "../../../lib/Util/constants";
 import { formatHash } from "../../../lib/Util/format";
 
 function AccountDelegationsContent(props) {
@@ -102,7 +102,7 @@ function AccountDelegationsContent(props) {
                       {data?.balance?.amount
                         ? (data.balance.amount / DENOM).toFixed(4)
                         : 0}{" "}
-                      {COIN}
+                      {assetSymbol(props?.chain_id)}
                     </td>
                   </tr>
                 </tbody>

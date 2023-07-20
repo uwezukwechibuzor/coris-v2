@@ -69,19 +69,19 @@ cosmosRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 cosmosRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 cosmosRoute(
   "/chain_validator_slashing_signing_info_details",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_delegations",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_undelegations",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_validator_redelegations",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 cosmosRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 cosmosRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -94,31 +94,31 @@ cosmosRoute("/chain_proposals", chainProposalsHandler(API));
 cosmosRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 cosmosRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 cosmosRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 cosmosRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 cosmosRoute("/chain_auth_account", chainAuthAccountHandler(API));
 cosmosRoute(
   "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API)
+  chainAccountTxsByEventsHandler(API),
 );
 cosmosRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 cosmosRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 cosmosRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 cosmosRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 cosmosRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

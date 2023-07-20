@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
 import Layout from "../../components/layout/Layout";
 import HomePageContent from "../../components/Homepage";
-import axios from "axios";
+import useSWR from "swr";
 import {
   chainActiveValidatorsEndpoint,
   chainPoolEndpoint,
@@ -14,127 +13,61 @@ import {
 import { DENOM } from "../../lib/Util/constants";
 import { BaseChainApi } from "../../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../../lib/coingeckoAPI";
+import { fetcher } from "../../lib/Util/fetcher";
+import { swrOptions } from "../../lib/Util/swrOptions ";
 
 function Home(props) {
-  const [getBlocks, setBlocks] = useState([]);
-  const [getAllTxs, setAllTxs] = useState([]);
-  const [getInflation, setInflation] = useState(null);
-  const [getCommunityPool, setCommunityPool] = useState(null);
-  const [getAllValidators, setAllValidators] = useState(null);
-  const [getActiveValidators, setActiveValidators] = useState([]);
-  const [getChainPool, setChainPool] = useState(null);
-  const [coinData, setCoin]: any = useState([]);
-  const [priceChart, setPriceChart]: any = useState([]);
-
   const queryTotalBlocks = 5;
   const queryTotalTxs = 5;
 
   const chain_id = props?.chain_id?.chain_id;
 
-  useEffect(() => {
-    const fetchBlocks = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks)
-        );
-        setBlocks(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Fetch latest blocks data
+  const { data: getBlocks } = useSWR(
+    BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks),
+    fetcher,
+    swrOptions
+  );
 
-    fetchBlocks();
-  }, [chain_id, queryTotalBlocks]);
+  // Fetch all transactions data
+  const { data: getAllTxs } = useSWR(
+    BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs),
+    fetcher,
+    swrOptions
+  );
 
-  useEffect(() => {
-    const fetchAllTxs = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs)
-        );
-        setAllTxs(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Fetch inflation data
+  const { data: getInflation } = useSWR(
+    BaseChainApi(chain_id) + inflationEndpoint,
+    fetcher
+  );
 
-    fetchAllTxs();
-  }, [chain_id, queryTotalTxs]);
+  // Fetch community pool data
+  const { data: getCommunityPool } = useSWR(
+    BaseChainApi(chain_id) + communityPoolEndpoint,
+    fetcher
+  );
 
-  useEffect(() => {
-    const fetchInflation = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + inflationEndpoint
-        );
-        setInflation(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Fetch active validators data
+  const { data: getActiveValidators } = useSWR(
+    BaseChainApi(chain_id) + chainActiveValidatorsEndpoint,
+    fetcher
+  );
 
-    fetchInflation();
-  }, [chain_id]);
+  // Fetch all validators data
+  const { data: getAllValidators } = useSWR(
+    BaseChainApi(chain_id) + ChainAllValidatorsEndpoint,
+    fetcher
+  );
 
-  useEffect(() => {
-    const fetchCommunityPool = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + communityPoolEndpoint
-        );
-        setCommunityPool(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // Fetch chain pool data
+  const { data: getChainPool } = useSWR(
+    BaseChainApi(chain_id) + chainPoolEndpoint,
+    fetcher
+  );
 
-    fetchCommunityPool();
-  }, [chain_id]);
-
-  useEffect(() => {
-    const fetchActiveValidators = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + chainActiveValidatorsEndpoint
-        );
-        setActiveValidators(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchActiveValidators();
-  }, [chain_id]);
-
-  useEffect(() => {
-    const fetchAllValidators = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + ChainAllValidatorsEndpoint
-        );
-        setAllValidators(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAllValidators();
-  }, [chain_id]);
-
-  useEffect(() => {
-    const fetchChainPool = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + chainPoolEndpoint
-        );
-        setChainPool(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchChainPool();
-  }, [chain_id]);
+  // Fetch coin data
+  const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);
 
   const inflationValue = getInflation
     ? (getInflation?.inflation * 100).toFixed(2) + "%"
@@ -144,32 +77,9 @@ function Home(props) {
     : null;
   const chainPoolValue = getChainPool ? getChainPool : null;
 
-  useEffect(() => {
-    const fetchCoinData = async () => {
-      try {
-        const response = await axios.get(coinsAPI(chain_id));
-        setCoin(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCoinData();
-  }, [chain_id, coinData]);
-
-  useEffect(() => {
-    const fetchPriceChart = async () => {
-      try {
-        const response = await axios.get(coinsPriceChart(chain_id));
-        const getPrice = response.data.prices;
-        setPriceChart(getPrice);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchPriceChart();
-  }, [chain_id, priceChart]);
+  // Fetch price chart data
+  const { data } = useSWR(coinsPriceChart(chain_id), fetcher, swrOptions);
+  const priceChart = data ? data?.prices : [];
 
   const homePageData = {
     title: "Overview",

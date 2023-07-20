@@ -69,19 +69,19 @@ junoRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 junoRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 junoRoute(
   "/chain_validator_slashing_signing_info_details",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API)
+  chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 junoRoute(
   "/chain_validator_delegations",
-  chainValidatorDelegationsHandler(API)
+  chainValidatorDelegationsHandler(API),
 );
 junoRoute(
   "/chain_validator_undelegations",
-  chainValidatorUnDelegationsHandler(API)
+  chainValidatorUnDelegationsHandler(API),
 );
 junoRoute(
   "/chain_validator_redelegations",
-  chainValidatorReDelegationsHandler(API)
+  chainValidatorReDelegationsHandler(API),
 );
 junoRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 junoRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -94,11 +94,11 @@ junoRoute("/chain_proposals", chainProposalsHandler(API));
 junoRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 junoRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API)
+  chainProposalVotingOptionsHandler(API),
 );
 junoRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API)
+  chainProposalTallyOptionsHandler(API),
 );
 junoRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 junoRoute("/chain_auth_account", chainAuthAccountHandler(API));
@@ -106,16 +106,16 @@ junoRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 junoRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 junoRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API)
+  chainAccountDelegationRewardsHandler(API),
 );
 junoRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
 junoRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API)
+  chainAccountReDelegationsHandler(API),
 );
 junoRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API)
+  chainAccountUnDelegationsHandler(API),
 );
 
 module.exports = app;

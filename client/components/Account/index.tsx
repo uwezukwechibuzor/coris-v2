@@ -7,7 +7,7 @@ import AccountRedelegationsContent from "./Details/Redelegations";
 import AccountUndelegationsContent from "./Details/Undelegations";
 import { useAppSelector } from "../../lib/hooks";
 import Doughnut from "./Doughnut";
-import { COIN, DENOM } from "../../lib/Util/constants";
+import { DENOM, assetSymbol } from "../../lib/Util/constants";
 import { abbrMessage, formatHash } from "../../lib/Util/format";
 import { useRouter } from "next/router";
 //import CopyClip from "../Validators/Details/CopyClip";
@@ -144,7 +144,9 @@ function AccountContents(props) {
                 {accountBalance?.balances?.map((data) => (
                   <h6>
                     {data?.denom == "uatom"
-                      ? (data?.amount / DENOM).toFixed(2) + " " + COIN
+                      ? (data?.amount / DENOM).toFixed(2) +
+                        " " +
+                        assetSymbol(chain_id)
                       : (data.amount / DENOM).toFixed(2) +
                         " " +
                         formatHash(data?.denom, 10, "...")}
@@ -194,7 +196,7 @@ function AccountContents(props) {
                           {delegationRewards?.rewards !== undefined
                             ? (totalRewards / DENOM).toFixed(4)
                             : 0}{" "}
-                          {COIN}
+                          {assetSymbol(chain_id)}
                         </strong>
                       </h5>
                     </Flex>
@@ -221,7 +223,7 @@ function AccountContents(props) {
                           {accountDelegations?.delegation_responses
                             ? (totalDelegationsAmount / DENOM).toFixed(4)
                             : 0}{" "}
-                          {COIN}
+                          {assetSymbol(chain_id)}
                         </strong>
                       </h5>
                     </Flex>
@@ -248,7 +250,7 @@ function AccountContents(props) {
                           {accountRedelegations?.redelegation_responses
                             ? (totalRedegationsAmount / DENOM).toFixed(4)
                             : 0}{" "}
-                          {COIN}
+                          {assetSymbol(chain_id)}
                         </strong>
                       </h5>
                     </Flex>
@@ -277,7 +279,7 @@ function AccountContents(props) {
                                 totalUnboundingDelegationsAmount / DENOM
                               ).toFixed(4)
                             : null}{" "}
-                          {COIN}
+                          {assetSymbol(chain_id)}
                         </strong>
                       </h5>
                     </Flex>
