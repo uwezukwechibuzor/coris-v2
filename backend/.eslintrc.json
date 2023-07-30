@@ -1,16 +1,16 @@
 {
-    "env": {
-      "node": true,
-      "es2021": true
-    },
-    "extends": [
-      "eslint:recommended",
-      "plugin:prettier/recommended" 
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2021
-    },
-    "rules": {
-      // Customize your rules if needed
-    }
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "rules": {
+    "arrow-body-style": "off",
+    "prefer-arrow-callback": "off",
+    "quotes": "off",
+    "prettier/prettier": "off"
   }
+}

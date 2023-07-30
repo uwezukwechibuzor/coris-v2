@@ -1,6 +1,11 @@
+const getCache = require("../redis/getCache");
+const setCache = require("../redis/setCache");
 const fetchData = require("./chainQueries");
 const { getLatestBlocks, getAllTxs } = require("./dbQueries");
 const endpoints = require("./endpoints.jsx");
+
+//Set the caching time in seconds (e.g., 600 seconds = 10Mins)
+const cacheExpirationInSeconds = 600;
 
 const latestBlocksHandler = (blockModel) => async (req, res) => {
   try {
@@ -21,8 +26,13 @@ const allTxsHandler = (txModel) => async (req, res) => {
 };
 
 const allValidatorsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.allChainValidators;
   try {
-    const data = await fetchData(api + endpoints.allChainValidators);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.allChainValidators);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -30,8 +40,13 @@ const allValidatorsHandler = (api) => async (req, res) => {
 };
 
 const activeValidatorsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.activeChainValidators;
   try {
-    const data = await fetchData(api + endpoints.activeChainValidators);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.activeChainValidators);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -39,11 +54,14 @@ const activeValidatorsHandler = (api) => async (req, res) => {
 };
 
 const chainValidatorsDetailsHandler = (api) => async (req, res) => {
+  const address = req.query.address;
+  const cacheKey = api + endpoints.chainValidatorsDetails(address);
   try {
-    const address = req.query.address;
-    const data = await fetchData(
-      api + endpoints.chainValidatorsDetails(address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainValidatorsDetails(address));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -51,8 +69,13 @@ const chainValidatorsDetailsHandler = (api) => async (req, res) => {
 };
 
 const chainInflationHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.chainInflation;
   try {
-    const data = await fetchData(api + endpoints.chainInflation);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainInflation);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -60,8 +83,13 @@ const chainInflationHandler = (api) => async (req, res) => {
 };
 
 const chainCommunityPoolHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.chainCommunityPool;
   try {
-    const data = await fetchData(api + endpoints.chainCommunityPool);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainCommunityPool);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -69,8 +97,13 @@ const chainCommunityPoolHandler = (api) => async (req, res) => {
 };
 
 const chainPoolHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.chainPool;
   try {
-    const data = await fetchData(api + endpoints.chainPool);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainPool);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -78,11 +111,14 @@ const chainPoolHandler = (api) => async (req, res) => {
 };
 
 const chainBlockHeightDetailsHandler = (api) => async (req, res) => {
+  const height = req.query.height;
+  const cacheKey = api + endpoints.chainBlockHeightDetails(height);
   try {
-    const height = req.query.height;
-    const data = await fetchData(
-      api + endpoints.chainBlockHeightDetails(height),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainBlockHeightDetails(height));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -90,9 +126,14 @@ const chainBlockHeightDetailsHandler = (api) => async (req, res) => {
 };
 
 const chainBlockHeightTxsHandler = (api) => async (req, res) => {
+  const height = req.query.height;
+  const cacheKey = api + endpoints.chainBlockHeightTxs(height);
   try {
-    const height = req.query.height;
-    const data = await fetchData(api + endpoints.chainBlockHeightTxs(height));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainBlockHeightTxs(height));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -100,9 +141,14 @@ const chainBlockHeightTxsHandler = (api) => async (req, res) => {
 };
 
 const chainTxsByHashHandler = (api) => async (req, res) => {
+  const hash = req.query.hash;
+  const cacheKey = api + endpoints.chainTxsByHash(hash);
   try {
-    const hash = req.query.hash;
-    const data = await fetchData(api + endpoints.chainTxsByHash(hash));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.chainTxsByHash(hash));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -111,12 +157,18 @@ const chainTxsByHashHandler = (api) => async (req, res) => {
 
 const chainValidatorsSlashingSigningInfosDetailsHandler =
   (api) => async (req, res) => {
+    const cons_address = req.query.cons_address;
+    const cacheKey =
+      api + endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address);
     try {
-      const cons_address = req.query.cons_address;
-      const data = await fetchData(
-        api +
-          endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address),
-      );
+      let data = await getCache(cacheKey);
+      if (!data) {
+        data = await fetchData(
+          api +
+            endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address)
+        );
+        await setCache(cacheKey, data, cacheExpirationInSeconds);
+      }
       res.json(data);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -124,11 +176,16 @@ const chainValidatorsSlashingSigningInfosDetailsHandler =
   };
 
 const chainValidatorDelegationsHandler = (api) => async (req, res) => {
+  const validator_address = req.query.validator_address;
+  const cacheKey = api + endpoints.chainValidatorDelegations(validator_address);
   try {
-    const validator_address = req.query.validator_address;
-    const data = await fetchData(
-      api + endpoints.chainValidatorDelegations(validator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.chainValidatorDelegations(validator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -136,11 +193,17 @@ const chainValidatorDelegationsHandler = (api) => async (req, res) => {
 };
 
 const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
+  const validator_address = req.query.validator_address;
+  const cacheKey =
+    api + endpoints.chainValidatorUnDelegations(validator_address);
   try {
-    const validator_address = req.query.validator_address;
-    const data = await fetchData(
-      api + endpoints.chainValidatorUnDelegations(validator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.chainValidatorUnDelegations(validator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -148,11 +211,17 @@ const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
 };
 
 const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
+  const delegator_address = req.query.delegator_address;
+  const cacheKey =
+    api + endpoints.chainValidatorReDelegations(delegator_address);
   try {
-    const delegator_address = req.query.delegator_address;
-    const data = await fetchData(
-      api + endpoints.chainValidatorReDelegations(delegator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.chainValidatorReDelegations(delegator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -160,8 +229,13 @@ const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
 };
 
 const chainConsensusStateHandler = (rpc) => async (req, res) => {
+  const cacheKey = rpc + endpoints.consensusState;
   try {
-    const data = await fetchData(rpc + endpoints.consensusState);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(rpc + endpoints.consensusState);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -169,8 +243,13 @@ const chainConsensusStateHandler = (rpc) => async (req, res) => {
 };
 
 const chainMintingParamsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.mintingParams;
   try {
-    const data = await fetchData(api + endpoints.mintingParams);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.mintingParams);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -178,9 +257,14 @@ const chainMintingParamsHandler = (api) => async (req, res) => {
 };
 
 const chainGovParamsHandler = (api) => async (req, res) => {
+  const params_type = req.query.params_type;
+  const cacheKey = api + endpoints.govParams(params_type);
   try {
-    const params_type = req.query.params_type;
-    const data = await fetchData(api + endpoints.govParams(params_type));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.govParams(params_type));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -188,8 +272,13 @@ const chainGovParamsHandler = (api) => async (req, res) => {
 };
 
 const chainSlashingParamsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.slashingParams;
   try {
-    const data = await fetchData(api + endpoints.slashingParams);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.slashingParams);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -197,8 +286,13 @@ const chainSlashingParamsHandler = (api) => async (req, res) => {
 };
 
 const chainStakingParamsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.stakingParams;
   try {
-    const data = await fetchData(api + endpoints.stakingParams);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.stakingParams);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -206,8 +300,13 @@ const chainStakingParamsHandler = (api) => async (req, res) => {
 };
 
 const chainDistributionParamsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.distributionParams;
   try {
-    const data = await fetchData(api + endpoints.distributionParams);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.distributionParams);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -215,8 +314,13 @@ const chainDistributionParamsHandler = (api) => async (req, res) => {
 };
 
 const chainNodeInfoHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.nodeInfo;
   try {
-    const data = await fetchData(api + endpoints.nodeInfo);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.nodeInfo);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -224,8 +328,13 @@ const chainNodeInfoHandler = (api) => async (req, res) => {
 };
 
 const chainProposalsHandler = (api) => async (req, res) => {
+  const cacheKey = api + endpoints.proposals;
   try {
-    const data = await fetchData(api + endpoints.proposals);
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.proposals);
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -233,9 +342,14 @@ const chainProposalsHandler = (api) => async (req, res) => {
 };
 
 const chainProposalDetailsHandler = (api) => async (req, res) => {
+  const proposal_id = req.query.proposal_id;
+  const cacheKey = api + endpoints.proposalDetails(proposal_id);
   try {
-    const proposal_id = req.query.proposal_id;
-    const data = await fetchData(api + endpoints.proposalDetails(proposal_id));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.proposalDetails(proposal_id));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -243,9 +357,14 @@ const chainProposalDetailsHandler = (api) => async (req, res) => {
 };
 
 const chainProposalVotingOptionsHandler = (api) => async (req, res) => {
+  const id = req.query.id;
+  const cacheKey = api + endpoints.proposalVotingOptions(id);
   try {
-    const id = req.query.id;
-    const data = await fetchData(api + endpoints.proposalVotingOptions(id));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.proposalVotingOptions(id));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -253,9 +372,14 @@ const chainProposalVotingOptionsHandler = (api) => async (req, res) => {
 };
 
 const chainProposalTallyOptionsHandler = (api) => async (req, res) => {
+  const id = req.query.id;
+  const cacheKey = api + endpoints.proposalTallyOptions(id);
   try {
-    const id = req.query.id;
-    const data = await fetchData(api + endpoints.proposalTallyOptions(id));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.proposalTallyOptions(id));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -263,9 +387,14 @@ const chainProposalTallyOptionsHandler = (api) => async (req, res) => {
 };
 
 const chainProposalDepositsHandler = (api) => async (req, res) => {
+  const id = req.query.id;
+  const cacheKey = api + endpoints.proposalDeposits(id);
   try {
-    const id = req.query.id;
-    const data = await fetchData(api + endpoints.proposalDeposits(id));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.proposalDeposits(id));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -273,9 +402,14 @@ const chainProposalDepositsHandler = (api) => async (req, res) => {
 };
 
 const chainAuthAccountHandler = (api) => async (req, res) => {
+  const address = req.query.address;
+  const cacheKey = api + endpoints.authAccount(address);
   try {
-    const address = req.query.address;
-    const data = await fetchData(api + endpoints.authAccount(address));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.authAccount(address));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -283,9 +417,14 @@ const chainAuthAccountHandler = (api) => async (req, res) => {
 };
 
 const chainAccountTxsByEventsHandler = (api) => async (req, res) => {
+  const address = req.query.address;
+  const cacheKey = api + endpoints.accountTxsByEvents(address);
   try {
-    const address = req.query.address;
-    const data = await fetchData(api + endpoints.accountTxsByEvents(address));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.accountTxsByEvents(address));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -293,9 +432,14 @@ const chainAccountTxsByEventsHandler = (api) => async (req, res) => {
 };
 
 const chainAccountBalanceHandler = (api) => async (req, res) => {
+  const address = req.query.address;
+  const cacheKey = api + endpoints.accountBalance(address);
   try {
-    const address = req.query.address;
-    const data = await fetchData(api + endpoints.accountBalance(address));
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(api + endpoints.accountBalance(address));
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -303,11 +447,16 @@ const chainAccountBalanceHandler = (api) => async (req, res) => {
 };
 
 const chainAccountDelegationRewardsHandler = (api) => async (req, res) => {
+  const delegator_address = req.query.delegator_address;
+  const cacheKey = api + endpoints.accountDelegationRewards(delegator_address);
   try {
-    const delegator_address = req.query.delegator_address;
-    const data = await fetchData(
-      api + endpoints.accountDelegationRewards(delegator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.accountDelegationRewards(delegator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -315,11 +464,16 @@ const chainAccountDelegationRewardsHandler = (api) => async (req, res) => {
 };
 
 const chainAccountDelegationsHandler = (api) => async (req, res) => {
+  const delegator_address = req.query.delegator_address;
+  const cacheKey = api + endpoints.accountDelegations(delegator_address);
   try {
-    const delegator_address = req.query.delegator_address;
-    const data = await fetchData(
-      api + endpoints.accountDelegations(delegator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.accountDelegations(delegator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -327,11 +481,16 @@ const chainAccountDelegationsHandler = (api) => async (req, res) => {
 };
 
 const chainAccountReDelegationsHandler = (api) => async (req, res) => {
+  const delegator_address = req.query.delegator_address;
+  const cacheKey = api + endpoints.accountReDelegations(delegator_address);
   try {
-    const delegator_address = req.query.delegator_address;
-    const data = await fetchData(
-      api + endpoints.accountReDelegations(delegator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.accountReDelegations(delegator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -339,11 +498,16 @@ const chainAccountReDelegationsHandler = (api) => async (req, res) => {
 };
 
 const chainAccountUnDelegationsHandler = (api) => async (req, res) => {
+  const delegator_address = req.query.delegator_address;
+  const cacheKey = api + endpoints.accountUnDelegations(delegator_address);
   try {
-    const delegator_address = req.query.delegator_address;
-    const data = await fetchData(
-      api + endpoints.accountUnDelegations(delegator_address),
-    );
+    let data = await getCache(cacheKey);
+    if (!data) {
+      data = await fetchData(
+        api + endpoints.accountUnDelegations(delegator_address)
+      );
+      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    }
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
