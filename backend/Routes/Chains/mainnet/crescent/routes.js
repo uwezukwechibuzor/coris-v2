@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("node-cron");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,20 +39,17 @@ const {
   latestBlocksHandler,
   allTxsHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.CRESCENT_REST_API;
 const RPC = process.env.CRESCENT_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(
-    API,
-    Model.crescentTxsModel,
-    Model.crescentBlockModel,
-  );
-});
+// cron task for cresent
+createCronJob(
+  API,
+  Model.crescentTxsModel,
+  Model.crescentBlockModel
+);
 
 // Define a helper function to prefix the routes with "/crescent"
 function crescentRoute(path, handler) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("node-cron");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,16 +39,17 @@ const {
   latestBlocksHandler,
   allTxsHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.AKASH_REST_API;
 const RPC = process.env.AKASH_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(API, Model.akashTxsModel, Model.akashBlockModel);
-});
+//cron task for akash
+createCronJob(
+  API,
+  Model.akashTxsModel,
+  Model.akashBlockModel
+);
 
 // Define a helper function to prefix the routes with "/akash"
 function akashRoute(path, handler) {
@@ -86,7 +87,7 @@ akashRoute(
 akashRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 akashRoute("/chain_minting_params", chainMintingParamsHandler(API));
 akashRoute("/chain_gov_params", chainGovParamsHandler(API));
-akashRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+akashRoute("/chain_slashing_params", corsMiddleware, chainSlashingParamsHandler(API));
 akashRoute("/chain_staking_params", chainStakingParamsHandler(API));
 akashRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
 akashRoute("/chain_node_info", chainNodeInfoHandler(API));

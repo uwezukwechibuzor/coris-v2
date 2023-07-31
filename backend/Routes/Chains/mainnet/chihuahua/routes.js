@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("node-cron");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,20 +39,17 @@ const {
   allTxsHandler,
   latestBlocksHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.CHIHUAHUA_REST_API;
 const RPC = process.env.CHIHUAHUA_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(
-    API,
-    Model.chihuahuaTxsModel,
-    Model.chihuahuaBlockModel,
-  );
-});
+//cron task for chihuahua
+createCronJob(
+  API,
+  Model.chihuahuaTxsModel,
+  Model.chihuahuaBlockModel
+);
 
 // Define a helper function to prefix the routes with "/chihuahua"
 function chihuahuaRoute(path, handler) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
+const createCronJob = require("../../../../cron.js");
 const app = express();
-const cron = require("node-cron");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,16 +39,17 @@ const {
   latestBlocksHandler,
   allTxsHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(API, Model.agoricTxsModel, Model.agoricBlockModel);
-});
+//cron task for agoric
+createCronJob(
+  API,
+  Model.agoricTxsModel,
+  Model.agoricBlockModel
+);
 
 // Define a helper function to prefix the routes with "/agoric"
 function agoricRoute(path, handler) {
