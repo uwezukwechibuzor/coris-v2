@@ -22,7 +22,7 @@ const allTxsHandler = (txModel) => async (req, res) => {
   }
 };
 
-// Set the caching time in seconds (e.g., 600 seconds = 10Mins)
+//Set the caching time in seconds (e.g., 600 seconds = 10Mins)
 const cacheExpirationInSeconds = 600;
 
 const allValidatorsHandler = (api) => async (req, res) => {
