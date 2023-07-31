@@ -45,7 +45,7 @@ const RPC = process.env.AGORIC_RPC_API;
 
 //cron task for agoric
 createCronJob(
-  process.env.AGORIC_REST_API,
+  API,
   Model.agoricTxsModel,
   Model.agoricBlockModel
 );
