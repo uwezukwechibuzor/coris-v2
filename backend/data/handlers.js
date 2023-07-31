@@ -28,17 +28,11 @@ const cacheExpirationInSeconds = 600;
 const allValidatorsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.allChainValidators;
   try {
-    // Check if data exists in the cache
     let data = await getCache(cacheKey);
-
     if (!data) {
-      // Data not found in cache, fetch from API
       data = await fetchData(api + endpoints.allChainValidators);
-
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
-
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -48,13 +42,9 @@ const allValidatorsHandler = (api) => async (req, res) => {
 const activeValidatorsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.activeChainValidators;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
-
     if (!data) {
-      // if data not found in cache, fetch from API
       data = await fetchData(api + endpoints.activeChainValidators);
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -67,14 +57,11 @@ const chainValidatorsDetailsHandler = (api) => async (req, res) => {
   const address = req.query.address;
   const cacheKey = api + endpoints.chainValidatorsDetails(address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.chainValidatorsDetails(address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -86,12 +73,9 @@ const chainValidatorsDetailsHandler = (api) => async (req, res) => {
 const chainInflationHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.chainInflation;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.chainInflation);
-      // Cache the fetched data for future use with expiration time
      await setCache(cacheKey, data, cacheExpirationInSeconds);
     } 
     res.json(data);
@@ -103,12 +87,9 @@ const chainInflationHandler = (api) => async (req, res) => {
 const chainCommunityPoolHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.chainCommunityPool;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.chainCommunityPool);
-       // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -120,12 +101,9 @@ const chainCommunityPoolHandler = (api) => async (req, res) => {
 const chainPoolHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.chainPool;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.chainPool);
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
    res.json(data);
@@ -138,14 +116,11 @@ const chainBlockHeightDetailsHandler = (api) => async (req, res) => {
   const height = req.query.height;
   const cacheKey = api + endpoints.chainBlockHeightDetails(height);
   try {
-     //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.chainBlockHeightDetails(height)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds)
     }
     res.json(data);
@@ -158,12 +133,9 @@ const chainBlockHeightTxsHandler = (api) => async (req, res) => {
   const height = req.query.height;
   const cacheKey = api + endpoints.chainBlockHeightTxs(height);
   try {
-     //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.chainBlockHeightTxs(height));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -176,12 +148,9 @@ const chainTxsByHashHandler = (api) => async (req, res) => {
   const hash = req.query.hash;
   const cacheKey = api + endpoints.chainTxsByHash(hash);
   try {
-      //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.chainTxsByHash(hash));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -195,14 +164,11 @@ const chainValidatorsSlashingSigningInfosDetailsHandler =
     const cons_address = req.query.cons_address;
     const cacheKey = api + endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address);
     try {
-      //check if data is in cache
       let data = await getCache(cacheKey);
       if (!data) {
-        // if data is not found in cache , fetch from API
         data = await fetchData(
           api + endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address)
         );
-        // Cache the fetched data for future use with expiration time
         await setCache(cacheKey, data, cacheExpirationInSeconds)
       }
       res.json(data);
@@ -215,14 +181,11 @@ const chainValidatorDelegationsHandler = (api) => async (req, res) => {
   const validator_address = req.query.validator_address;
   const cacheKey  = api + endpoints.chainValidatorDelegations(validator_address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.chainValidatorDelegations(validator_address)
       );
-       // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -235,14 +198,11 @@ const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
   const validator_address = req.query.validator_address;
   const cacheKey = api + endpoints.chainValidatorUnDelegations(validator_address);
   try {
-     //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-       // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.chainValidatorUnDelegations(validator_address)
       );
-       // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -255,14 +215,11 @@ const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
   const cacheKey =  api + endpoints.chainValidatorReDelegations(delegator_address);
   try {
-     //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.chainValidatorReDelegations(delegator_address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -274,12 +231,9 @@ const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
 const chainConsensusStateHandler = (rpc) => async (req, res) => {
   const cacheKey = rpc + endpoints.consensusState;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(rpc + endpoints.consensusState);
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -291,12 +245,9 @@ const chainConsensusStateHandler = (rpc) => async (req, res) => {
 const chainMintingParamsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.mintingParams;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.mintingParams);
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -309,12 +260,9 @@ const chainGovParamsHandler = (api) => async (req, res) => {
   const params_type = req.query.params_type;
   const cacheKey = api + endpoints.govParams(params_type)
   try {
-     //check if data is in cache
     let data = await getCache(cacheKey)
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.govParams(params_type));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -326,12 +274,9 @@ const chainGovParamsHandler = (api) => async (req, res) => {
 const chainSlashingParamsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.slashingParams;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.slashingParams);
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -343,12 +288,9 @@ const chainSlashingParamsHandler = (api) => async (req, res) => {
 const chainStakingParamsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.stakingParams;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
     data = await fetchData(api + endpoints.stakingParams);
-    // Cache the fetched data for future use with expiration time
     await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -360,12 +302,9 @@ const chainStakingParamsHandler = (api) => async (req, res) => {
 const chainDistributionParamsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.distributionParams;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-    // if data is not found in cache , fetch from API
     data = await fetchData(api + endpoints.distributionParams);
-    // Cache the fetched data for future use with expiration time
     await setCache(cacheKey, data, cacheExpirationInSeconds)
     }
     res.json(data);
@@ -377,12 +316,9 @@ const chainDistributionParamsHandler = (api) => async (req, res) => {
 const chainNodeInfoHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.nodeInfo;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-    // if data is not found in cache , fetch from API
     data = await fetchData(api + endpoints.nodeInfo);
-    // Cache the fetched data for future use with expiration time
     await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -394,12 +330,9 @@ const chainNodeInfoHandler = (api) => async (req, res) => {
 const chainProposalsHandler = (api) => async (req, res) => {
   const cacheKey = api + endpoints.proposals;
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-    // if data is not found in cache , fetch from API
     data = await fetchData(api + endpoints.proposals);
-    // Cache the fetched data for future use with expiration time
     await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -412,12 +345,9 @@ const chainProposalDetailsHandler = (api) => async (req, res) => {
   const proposal_id = req.query.proposal_id;
   const cacheKey = api + endpoints.proposalDetails(proposal_id);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.proposalDetails(proposal_id));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -430,12 +360,9 @@ const chainProposalVotingOptionsHandler = (api) => async (req, res) => {
   const id = req.query.id;
   const cacheKey = api + endpoints.proposalVotingOptions(id);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.proposalVotingOptions(id));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -448,12 +375,9 @@ const chainProposalTallyOptionsHandler = (api) => async (req, res) => {
   const id = req.query.id;
   const cacheKey = api + endpoints.proposalTallyOptions(id);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.proposalTallyOptions(id));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -466,12 +390,9 @@ const chainProposalDepositsHandler = (api) => async (req, res) => {
   const id = req.query.id;
   const cacheKey = api + endpoints.proposalDeposits(id);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.proposalDeposits(id));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -484,12 +405,9 @@ const chainAuthAccountHandler = (api) => async (req, res) => {
   const address = req.query.address;
   const cacheKey = api + endpoints.authAccount(address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.authAccount(address));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -502,12 +420,9 @@ const chainAccountTxsByEventsHandler = (api) => async (req, res) => {
   const address = req.query.address;
   const cacheKey = api + endpoints.accountTxsByEvents(address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.accountTxsByEvents(address));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -520,12 +435,9 @@ const chainAccountBalanceHandler = (api) => async (req, res) => {
   const address = req.query.address;
   const cacheKey = api + endpoints.accountBalance(address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(api + endpoints.accountBalance(address));
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -538,14 +450,11 @@ const chainAccountDelegationRewardsHandler = (api) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
   const cacheKey =  api + endpoints.accountDelegationRewards(delegator_address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.accountDelegationRewards(delegator_address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -558,14 +467,11 @@ const chainAccountDelegationsHandler = (api) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
   const cacheKey =  api + endpoints.accountDelegations(delegator_address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.accountDelegations(delegator_address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     }
     res.json(data);
@@ -578,14 +484,11 @@ const chainAccountReDelegationsHandler = (api) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
   const cacheKey = api + endpoints.accountReDelegations(delegator_address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.accountReDelegations(delegator_address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     } 
     res.json(data);
@@ -598,14 +501,11 @@ const chainAccountUnDelegationsHandler = (api) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
   const cacheKey =  api + endpoints.accountUnDelegations(delegator_address);
   try {
-    //check if data is in cache
     let data = await getCache(cacheKey);
     if (!data) {
-      // if data is not found in cache , fetch from API
       data = await fetchData(
         api + endpoints.accountUnDelegations(delegator_address)
       );
-      // Cache the fetched data for future use with expiration time
       await setCache(cacheKey, data, cacheExpirationInSeconds);
     } 
     res.json(data);
