@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 require("dotenv").config()
 const fetchLatestBlocksAndTxs = require("./data/chainQueries/latestBlocksAndTxs.js");
+
 //cron to run at every 3sec to get latest blocks
  function createCronJob(apiUrl, txsModel, blockModel) {
    return cron.schedule("*/3 * * * * *", async () => {
@@ -11,4 +12,5 @@ const fetchLatestBlocksAndTxs = require("./data/chainQueries/latestBlocksAndTxs.
      }
    });
  }
+
 module.exports = createCronJob;
