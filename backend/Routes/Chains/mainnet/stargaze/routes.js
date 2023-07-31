@@ -56,74 +56,86 @@ function stargazeRoute(path, handler) {
 }
 
 // Define the routes
-stargazeRoute("/blocks/latest", latestBlocksHandler(Model.stargazeBlockModel));
-stargazeRoute("/txs", allTxsHandler(Model.stargazeTxsModel));
-stargazeRoute("/all_validators", allValidatorsHandler(API));
-stargazeRoute("/active_validators", activeValidatorsHandler(API));
-stargazeRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-stargazeRoute("/chain_inflation", chainInflationHandler(API));
-stargazeRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+stargazeRoute("/blocks/latest", corsMiddleware, latestBlocksHandler(Model.stargazeBlockModel));
+stargazeRoute("/txs", corsMiddleware, allTxsHandler(Model.stargazeTxsModel));
+stargazeRoute("/all_validators", corsMiddleware, allValidatorsHandler(API));
+stargazeRoute("/active_validators", corsMiddleware, activeValidatorsHandler(API));
+stargazeRoute("/chain_validator_details", corsMiddleware, chainValidatorsDetailsHandler(API));
+stargazeRoute("/chain_inflation", corsMiddleware, chainInflationHandler(API));
+stargazeRoute("/chain_community_pool", corsMiddleware, chainCommunityPoolHandler(API));
 stargazeRoute("/chain_pool", chainPoolHandler(API));
-stargazeRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-stargazeRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-stargazeRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+stargazeRoute("/block_height_details", corsMiddleware, chainBlockHeightDetailsHandler(API));
+stargazeRoute("/block_height_txs", corsMiddleware, chainBlockHeightTxsHandler(API));
+stargazeRoute("/chain_txs_hash", corsMiddleware, chainTxsByHashHandler(API));
 stargazeRoute(
   "/chain_validator_slashing_signing_info_details",
+  corsMiddleware,
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_delegations",
+  corsMiddleware,
   chainValidatorDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_undelegations",
+  corsMiddleware,
   chainValidatorUnDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_validator_redelegations",
+  corsMiddleware,
   chainValidatorReDelegationsHandler(API),
 );
-stargazeRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-stargazeRoute("/chain_minting_params", chainMintingParamsHandler(API));
-stargazeRoute("/chain_gov_params", chainGovParamsHandler(API));
-stargazeRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-stargazeRoute("/chain_staking_params", chainStakingParamsHandler(API));
+stargazeRoute("/chain_consensus", corsMiddleware, chainConsensusStateHandler(RPC));
+stargazeRoute("/chain_minting_params", corsMiddleware, chainMintingParamsHandler(API));
+stargazeRoute("/chain_gov_params", corsMiddleware, chainGovParamsHandler(API));
+stargazeRoute("/chain_slashing_params", corsMiddleware, chainSlashingParamsHandler(API));
+stargazeRoute("/chain_staking_params", corsMiddleware, chainStakingParamsHandler(API));
 stargazeRoute(
   "/chain_distribution_params",
+  corsMiddleware,
   chainDistributionParamsHandler(API),
 );
-stargazeRoute("/chain_node_info", chainNodeInfoHandler(API));
-stargazeRoute("/chain_proposals", chainProposalsHandler(API));
-stargazeRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+stargazeRoute("/chain_node_info", corsMiddleware, chainNodeInfoHandler(API));
+stargazeRoute("/chain_proposals", corsMiddleware,chainProposalsHandler(API));
+stargazeRoute("/chain_proposal_details", corsMiddleware, chainProposalDetailsHandler(API));
 stargazeRoute(
   "/chain_proposal_voting_options",
+  corsMiddleware,
   chainProposalVotingOptionsHandler(API),
 );
 stargazeRoute(
   "/chain_proposal_tally_options",
+  corsMiddleware,
   chainProposalTallyOptionsHandler(API),
 );
-stargazeRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-stargazeRoute("/chain_auth_account", chainAuthAccountHandler(API));
+stargazeRoute("/chain_proposal_deposits", corsMiddleware, chainProposalDepositsHandler(API));
+stargazeRoute("/chain_auth_account", corsMiddleware, chainAuthAccountHandler(API));
 stargazeRoute(
   "/chain_account_txs_by_events",
+  corsMiddleware,
   chainAccountTxsByEventsHandler(API),
 );
-stargazeRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+stargazeRoute("/chain_account_balance", corsMiddleware, chainAccountBalanceHandler(API));
 stargazeRoute(
   "/chain_account_delegation_rewards",
+  corsMiddleware,
   chainAccountDelegationRewardsHandler(API),
 );
 stargazeRoute(
   "/chain_account_delegations",
+  corsMiddleware,
   chainAccountDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_account_redelegations",
+  corsMiddleware,
   chainAccountReDelegationsHandler(API),
 );
 stargazeRoute(
   "/chain_account_undelegations",
+  corsMiddleware,
   chainAccountUnDelegationsHandler(API),
 );
 

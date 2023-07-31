@@ -56,65 +56,74 @@ function junoRoute(path, handler) {
 }
 
 // Define the routes
-junoRoute("/blocks/latest", latestBlocksHandler(Model.junoBlockModel));
-junoRoute("/txs", allTxsHandler(Model.junoTxsModel));
-junoRoute("/all_validators", allValidatorsHandler(API));
-junoRoute("/active_validators", activeValidatorsHandler(API));
-junoRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-junoRoute("/chain_inflation", chainInflationHandler(API));
-junoRoute("/chain_community_pool", chainCommunityPoolHandler(API));
-junoRoute("/chain_pool", chainPoolHandler(API));
-junoRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-junoRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-junoRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+junoRoute("/blocks/latest", corsMiddleware, latestBlocksHandler(Model.junoBlockModel));
+junoRoute("/txs", corsMiddleware, allTxsHandler(Model.junoTxsModel));
+junoRoute("/all_validators", corsMiddleware, allValidatorsHandler(API));
+junoRoute("/active_validators", corsMiddleware, activeValidatorsHandler(API));
+junoRoute("/chain_validator_details", corsMiddleware, chainValidatorsDetailsHandler(API));
+junoRoute("/chain_inflation", corsMiddleware, chainInflationHandler(API));
+junoRoute("/chain_community_pool", corsMiddleware, chainCommunityPoolHandler(API));
+junoRoute("/chain_pool", corsMiddleware, chainPoolHandler(API));
+junoRoute("/block_height_details", corsMiddleware, chainBlockHeightDetailsHandler(API));
+junoRoute("/block_height_txs", corsMiddleware, chainBlockHeightTxsHandler(API));
+junoRoute("/chain_txs_hash", corsMiddleware, chainTxsByHashHandler(API));
 junoRoute(
   "/chain_validator_slashing_signing_info_details",
+  corsMiddleware,
   chainValidatorsSlashingSigningInfosDetailsHandler(API),
 );
 junoRoute(
   "/chain_validator_delegations",
+  corsMiddleware,
   chainValidatorDelegationsHandler(API),
 );
 junoRoute(
   "/chain_validator_undelegations",
+  corsMiddleware,
   chainValidatorUnDelegationsHandler(API),
 );
 junoRoute(
   "/chain_validator_redelegations",
+  corsMiddleware,
   chainValidatorReDelegationsHandler(API),
 );
-junoRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-junoRoute("/chain_minting_params", chainMintingParamsHandler(API));
-junoRoute("/chain_gov_params", chainGovParamsHandler(API));
-junoRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-junoRoute("/chain_staking_params", chainStakingParamsHandler(API));
-junoRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
-junoRoute("/chain_node_info", chainNodeInfoHandler(API));
-junoRoute("/chain_proposals", chainProposalsHandler(API));
-junoRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+junoRoute("/chain_consensus", corsMiddleware, chainConsensusStateHandler(RPC));
+junoRoute("/chain_minting_params", corsMiddleware, chainMintingParamsHandler(API));
+junoRoute("/chain_gov_params", corsMiddleware, chainGovParamsHandler(API));
+junoRoute("/chain_slashing_params", corsMiddleware, chainSlashingParamsHandler(API));
+junoRoute("/chain_staking_params", corsMiddleware, chainStakingParamsHandler(API));
+junoRoute("/chain_distribution_params", corsMiddleware, chainDistributionParamsHandler(API));
+junoRoute("/chain_node_info", corsMiddleware, chainNodeInfoHandler(API));
+junoRoute("/chain_proposals", corsMiddleware, chainProposalsHandler(API));
+junoRoute("/chain_proposal_details", corsMiddleware, chainProposalDetailsHandler(API));
 junoRoute(
   "/chain_proposal_voting_options",
+  corsMiddleware,
   chainProposalVotingOptionsHandler(API),
 );
 junoRoute(
   "/chain_proposal_tally_options",
+  corsMiddleware,
   chainProposalTallyOptionsHandler(API),
 );
-junoRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-junoRoute("/chain_auth_account", chainAuthAccountHandler(API));
-junoRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
-junoRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+junoRoute("/chain_proposal_deposits", corsMiddleware, chainProposalDepositsHandler(API));
+junoRoute("/chain_auth_account", corsMiddleware, chainAuthAccountHandler(API));
+junoRoute("/chain_account_txs_by_events", corsMiddleware, chainAccountTxsByEventsHandler(API));
+junoRoute("/chain_account_balance", corsMiddleware, chainAccountBalanceHandler(API));
 junoRoute(
   "/chain_account_delegation_rewards",
+  corsMiddleware,
   chainAccountDelegationRewardsHandler(API),
 );
-junoRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+junoRoute("/chain_account_delegations", corsMiddleware, chainAccountDelegationsHandler(API));
 junoRoute(
   "/chain_account_redelegations",
+  corsMiddleware,
   chainAccountReDelegationsHandler(API),
 );
 junoRoute(
   "/chain_account_undelegations",
+  corsMiddleware,
   chainAccountUnDelegationsHandler(API),
 );
 

@@ -56,68 +56,78 @@ function agoricRoute(path, handler) {
 }
 
 // Define the routes
-agoricRoute("/blocks/latest", latestBlocksHandler(Model.agoricBlockModel));
-agoricRoute("/txs", allTxsHandler(Model.agoricTxsModel));
-agoricRoute("/all_validators", allValidatorsHandler(API));
-agoricRoute("/active_validators", activeValidatorsHandler(API));
-agoricRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-agoricRoute("/chain_inflation", chainInflationHandler(API));
-agoricRoute("/chain_community_pool", chainCommunityPoolHandler(API));
-agoricRoute("/chain_pool", chainPoolHandler(API));
-agoricRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-agoricRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-agoricRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+agoricRoute("/blocks/latest", corsMiddleware, latestBlocksHandler(Model.agoricBlockModel));
+agoricRoute("/txs", corsMiddleware, allTxsHandler(Model.agoricTxsModel));
+agoricRoute("/all_validators", corsMiddleware, allValidatorsHandler(API));
+agoricRoute("/active_validators", corsMiddleware, activeValidatorsHandler(API));
+agoricRoute("/chain_validator_details", corsMiddleware, chainValidatorsDetailsHandler(API));
+agoricRoute("/chain_inflation", corsMiddleware, chainInflationHandler(API));
+agoricRoute("/chain_community_pool", corsMiddleware, chainCommunityPoolHandler(API));
+agoricRoute("/chain_pool", corsMiddleware, chainPoolHandler(API));
+agoricRoute("/block_height_details", corsMiddleware, chainBlockHeightDetailsHandler(API));
+agoricRoute("/block_height_txs", corsMiddleware, chainBlockHeightTxsHandler(API));
+agoricRoute("/chain_txs_hash", corsMiddleware, chainTxsByHashHandler(API));
 agoricRoute(
   "/chain_validator_slashing_signing_info_details",
+  corsMiddleware,
   chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
 agoricRoute(
   "/chain_validator_delegations",
+  corsMiddleware,
   chainValidatorDelegationsHandler(API)
 );
 agoricRoute(
   "/chain_validator_undelegations",
+  corsMiddleware,
   chainValidatorUnDelegationsHandler(API)
 );
 agoricRoute(
   "/chain_validator_redelegations",
+  corsMiddleware,
   chainValidatorReDelegationsHandler(API)
 );
-agoricRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-agoricRoute("/chain_minting_params", chainMintingParamsHandler(API));
-agoricRoute("/chain_gov_params", chainGovParamsHandler(API));
-agoricRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-agoricRoute("/chain_staking_params", chainStakingParamsHandler(API));
-agoricRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
-agoricRoute("/chain_node_info", chainNodeInfoHandler(API));
-agoricRoute("/chain_proposals", chainProposalsHandler(API));
-agoricRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+agoricRoute("/chain_consensus", corsMiddleware, chainConsensusStateHandler(RPC));
+agoricRoute("/chain_minting_params", corsMiddleware, chainMintingParamsHandler(API));
+agoricRoute("/chain_gov_params", corsMiddleware, chainGovParamsHandler(API));
+agoricRoute("/chain_slashing_params", corsMiddleware, chainSlashingParamsHandler(API));
+agoricRoute("/chain_staking_params", corsMiddleware, chainStakingParamsHandler(API));
+agoricRoute("/chain_distribution_params", corsMiddleware, chainDistributionParamsHandler(API));
+agoricRoute("/chain_node_info", corsMiddleware, chainNodeInfoHandler(API));
+agoricRoute("/chain_proposals", corsMiddleware, chainProposalsHandler(API));
+agoricRoute("/chain_proposal_details", corsMiddleware, chainProposalDetailsHandler(API));
 agoricRoute(
   "/chain_proposal_voting_options",
+  corsMiddleware,
   chainProposalVotingOptionsHandler(API)
 );
 agoricRoute(
   "/chain_proposal_tally_options",
+  corsMiddleware,
   chainProposalTallyOptionsHandler(API)
 );
-agoricRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-agoricRoute("/chain_auth_account", chainAuthAccountHandler(API));
+agoricRoute("/chain_proposal_deposits", corsMiddleware, chainProposalDepositsHandler(API));
+agoricRoute("/chain_auth_account", corsMiddleware, chainAuthAccountHandler(API));
 agoricRoute(
   "/chain_account_txs_by_events",
+  corsMiddleware,
   chainAccountTxsByEventsHandler(API)
 );
-agoricRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+agoricRoute("/chain_account_balance", corsMiddleware, chainAccountBalanceHandler(API));
 agoricRoute(
   "/chain_account_delegation_rewards",
+  corsMiddleware,
   chainAccountDelegationRewardsHandler(API)
 );
-agoricRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+agoricRoute("/chain_account_delegations", corsMiddleware, chainAccountDelegationsHandler(API));
 agoricRoute(
   "/chain_account_redelegations",
+  corsMiddleware,
   chainAccountReDelegationsHandler(API)
 );
 agoricRoute(
   "/chain_account_undelegations",
+  corsMiddleware,
   chainAccountUnDelegationsHandler(API)
 );
 
