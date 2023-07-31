@@ -43,7 +43,7 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.AKASH_REST_API;
 const RPC = process.env.AKASH_RPC_API;
 
-cron.akashcCron; //cron task for akash
+cron.akashCron; //cron task for akash
 
 // Define a helper function to prefix the routes with "/akash"
 function akashRoute(path, handler) {
