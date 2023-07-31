@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("node-cron");
+const cron = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,16 +39,11 @@ const {
   latestBlocksHandler,
   allTxsHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
-
 const API = process.env.AKASH_REST_API;
 const RPC = process.env.AKASH_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(API, Model.akashTxsModel, Model.akashBlockModel);
-});
+cron.akashcCron; //cron task for akash
 
 // Define a helper function to prefix the routes with "/akash"
 function akashRoute(path, handler) {

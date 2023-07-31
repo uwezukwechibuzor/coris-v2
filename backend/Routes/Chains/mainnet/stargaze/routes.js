@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("node-cron");
+const cron = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -39,20 +39,12 @@ const {
   latestBlocksHandler,
   allTxsHandler,
 } = require("../../../../data/handlers.js");
-const fetchLatestBlocksAndTxs = require("../../../../data/chainQueries/latestBlocksAndTxs.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
 const API = process.env.STARGAZE_REST_API;
 const RPC = process.env.STARGAZE_RPC_API;
 
-cron.schedule("*/3 * * * * *", function () {
-  //cron to run at every 3sec to get latest blocks
-  fetchLatestBlocksAndTxs(
-    API,
-    Model.stargazeTxsModel,
-    Model.stargazeBlockModel,
-  );
-});
+cron.stargazeCron; // cron task for stargaze
 
 // Define a helper function to prefix the routes with "/stargaze"
 function stargazeRoute(path, handler) {
