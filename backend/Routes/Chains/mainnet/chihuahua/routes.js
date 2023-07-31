@@ -93,7 +93,7 @@ chihuahuaRoute(
 );
 chihuahuaRoute("/chain_consensus", corsMiddleware, chainConsensusStateHandler(RPC));
 chihuahuaRoute("/chain_minting_params", corsMiddleware, chainMintingParamsHandler(API));
-chihuahuaRoute("/chain_gov_params", chainGovParamsHandler(API));
+chihuahuaRoute("/chain_gov_params",  corsMiddleware, chainGovParamsHandler(API));
 chihuahuaRoute("/chain_slashing_params", corsMiddleware, chainSlashingParamsHandler(API));
 chihuahuaRoute("/chain_staking_params", corsMiddleware, chainStakingParamsHandler(API));
 chihuahuaRoute(
