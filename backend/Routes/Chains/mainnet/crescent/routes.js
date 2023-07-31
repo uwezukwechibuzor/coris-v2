@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -43,7 +43,12 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.CRESCENT_REST_API;
 const RPC = process.env.CRESCENT_RPC_API;
 
-cron.crescentCron; // cron task for cresent
+// cron task for cresent
+createCronJob(
+  API,
+  Model.crescentTxsModel,
+  Model.crescentBlockModel
+);
 
 // Define a helper function to prefix the routes with "/crescent"
 function crescentRoute(path, handler) {

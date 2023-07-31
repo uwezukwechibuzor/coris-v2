@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -43,7 +43,12 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.AKASH_REST_API;
 const RPC = process.env.AKASH_RPC_API;
 
-cron.akashCron; //cron task for akash
+//cron task for akash
+createCronJob(
+  API,
+  Model.akashTxsModel,
+  Model.akashBlockModel
+);
 
 // Define a helper function to prefix the routes with "/akash"
 function akashRoute(path, handler) {

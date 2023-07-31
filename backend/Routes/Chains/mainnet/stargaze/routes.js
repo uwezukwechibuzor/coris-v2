@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -40,11 +40,15 @@ const {
   allTxsHandler,
 } = require("../../../../data/handlers.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
-
 const API = process.env.STARGAZE_REST_API;
 const RPC = process.env.STARGAZE_RPC_API;
 
-cron.stargazeCron; // cron task for stargaze
+// cron task for stargaze
+createCronJob(
+  API,
+  Model.stargazeTxsModel,
+  Model.stargazeBlockModel
+);
 
 // Define a helper function to prefix the routes with "/stargaze"
 function stargazeRoute(path, handler) {

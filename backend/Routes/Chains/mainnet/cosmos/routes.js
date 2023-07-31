@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -43,7 +43,12 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.COSMOS_REST_API;
 const RPC = process.env.COSMOS_RPC_API;
 
-cron.cosmosCron; // cron task for cosmos
+// cron task for cosmos
+createCronJob(
+  API, 
+  Model.cosmosTxsModel, 
+  Model.cosmosBlockModel
+);
 
 // Define a helper function to prefix the routes with "/cosmos"
 function cosmosRoute(path, handler) {

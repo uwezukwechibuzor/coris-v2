@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -43,7 +43,12 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.JUNO_REST_API;
 const RPC = process.env.JUNO_RPC_API;
 
-cron.junoCron; // cron task for juno
+// cron task for juno
+createCronJob(
+  API, 
+  Model.junoTxsModel, 
+  Model.junoBlockModel
+);
 
 // Define a helper function to prefix the routes with "/juno"
 function junoRoute(path, handler) {

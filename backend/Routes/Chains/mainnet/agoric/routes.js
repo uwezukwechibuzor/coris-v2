@@ -1,6 +1,6 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 const app = express();
 require("dotenv").config();
 const {
@@ -40,11 +40,15 @@ const {
   allTxsHandler,
 } = require("../../../../data/handlers.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
-
 const API = process.env.AGORIC_REST_API;
 const RPC = process.env.AGORIC_RPC_API;
 
-cron.agoricCron; //cron task for agoric
+//cron task for agoric
+createCronJob(
+  process.env.AGORIC_REST_API,
+  Model.agoricTxsModel,
+  Model.agoricBlockModel
+);
 
 // Define a helper function to prefix the routes with "/agoric"
 function agoricRoute(path, handler) {

@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
 const app = express();
-const cron = require("../../../../cron.js");
+const createCronJob = require("../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -43,8 +43,12 @@ const corsMiddleware = require("../../../../corsMiddleware.js");
 const API = process.env.UMEE_REST_API;
 const RPC = process.env.UMEE_RPC_API;
 
-cron.umeeCron; // cron task for umee
-
+// cron task for umee
+createCronJob(
+  API, 
+  Model.umeeTxsModel, 
+  Model.umeeBlockModel
+);
 // Define a helper function to prefix the routes with "/umee"
 function umeeRoute(path, handler) {
   return app.get(`/umee${path}`, corsMiddleware, handler);
