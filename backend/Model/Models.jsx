@@ -58,7 +58,6 @@ const TxsSchema = new mongoose.Schema({
 const umeeBlocks = mongoose.model("umee-Blocks", BlockSchema);
 const umeeTransactions = mongoose.model("umee-Transactions", TxsSchema);
 
-
 //set cosmos chain schema
 const cosmosBlocks = mongoose.model("cosmos-Blocks", BlockSchema);
 const cosmosTransactions = mongoose.model("cosmos-Transactions", TxsSchema);
@@ -83,7 +82,6 @@ const chihuahuaTransactions = mongoose.model("chihuahua-Transactions", TxsSchema
 const junoBlocks = mongoose.model("juno-Blocks", BlockSchema);
 const junoTransactions = mongoose.model("juno-Transactions", TxsSchema);
 
-
 //set stargaze chain schema
 const stargazeBlocks = mongoose.model("stargaze-Blocks", BlockSchema);
 const stargazeTransactions = mongoose.model("stargaze-Transactions", TxsSchema);
@@ -92,6 +90,9 @@ const stargazeTransactions = mongoose.model("stargaze-Transactions", TxsSchema);
 const neutronBlocks = mongoose.model("neutron-Blocks", BlockSchema);
 const neutronTransactions = mongoose.model("neutron-Transactions", TxsSchema);
 
+//set stride chain schema
+const strideBlocks = mongoose.model("stride-Blocks", BlockSchema);
+const strideTransactions = mongoose.model("stride-Transactions", TxsSchema);
 
 module.exports = {
   umeeBlockModel: umeeBlocks,
@@ -120,4 +121,7 @@ module.exports = {
   
   neutronBlockModel: neutronBlocks,
   neutronTxsModel: neutronTransactions,
+
+  strideBlockModel: strideBlocks,
+  strideTxsModel: strideTransactions,
 };

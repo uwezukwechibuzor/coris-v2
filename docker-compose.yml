@@ -62,10 +62,14 @@ services:
      CRESCENT_RPC_API: https://mainnet.crescent.network:26657
      CHIHUAHUA_REST_API: https://chihuahua-api.polkachu.com
      CHIHUAHUA_RPC_API: https://chihuahua-rpc.polkachu.com:443
+     NEUTRON_REST_API: https://neutron-api.polkachu.com
+     NEUTRON_RPC_API: https://neutron-rpc.polkachu.com
      JUNO_REST_API: https://api-juno-ia.cosmosia.notional.ventures
      JUNO_RPC_API: https://rpc-juno-ia.cosmosia.notional.ventures:443
      STARGAZE_REST_API: https://stargaze-api.polkachu.com
      STARGAZE_RPC_API: https://stargaze-rpc.polkachu.com
+     STRIDE_REST_API: https://stride-api.polkachu.com
+     STRIDE_RPC_API: https://stride-rpc.polkachu.com:443
      PORT: 5001
      REDIS_HOST: redis
      REDIS_PORT: 6379
