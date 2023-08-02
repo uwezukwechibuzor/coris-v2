@@ -55,7 +55,7 @@ function ProposalsContent(props) {
       <Title className={darkMode ? "dark-mode" : ""}>Proposals</Title>
       <Grid>
         {getFirstFourActiveProposalsTally?.map((proposals) => {
-          return proposals.map((data) => {
+          return proposals?.map((data) => {
             finalTallySum =
               data.tally !== undefined || data?.tally != null
                 ? Number(data?.tally?.tally?.yes) +

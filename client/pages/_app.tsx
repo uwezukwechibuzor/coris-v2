@@ -9,7 +9,7 @@ import { SSRProvider } from "react-bootstrap";
 import { wrapper } from "../lib/store";
 import Error from "next/error";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { ErrorFallback } from "../components/ErrorFallback";
+import  ErrorFallback  from "../components/ErrorFallback";
 import { useRouter } from "next/router";
 
 Object.assign(globalThis, {

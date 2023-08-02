@@ -1,30 +1,24 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import TransactionContents from "../../../components/Transaction";
 import { BaseChainApi } from "../../../lib/baseChainApi";
 import { chainTxsByHashEndpoint } from "../../../lib/chainApiEndpoints";
 import { useRouter } from "next/router";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function TransactionDetails(props) {
-  const [getChainTxsByHash, setChainTxsByHash] = useState(null);
-
   const router = useRouter();
   const query = router.query;
 
   const chain_id = props?.chain_id?.chain_id;
 
   //fetch Txs By Hash
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainTxsByHashEndpoint(query?.hash))
-      .then((response) => {
-        setChainTxsByHash(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.hash, chain_id]);
+  const { data: getChainTxsByHash } = useSWR(
+    query.hash
+      ? BaseChainApi(chain_id) + chainTxsByHashEndpoint(query?.hash)
+      : null,
+    fetcher
+  );
 
   return (
     <>

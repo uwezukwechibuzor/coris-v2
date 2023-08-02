@@ -9,53 +9,32 @@ import {
 } from "../../../lib/chainApiEndpoints";
 import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
+import { activeValidators } from "../../../lib/commonQueries";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function BlocksDetails(props) {
-  const [getActiveValidators, setActiveValidators] = useState([]);
-  const [getTxsByHeight, setTxsByHeight] = useState(null);
-  const [getBlockHeightDetails, setBlockHeightDetails] = useState(null);
-
   const router = useRouter();
   const query = router.query;
 
   const chain_id = props?.chain_id?.chain_id;
 
-  useEffect(() => {
-    axios
-      .get(
-        BaseChainApi(chain_id) + chainBlockHeightDetailsEndpont(query?.height)
-      )
-      .then((response) => {
-        setBlockHeightDetails(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.height, chain_id]);
+  const { data: getBlockHeightDetails } = useSWR(
+    query?.height
+      ? BaseChainApi(chain_id) + chainBlockHeightDetailsEndpont(query?.height)
+      : null,
+    fetcher
+  );
 
   //fetch Transactions in a Block Height
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainBlockHeightTxsEndpoint(query.height))
-      .then((response) => {
-        setTxsByHeight(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.height, chain_id]);
+  const { data: getTxsByHeight } = useSWR(
+    query?.height
+      ? BaseChainApi(chain_id) + chainBlockHeightTxsEndpoint(query.height)
+      : null,
+    fetcher
+  );
 
-  //active validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
-      .then((response) => {
-        setActiveValidators(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.height, chain_id]);
+  const getActiveValidators = activeValidators(chain_id);
 
   const blockDetailsData = {
     title: "Block Details",
