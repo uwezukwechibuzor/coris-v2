@@ -1,7 +1,10 @@
 import useSWR from "swr";
 import { BaseChainApi } from "./baseChainApi";
 import {
+  ChainAllValidatorsEndpoint,
+  accountTxsByEventsEndpoint,
   allTxsEndpoint,
+  chainActiveValidatorsEndpoint,
   chainPoolEndpoint,
   latestBlocksEndpoint,
 } from "./chainApiEndpoints";
@@ -31,5 +34,35 @@ export function latestTxs(chain_id, queryTotalTxs) {
 // Fetch chain pool data
 export function chainPool(chain_id) {
   const { data } = useSWR(BaseChainApi(chain_id) + chainPoolEndpoint, fetcher);
+  return data;
+}
+
+// Fetch all validators data
+export function allValidators(chain_id) {
+  const { data } = useSWR(
+    BaseChainApi(chain_id) + ChainAllValidatorsEndpoint,
+    fetcher
+  );
+  return data;
+}
+
+// Fetch active validators data
+export function activeValidators(chain_id) {
+  const { data } = useSWR(
+    BaseChainApi(chain_id) + chainActiveValidatorsEndpoint,
+    fetcher
+  );
+  return data;
+}
+
+// Fetch account Txs By Events
+export function accountTxsByEvents(chain_id, accountAddress) {
+  const { data } = useSWR(
+    accountAddress
+      ? BaseChainApi(chain_id) + accountTxsByEventsEndpoint(accountAddress)
+      : null,
+    fetcher,
+    swrOptions
+  );
   return data;
 }

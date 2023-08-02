@@ -1,76 +1,27 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import ValidatorsContent from "../../../components/Validators";
-import { BaseChainApi } from "../../../lib/baseChainApi";
 import {
-  ChainAllValidatorsEndpoint,
-  chainPoolEndpoint,
-  latestBlocksEndpoint,
-} from "../../../lib/chainApiEndpoints";
+  allValidators,
+  chainPool,
+  getLatestBlocks,
+} from "../../../lib/commonQueries";
 
 function Validators(props) {
-  const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);
-  const [getChainPool, setChainPool] = useState(null);
-  const [getAllValidators, setAllValidators] = useState(null);
-
   const chain_id = props?.chain_id?.chain_id;
 
-  //all validators
-  useEffect(() => {
-    const fetchAllValidators = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + ChainAllValidatorsEndpoint
-        );
-        setAllValidators(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchAllValidators();
-  }, [chain_id]);
-
-  //get Pool
-  useEffect(() => {
-    const fetchChainPool = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + chainPoolEndpoint
-        );
-        setChainPool(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchChainPool();
-  }, [chain_id]);
+  const getAllValidators = allValidators(chain_id);
 
   //get total bonded tokens
+  const getChainPool = chainPool(chain_id);
   const bondedTokensFromPool =
     getChainPool !== null ? getChainPool?.pool?.bonded_tokens : null;
 
   //get uptime by blocks
   //get blocks
   const queryTotalBlocks = 100;
-  useEffect(() => {
-    const fetchUptimeByBlocks = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks)
-        );
-        setUptimeByBlocksHeights(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const getUptimeByBlocksHeights = getLatestBlocks(chain_id, queryTotalBlocks);
 
-    fetchUptimeByBlocks();
-  }, [getUptimeByBlocksHeights, chain_id]);
-
-  const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(
+  const uptimeByBlocksHeights = getUptimeByBlocksHeights?.map(
     (uptimeByBlocksHeights) => uptimeByBlocksHeights
   );
 

@@ -24,7 +24,6 @@ export function SearchBar(props) {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
   //search button functionalities
-
   let searchedData;
   let err;
   //search query for tranactions Hash

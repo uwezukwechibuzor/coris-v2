@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import ValidatorsDetailsContent from "../../../components/Validators/Details";
 import { useRouter } from "next/router";
-import axios from "axios";
 import {
   accountTxsByEventsEndpoint,
-  chainPoolEndpoint,
   chainValidatorDelegationsEndpoint,
   chainValidatorsDetailsEndpoint,
   chainValidatorsSlashingSigningInfosDetailsEndpoint,
   chainValidatorUnDelegationsEndpoint,
-  latestBlocksEndpoint,
 } from "../../../lib/chainApiEndpoints";
 import {
   Bech32,
@@ -22,17 +18,15 @@ import {
 } from "@cosmjs/encoding";
 import { sha256 } from "@cosmjs/crypto";
 import { BaseChainApi } from "../../../lib/baseChainApi";
+import {
+  accountTxsByEvents,
+  chainPool,
+  getLatestBlocks,
+} from "../../../lib/commonQueries";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function ValidatorsDetails(props) {
-  const [getUptimeByBlocksHeights, setUptimeByBlocksHeights] = useState([]);
-  const [getValidatorDetails, setValidatorDetails] = useState(null);
-  const [getValidatorSlashingSigningInfos, setValidatorSlashingSigningInfos] =
-    useState(null);
-  const [getValidatorDelegations, setValidatorDelegations] = useState(null);
-  const [getValidatorUnDelegations, setValidatorUnDelegations] = useState(null);
-  const [getChainPool, setChainPool] = useState(null);
-  const [getValidatorTxsByEvents, setValidatorTxsByEvents] = useState(null);
-
   const chain_id = props?.chain_id?.chain_id;
 
   const router = useRouter();
@@ -41,40 +35,23 @@ function ValidatorsDetails(props) {
   //get uptime by blocks
   //get blocks
   const queryTotalBlocks = 100;
-  useEffect(() => {
-    const fetchUptimeByBlocks = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks)
-        );
-        setUptimeByBlocksHeights(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const getUptimeByBlocksHeights = getLatestBlocks(chain_id, queryTotalBlocks);
 
-    fetchUptimeByBlocks();
-  }, [getUptimeByBlocksHeights, chain_id]);
-
-  const uptimeByBlocksHeights = getUptimeByBlocksHeights.map(
+  const uptimeByBlocksHeights = getUptimeByBlocksHeights?.map(
     (uptimeByBlocksHeights) => uptimeByBlocksHeights
   );
 
-  //get validators details
-  useEffect(() => {
-    const fetchValidatorDetails = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + chainValidatorsDetailsEndpoint(query.address)
-        );
-        setValidatorDetails(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const getChainPool = chainPool(chain_id);
 
-    fetchValidatorDetails();
-  }, [query.address, chain_id]);
+  const getValidatorTxsByEvents = accountTxsByEvents(chain_id, accountAddress);
+
+  //get validators details
+  const { data: getValidatorDetails } = useSWR(
+    query.address
+      ? BaseChainApi(chain_id) + chainValidatorsDetailsEndpoint(query.address)
+      : null,
+    fetcher
+  );
 
   var accountAddress, hexAddress, operatorAddress, bech32Address;
   try {
@@ -101,100 +78,31 @@ function ValidatorsDetails(props) {
   } catch (error) {}
 
   // Fetch validator slashing signing Info Details
-  useEffect(() => {
-    const fetchValidatorSlashingSigningInfos = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) +
-            chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)
-        );
-        if (getValidatorSlashingSigningInfos === null) {
-          setValidatorSlashingSigningInfos(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching validator slashing signing info:", error);
-        // Handle the error here, such as displaying an error message
-      }
-    };
-
-    if (bech32Address) {
-      fetchValidatorSlashingSigningInfos();
-    }
-  }, [bech32Address, chain_id]);
-
-  // Fetch account Txs By Events
-  useEffect(() => {
-    const fetchValidatorTxsByEvents = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + accountTxsByEventsEndpoint(accountAddress)
-        );
-        setValidatorTxsByEvents(response.data);
-      } catch (error) {
-        console.error(
-          "Error fetching validator transactions by events:",
-          error
-        );
-        // Handle the error here, such as displaying an error message
-      }
-    };
-
-    if (accountAddress) {
-      fetchValidatorTxsByEvents();
-    }
-  }, [accountAddress, chain_id]);
+  const { data: getValidatorSlashingSigningInfos } = useSWR(
+    bech32Address
+      ? BaseChainApi(chain_id) +
+          chainValidatorsSlashingSigningInfosDetailsEndpoint(bech32Address)
+      : null,
+    fetcher
+  );
 
   // Get each validator's delegations
-  useEffect(() => {
-    const fetchValidatorDelegations = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) +
-            chainValidatorDelegationsEndpoint(query.address)
-        );
-        setValidatorDelegations(response.data);
-      } catch (error) {
-        console.error("Error fetching validator delegations:", error);
-        // Handle the error here, such as displaying an error message
-      }
-    };
-
-    fetchValidatorDelegations();
-  }, [query.address, chain_id]);
+  const { data: getValidatorDelegations } = useSWR(
+    query.address
+      ? BaseChainApi(chain_id) +
+          chainValidatorDelegationsEndpoint(query.address)
+      : null,
+    fetcher
+  );
 
   // Get each validator's undelegations
-  useEffect(() => {
-    const fetchValidatorUnDelegations = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) +
-            chainValidatorUnDelegationsEndpoint(query.address)
-        );
-        setValidatorUnDelegations(response.data);
-      } catch (error) {
-        console.error("Error fetching validator undelegations:", error);
-        // Handle the error here, such as displaying an error message
-      }
-    };
-
-    fetchValidatorUnDelegations();
-  }, [query.address, chain_id]);
-
-  //get Pool
-  useEffect(() => {
-    const fetchChainPool = async () => {
-      try {
-        const response = await axios.get(
-          BaseChainApi(chain_id) + chainPoolEndpoint
-        );
-        setChainPool(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchChainPool();
-  }, [chain_id]);
+  const { data: getValidatorUnDelegations } = useSWR(
+    query.address
+      ? BaseChainApi(chain_id) +
+          chainValidatorUnDelegationsEndpoint(query.address)
+      : null,
+    fetcher
+  );
 
   const data = {
     getValidatorDetails: getValidatorDetails,

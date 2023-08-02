@@ -1,56 +1,25 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Layout from "../../../../components/layout/Layout";
 import ConsensusDetails from "../../../../components/Validators/Consensus";
 import { BaseChainApi } from "../../../../lib/baseChainApi";
-import {
-  ChainAllValidatorsEndpoint,
-  chainPoolEndpoint,
-  consensusStateEndpoint,
-} from "../../../../lib/chainApiEndpoints";
+import { consensusStateEndpoint } from "../../../../lib/chainApiEndpoints";
+import { allValidators, chainPool } from "../../../../lib/commonQueries";
+import { fetcher } from "../../../../lib/Util/fetcher";
+import useSWR from "swr";
+import { swrOptions } from "../../../../lib/Util/swrOptions ";
 
 function ValidatorsConsensusState(props) {
-  const [getChainPool, setChainPool] = useState(null);
-  const [getConsensusState, setConsensusState] = useState(null);
-  const [getAllValidators, setAllValidators] = useState(null);
-
   const chain_id = props?.chain_id?.chain_id;
 
-  //all validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + ChainAllValidatorsEndpoint)
-      .then((response) => {
-        setAllValidators(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const getChainPool = chainPool(chain_id);
 
-  //get total bonded tokens
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainPoolEndpoint)
-      .then((response) => {
-        setChainPool(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const getAllValidators = allValidators(chain_id);
 
   //consensus state for the validators
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + consensusStateEndpoint)
-      .then((response) => {
-        setConsensusState(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getConsensusState, chain_id]);
+  const { data: getConsensusState } = useSWR(
+    BaseChainApi(chain_id) + consensusStateEndpoint,
+    fetcher,
+    swrOptions
+  );
 
   const validatorsDetails = {
     validators: getAllValidators,

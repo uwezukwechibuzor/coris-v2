@@ -3,19 +3,21 @@ import HomePageContent from "../../components/Homepage";
 import useSWR from "swr";
 import {
   chainActiveValidatorsEndpoint,
-  chainPoolEndpoint,
   communityPoolEndpoint,
   inflationEndpoint,
-  latestBlocksEndpoint,
-  allTxsEndpoint,
-  ChainAllValidatorsEndpoint,
 } from "../../lib/chainApiEndpoints";
 import { DENOM } from "../../lib/Util/constants";
 import { BaseChainApi } from "../../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../../lib/coingeckoAPI";
 import { fetcher } from "../../lib/Util/fetcher";
 import { swrOptions } from "../../lib/Util/swrOptions ";
-import { chainPool, getLatestBlocks, latestTxs } from "../../lib/commonQueries";
+import {
+  activeValidators,
+  allValidators,
+  chainPool,
+  getLatestBlocks,
+  latestTxs,
+} from "../../lib/commonQueries";
 
 function Home(props) {
   const queryTotalBlocks = 5;
@@ -27,20 +29,12 @@ function Home(props) {
 
   const getAllTxs = latestTxs(chain_id, queryTotalTxs);
 
+  const getAllValidators = allValidators(chain_id);
+
+  const getActiveValidators = activeValidators(chain_id);
+
   const getChainPool = chainPool(chain_id);
   const chainPoolValue = getChainPool ? getChainPool : null;
-
-  // Fetch active validators data
-  const { data: getActiveValidators } = useSWR(
-    BaseChainApi(chain_id) + chainActiveValidatorsEndpoint,
-    fetcher
-  );
-
-  // Fetch all validators data
-  const { data: getAllValidators } = useSWR(
-    BaseChainApi(chain_id) + ChainAllValidatorsEndpoint,
-    fetcher
-  );
 
   // Fetch coin data
   const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);

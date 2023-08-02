@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import ParamsContent from "../../../components/Params";
 import Layout from "../../../components/layout/Layout";
 import {
@@ -10,113 +9,57 @@ import {
   stakingParamsEndpoint,
 } from "../../../lib/chainApiEndpoints";
 import { BaseChainApi } from "../../../lib/baseChainApi";
-import axios from "axios";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function Params(props) {
-  const [getMintingParams, setMintingParams] = useState({});
-  const [getGovVotingParams, setGovVotingParams] = useState({});
-  const [getGovDepositParams, setGovDepositParams] = useState({});
-  const [getGovTallyingParams, setGovTallyingParams] = useState({});
-  const [getSlashingParams, setSlashingParams] = useState({});
-  const [getStakingParams, setStakingParams] = useState({});
-  const [getDistributionParams, setDistributionParams] = useState({});
-  const [getChainNodeInfo, setChainNodeInfo] = useState({});
-
   const chain_id = props?.chain_id?.chain_id;
 
-  //fetch minting params
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + mintingParamsEndpoint)
-      .then((response) => {
-        setMintingParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // fetch minting params
+  const { data: getMintingParams } = useSWR(
+    BaseChainApi(chain_id) + mintingParamsEndpoint,
+    fetcher
+  );
 
-  //fetch governance params
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + govParamsEndpoint("voting"))
-      .then((response) => {
-        setGovVotingParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // fetch governance params
+  const { data: getGovVotingParams } = useSWR(
+    BaseChainApi(chain_id) + govParamsEndpoint("voting"),
+    fetcher
+  );
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + govParamsEndpoint("deposit"))
-      .then((response) => {
-        setGovDepositParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const { data: getGovDepositParams } = useSWR(
+    BaseChainApi(chain_id) + govParamsEndpoint("deposit"),
+    fetcher
+  );
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + govParamsEndpoint("tallying"))
-      .then((response) => {
-        setGovTallyingParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const { data: getGovTallyingParams } = useSWR(
+    BaseChainApi(chain_id) + govParamsEndpoint("tallying"),
+    fetcher
+  );
 
-  //fetch slashing params
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + slashingParamsEndpoint)
-      .then((response) => {
-        setSlashingParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // fetch slashing params
+  const { data: getSlashingParams } = useSWR(
+    BaseChainApi(chain_id) + slashingParamsEndpoint,
+    fetcher
+  );
 
-  //fetch staking params
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + stakingParamsEndpoint)
-      .then((response) => {
-        setStakingParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // fetch staking params
+  const { data: getStakingParams } = useSWR(
+    BaseChainApi(chain_id) + stakingParamsEndpoint,
+    fetcher
+  );
 
-  //fetch Distribution params
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + distributionParamsEndpoint)
-      .then((response) => {
-        setDistributionParams(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  // fetch Distribution params
+  const { data: getDistributionParams } = useSWR(
+    BaseChainApi(chain_id) + distributionParamsEndpoint,
+    fetcher
+  );
 
   //fetch Chain Node Info
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + nodeInfoEndpoint)
-      .then((response) => {
-        setChainNodeInfo(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const { data: getChainNodeInfo } = useSWR(
+    BaseChainApi(chain_id) + nodeInfoEndpoint,
+    fetcher
+  );
 
   const paramsData = {
     govMintingParams: getMintingParams,
@@ -130,7 +73,7 @@ function Params(props) {
   };
   return (
     <>
-      <ParamsContent {...paramsData} chain_id={chain_id } />
+      <ParamsContent {...paramsData} chain_id={chain_id} />
     </>
   );
 }

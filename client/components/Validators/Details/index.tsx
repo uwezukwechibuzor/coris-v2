@@ -55,7 +55,7 @@ function ValidatorsDetailsContent(props) {
   //check if validator address contained in the signatures equals bech32Address
   let totalSignedBlocks = 0;
   let totalBlocks = 0;
-  const getUptime = convertedSignatures.map((sigs, index) => {
+  const getUptime = convertedSignatures?.map((sigs, index) => {
     totalBlocks++;
     if (validatorsDetails === null) {
       //set noUpTime and upTime to empty string when data is still loading
@@ -274,7 +274,7 @@ function ValidatorsDetailsContent(props) {
               </div>
             </Flex>
             <BlockGrid>
-              {getUptime.map((data) => (
+              {getUptime?.map((data) => (
                 <Link
                   href="/[chain_id]/blocks/[height]"
                   as={`/${chain_id}/blocks/${
