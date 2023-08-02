@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import ProposalDetailsContents from "../../../components/Proposals/Details";
 import Layout from "../../../components/layout/Layout";
 import { useRouter } from "next/router";
@@ -8,67 +7,47 @@ import {
   proposalTallyOptionsEndpoint,
   proposalVotingOptionsEndpoint,
 } from "../../../lib/chainApiEndpoints";
-import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function ProposalDetails(props) {
-  const [getProposalDetails, setProposalDetails] = useState(null);
-  const [getProposalsVotingOptions, setProposalsVotingOptions] = useState(null);
-  const [getDeposits, setDeposits] = useState(null);
-  const [getTally, setTally] = useState(null);
-
   const chain_id = props?.chain_id?.chain_id;
 
   const router = useRouter();
   const query = router.query;
 
   //get proposals details
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + proposalDetailsEndpoint(query.id))
-      .then((response) => {
-        setProposalDetails(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.id, chain_id]);
+  const { data: getProposalDetails } = useSWR(
+    query.id
+      ? BaseChainApi(chain_id) + proposalDetailsEndpoint(query.id)
+      : null,
+    fetcher
+  );
 
   //get proposals voting options data
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + proposalVotingOptionsEndpoint(query.id))
-      .then((response) => {
-        setProposalsVotingOptions(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.id, chain_id]);
+  const { data: getProposalsVotingOptions } = useSWR(
+    query.id
+      ? BaseChainApi(chain_id) + proposalVotingOptionsEndpoint(query.id)
+      : null,
+    fetcher
+  );
 
   //get proposals tally options
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + proposalTallyOptionsEndpoint(query.id))
-      .then((response) => {
-        setTally(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.id, chain_id]);
+  const { data: getTally } = useSWR(
+    query.id
+      ? BaseChainApi(chain_id) + proposalTallyOptionsEndpoint(query.id)
+      : null,
+    fetcher
+  );
 
   //get all deposits on each proposals
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + proposalDepositsEndpoint(query.id))
-      .then((response) => {
-        setDeposits(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [query.id, chain_id]);
+  const { data: getDeposits } = useSWR(
+    query.id
+      ? BaseChainApi(chain_id) + proposalDepositsEndpoint(query.id)
+      : null,
+    fetcher
+  );
 
   const proposalsDetailsData = {
     type: "Type:",

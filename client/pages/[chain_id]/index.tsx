@@ -3,18 +3,21 @@ import HomePageContent from "../../components/Homepage";
 import useSWR from "swr";
 import {
   chainActiveValidatorsEndpoint,
-  chainPoolEndpoint,
   communityPoolEndpoint,
   inflationEndpoint,
-  latestBlocksEndpoint,
-  allTxsEndpoint,
-  ChainAllValidatorsEndpoint,
 } from "../../lib/chainApiEndpoints";
 import { DENOM } from "../../lib/Util/constants";
 import { BaseChainApi } from "../../lib/baseChainApi";
 import { coinsAPI, coinsPriceChart } from "../../lib/coingeckoAPI";
 import { fetcher } from "../../lib/Util/fetcher";
 import { swrOptions } from "../../lib/Util/swrOptions ";
+import {
+  activeValidators,
+  allValidators,
+  chainPool,
+  getLatestBlocks,
+  latestTxs,
+} from "../../lib/commonQueries";
 
 function Home(props) {
   const queryTotalBlocks = 5;
@@ -22,64 +25,41 @@ function Home(props) {
 
   const chain_id = props?.chain_id?.chain_id;
 
-  // Fetch latest blocks data
-  const { data: getBlocks } = useSWR(
-    BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks),
-    fetcher,
-    swrOptions
-  );
+  const getBlocks = getLatestBlocks(chain_id, queryTotalBlocks);
 
-  // Fetch all transactions data
-  const { data: getAllTxs } = useSWR(
-    BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs),
-    fetcher,
-    swrOptions
-  );
+  const getAllTxs = latestTxs(chain_id, queryTotalTxs);
+
+  const getAllValidators = allValidators(chain_id);
+
+  const getActiveValidators = activeValidators(chain_id);
+
+  const getChainPool = chainPool(chain_id);
+  const chainPoolValue = getChainPool ? getChainPool : null;
+
+  // Fetch coin data
+  const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);
+
+  // Fetch price chart data
+  const { data } = useSWR(coinsPriceChart(chain_id), fetcher, swrOptions);
+  const priceChart = data ? data?.prices : [];
 
   // Fetch inflation data
   const { data: getInflation } = useSWR(
     BaseChainApi(chain_id) + inflationEndpoint,
     fetcher
   );
+  const inflationValue = getInflation
+    ? (getInflation?.inflation * 100).toFixed(2) + "%"
+    : null;
 
   // Fetch community pool data
   const { data: getCommunityPool } = useSWR(
     BaseChainApi(chain_id) + communityPoolEndpoint,
     fetcher
   );
-
-  // Fetch active validators data
-  const { data: getActiveValidators } = useSWR(
-    BaseChainApi(chain_id) + chainActiveValidatorsEndpoint,
-    fetcher
-  );
-
-  // Fetch all validators data
-  const { data: getAllValidators } = useSWR(
-    BaseChainApi(chain_id) + ChainAllValidatorsEndpoint,
-    fetcher
-  );
-
-  // Fetch chain pool data
-  const { data: getChainPool } = useSWR(
-    BaseChainApi(chain_id) + chainPoolEndpoint,
-    fetcher
-  );
-
-  // Fetch coin data
-  const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);
-
-  const inflationValue = getInflation
-    ? (getInflation?.inflation * 100).toFixed(2) + "%"
-    : null;
   const communityPoolValue = getCommunityPool
     ? (getCommunityPool?.pool[0]?.amount / DENOM).toFixed(2)
     : null;
-  const chainPoolValue = getChainPool ? getChainPool : null;
-
-  // Fetch price chart data
-  const { data } = useSWR(coinsPriceChart(chain_id), fetcher, swrOptions);
-  const priceChart = data ? data?.prices : [];
 
   const homePageData = {
     title: "Overview",

@@ -28,7 +28,7 @@ const Chain = ({ chainName, chainImage, chain_id }) => {
       className={darkMode ? "dark-mode" : ""}
       onClick={() => handleClick()}
     >
-      <img src={chainImage} alt="" width={40} />
+      <img src={chainImage} alt="" width={45} />
       <a className="ml-3">{chainName}</a>
     </GridItem>
   );
@@ -37,7 +37,7 @@ const Chain = ({ chainName, chainImage, chain_id }) => {
 const GridItem = styled.div`
   border-radius: 10px;
   background: #f5f5f5;
-  padding: 10px;
+  padding: 5px;
   &.dark-mode {
     background: #100f1e;
   }

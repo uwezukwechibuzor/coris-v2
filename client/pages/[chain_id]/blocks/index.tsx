@@ -1,56 +1,22 @@
-import React, { useEffect, useState } from "react";
 import Layout from "../../../components/layout/Layout";
 import BlocksContent from "../../../components/Blocks";
-import axios from "axios";
 import {
-  allTxsEndpoint,
-  chainActiveValidatorsEndpoint,
-  latestBlocksEndpoint,
-} from "../../../lib/chainApiEndpoints";
-import { BaseChainApi } from "../../../lib/baseChainApi";
+  activeValidators,
+  getLatestBlocks,
+  latestTxs,
+} from "../../../lib/commonQueries";
 
 function Blocks(props) {
-  const [getBlocks, setBlocks] = useState([]);
-  const [getAllTxs, setAllTxs] = useState([]);
-  const [getActiveValidators, setActiveValidators] = useState([]);
-
   const queryTotalBlocks = 20;
   const queryTotalTxs = 20;
 
   const chain_id = props?.chain_id?.chain_id;
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + latestBlocksEndpoint(queryTotalBlocks))
-      .then((response) => {
-        setBlocks(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getBlocks]);
+  const getBlocks = getLatestBlocks(chain_id, queryTotalBlocks);
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + allTxsEndpoint(queryTotalTxs))
-      .then((response) => {
-        setAllTxs(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [getAllTxs]);
+  const getAllTxs = latestTxs(chain_id, queryTotalTxs);
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + chainActiveValidatorsEndpoint)
-      .then((response) => {
-        setActiveValidators(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const getActiveValidators = activeValidators(chain_id);
 
   return (
     <>

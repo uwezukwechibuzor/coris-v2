@@ -7,24 +7,19 @@ import {
 } from "../../../lib/chainApiEndpoints";
 import axios from "axios";
 import { BaseChainApi } from "../../../lib/baseChainApi";
+import useSWR from "swr";
+import { fetcher } from "../../../lib/Util/fetcher";
 
 function Proposals(props) {
-  const [getProposals, setProposals] = useState(null);
   const [getFirstFourActiveProposalsTally, setFirstFourActiveProposalsTally] =
     useState([]);
 
   const chain_id = props?.chain_id?.chain_id;
 
-  useEffect(() => {
-    axios
-      .get(BaseChainApi(chain_id) + proposalsEndpoint)
-      .then((response) => {
-        setProposals(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [chain_id]);
+  const { data: getProposals } = useSWR(
+    BaseChainApi(chain_id) + proposalsEndpoint,
+    fetcher
+  );
 
   //get proposals in Array form
   const getFirstFourActiveProposals = getProposals?.proposals?.map(
