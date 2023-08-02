@@ -113,7 +113,7 @@ osmosisRoute(
   chainAccountDelegationRewardsHandler(API)
 );
 osmosisRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
-agoricRoute(
+osmosisRoute(
   "/chain_account_redelegations",
   chainAccountReDelegationsHandler(API)
 );
