@@ -70,6 +70,16 @@ services:
      STARGAZE_RPC_API: https://stargaze-rpc.polkachu.com
      STRIDE_REST_API: https://stride-api.polkachu.com
      STRIDE_RPC_API: https://stride-rpc.polkachu.com:443
+     IRISNET_REST_API: https://api.irishub-1.irisnet.org
+     IRISNET_RPC_API: http://34.82.96.8:26657
+     REGEN_REST_API: https://regen.stakesystems.io
+     REGEN_RPC_API: https://regen.stakesystems.io:2053
+     SIFCHAIN_REST_API: https://sifchain-api.polkachu.com
+     SIFCHAIN_RPC_API: https://sifchain-rpc.polkachu.com:443
+     OSMOSIS_REST_API: https://osmosis-api.polkachu.com
+     OSMOSIS_RPC_API: https://osmosis-rpc.polkachu.com:443
+     EVMOS_REST_API: https://evmos-api.polkachu.com
+     EVMOS_RPC_API: https://evmos-rpc.polkachu.com:443
      PORT: 5001
      REDIS_HOST: redis
      REDIS_PORT: 6379

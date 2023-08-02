@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
-const app = express();
 const createCronJob = require("../../../../cron.js");
+const app = express();
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -41,83 +41,83 @@ const {
 } = require("../../../../data/handlers.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
-const API = process.env.NEUTRON_REST_API;
-const RPC = process.env.NEUTRON_RPC_API;
+const API = process.env.EVMOS_REST_API;
+const RPC = process.env.EVMOS_RPC_API;
 
-// cron task for neutron
+//cron task for evmos
 createCronJob(
-  API, 
-  Model.neutronTxsModel, 
-  Model.neutronBlockModel
+  API,
+  Model.evmosTxsModel,
+  Model.evmosBlockModel
 );
 
-// Define a helper function to prefix the routes with "/neutron"
-function neutronRoute(path, handler) {
-  return app.get(`/neutron${path}`, corsMiddleware, handler);
+// Define a helper function to prefix the routes with "/evmos"
+function evmosRoute(path, handler) {
+  return app.get(`/evmos${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
-neutronRoute("/blocks/latest", latestBlocksHandler(Model.neutronBlockModel));
-neutronRoute("/txs", allTxsHandler(Model.neutronTxsModel));
-neutronRoute("/all_validators", allValidatorsHandler(API));
-neutronRoute("/active_validators", activeValidatorsHandler(API));
-neutronRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-neutronRoute("/chain_inflation", chainInflationHandler(API));
-neutronRoute("/chain_community_pool", chainCommunityPoolHandler(API));
-neutronRoute("/chain_pool", chainPoolHandler(API));
-neutronRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-neutronRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-neutronRoute("/chain_txs_hash", chainTxsByHashHandler(API));
-neutronRoute(
+evmosRoute("/blocks/latest", latestBlocksHandler(Model.evmosBlockModel));
+evmosRoute("/txs", allTxsHandler(Model.evmosTxsModel));
+evmosRoute("/all_validators", allValidatorsHandler(API));
+evmosRoute("/active_validators", activeValidatorsHandler(API));
+evmosRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
+evmosRoute("/chain_inflation", chainInflationHandler(API));
+evmosRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+evmosRoute("/chain_pool", chainPoolHandler(API));
+evmosRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
+evmosRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
+evmosRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+evmosRoute(
   "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
-neutronRoute(
+evmosRoute(
   "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API)
 );
-neutronRoute(
+evmosRoute(
   "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API)
 );
-neutronRoute(
+evmosRoute(
   "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API)
 );
-neutronRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-neutronRoute("/chain_minting_params", chainMintingParamsHandler(API));
-neutronRoute("/chain_gov_params", chainGovParamsHandler(API));
-neutronRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-neutronRoute("/chain_staking_params", chainStakingParamsHandler(API));
-neutronRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
-neutronRoute("/chain_node_info", chainNodeInfoHandler(API));
-neutronRoute("/chain_proposals", chainProposalsHandler(API));
-neutronRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
-neutronRoute(
+evmosRoute("/chain_consensus", chainConsensusStateHandler(RPC));
+evmosRoute("/chain_minting_params", chainMintingParamsHandler(API));
+evmosRoute("/chain_gov_params", chainGovParamsHandler(API));
+evmosRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+evmosRoute("/chain_staking_params", chainStakingParamsHandler(API));
+evmosRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
+evmosRoute("/chain_node_info", chainNodeInfoHandler(API));
+evmosRoute("/chain_proposals", chainProposalsHandler(API));
+evmosRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+evmosRoute(
   "/chain_proposal_voting_options",
   chainProposalVotingOptionsHandler(API)
 );
-neutronRoute(
+evmosRoute(
   "/chain_proposal_tally_options",
   chainProposalTallyOptionsHandler(API)
 );
-neutronRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-neutronRoute("/chain_auth_account", chainAuthAccountHandler(API));
-neutronRoute(
+evmosRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
+evmosRoute("/chain_auth_account", chainAuthAccountHandler(API));
+evmosRoute(
   "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API)
 );
-neutronRoute("/chain_account_balance", chainAccountBalanceHandler(API));
-neutronRoute(
+evmosRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+evmosRoute(
   "/chain_account_delegation_rewards",
   chainAccountDelegationRewardsHandler(API)
 );
-neutronRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
-neutronRoute(
+evmosRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+evmosRoute(
   "/chain_account_redelegations",
   chainAccountReDelegationsHandler(API)
 );
-neutronRoute(
+evmosRoute(
   "/chain_account_undelegations",
   chainAccountUnDelegationsHandler(API)
 );

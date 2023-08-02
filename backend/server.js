@@ -11,6 +11,13 @@ const junoRouter = require("./Routes/Chains/mainnet/juno/routes");
 const neutronRouter = require("./Routes/Chains/mainnet/neutron/routes");
 const stargazeRouter = require("./Routes/Chains/mainnet/stargaze/routes");
 const strideRouter = require("./Routes/Chains/mainnet/stride/routes");
+const celoRouter = require("./Routes/Chains/mainnet/celo/routes");
+const evmosRouter = require("./Routes/Chains/mainnet/evmos/routes");
+const irisnetRouter = require("./Routes/Chains/mainnet/irisnet/routes");
+const osmosisRouter = require("./Routes/Chains/mainnet/osmosis/routes");
+const regenRouter = require("./Routes/Chains/mainnet/regen/routes");
+const sifchainRouter = require("./Routes/Chains/mainnet/sifchain/routes");
+const skaleRouter = require("./Routes/Chains/mainnet/skale/routes");
 require("dotenv").config();
 
 const app = express();
@@ -36,6 +43,13 @@ app.use(junoRouter);
 app.use(neutronRouter);
 app.use(stargazeRouter);
 app.use(strideRouter);
+app.use(celoRouter);
+app.use(evmosRouter);
+app.use(irisnetRouter);
+app.use(osmosisRouter);
+app.use(regenRouter);
+app.use(sifchainRouter);
+app.use(skaleRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);

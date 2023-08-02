@@ -94,6 +94,34 @@ const neutronTransactions = mongoose.model("neutron-Transactions", TxsSchema);
 const strideBlocks = mongoose.model("stride-Blocks", BlockSchema);
 const strideTransactions = mongoose.model("stride-Transactions", TxsSchema);
 
+//set evmos chain schema
+const evmosBlocks = mongoose.model("evmos-Blocks", BlockSchema);
+const evmosTransactions = mongoose.model("evmos-Transactions", TxsSchema);
+
+//set osmosis chain schema
+const osmosisBlocks = mongoose.model("osmosis-Blocks", BlockSchema);
+const osmosisTransactions = mongoose.model("osmosis-Transactions", TxsSchema);
+
+//set skale chain schema
+const skaleBlocks = mongoose.model("skale-Blocks", BlockSchema);
+const skaleTransactions = mongoose.model("skale-Transactions", TxsSchema);
+
+//set celo chain schema
+const celoBlocks = mongoose.model("celo-Blocks", BlockSchema);
+const celoTransactions = mongoose.model("celo-Transactions", TxsSchema);
+
+//set sifchain chain schema
+const sifchainBlocks = mongoose.model("sifchain-Blocks", BlockSchema);
+const sifchainTransactions = mongoose.model("sifchain-Transactions", TxsSchema);
+
+//set regen chain schema
+const regenBlocks = mongoose.model("regen-Blocks", BlockSchema);
+const regenTransactions = mongoose.model("regen-Transactions", TxsSchema);
+
+//set irisnet chain schema
+const irisnetBlocks = mongoose.model("irisnet-Blocks", BlockSchema);
+const irisnetTransactions = mongoose.model("irisnet-Transactions", TxsSchema);
+
 module.exports = {
   umeeBlockModel: umeeBlocks,
   umeeTxsModel: umeeTransactions,
@@ -124,4 +152,25 @@ module.exports = {
 
   strideBlockModel: strideBlocks,
   strideTxsModel: strideTransactions,
+
+  evmosBlockModel: evmosBlocks,
+  evmosTxsModel: evmosTransactions,
+
+  osmosisBlockModel: osmosisBlocks,
+  osmosisTxsModel: osmosisTransactions,
+
+  skaleBlockModel: skaleBlocks,
+  skaleTxsModel: skaleTransactions,
+
+  celoBlockModel: celoBlocks,
+  celoTxsModel: celoTransactions,
+
+  sifchainBlockModel: sifchainBlocks,
+  sifchainTxsModel: sifchainTransactions,
+
+  regenBlockModel: regenBlocks,
+  regenTxsModel: regenTransactions,
+
+  irisnetBlockModel: irisnetBlocks,
+  irisnetTxsModel: irisnetTransactions,
 };

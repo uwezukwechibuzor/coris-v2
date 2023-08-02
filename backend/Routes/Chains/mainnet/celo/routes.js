@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
-const app = express();
 const createCronJob = require("../../../../cron.js");
+const app = express();
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -41,83 +41,83 @@ const {
 } = require("../../../../data/handlers.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
-const API = process.env.NEUTRON_REST_API;
-const RPC = process.env.NEUTRON_RPC_API;
+const API = process.env.CELO_REST_API;
+const RPC = process.env.CELO_RPC_API;
 
-// cron task for neutron
+//cron task for celo
 createCronJob(
-  API, 
-  Model.neutronTxsModel, 
-  Model.neutronBlockModel
+  API,
+  Model.celoTxsModel,
+  Model.celoBlockModel
 );
 
-// Define a helper function to prefix the routes with "/neutron"
-function neutronRoute(path, handler) {
-  return app.get(`/neutron${path}`, corsMiddleware, handler);
+// Define a helper function to prefix the routes with "/celo"
+function celoRoute(path, handler) {
+  return app.get(`/celo${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
-neutronRoute("/blocks/latest", latestBlocksHandler(Model.neutronBlockModel));
-neutronRoute("/txs", allTxsHandler(Model.neutronTxsModel));
-neutronRoute("/all_validators", allValidatorsHandler(API));
-neutronRoute("/active_validators", activeValidatorsHandler(API));
-neutronRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-neutronRoute("/chain_inflation", chainInflationHandler(API));
-neutronRoute("/chain_community_pool", chainCommunityPoolHandler(API));
-neutronRoute("/chain_pool", chainPoolHandler(API));
-neutronRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-neutronRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-neutronRoute("/chain_txs_hash", chainTxsByHashHandler(API));
-neutronRoute(
+celoRoute("/blocks/latest", latestBlocksHandler(Model.celoBlockModel));
+celoRoute("/txs", allTxsHandler(Model.celoTxsModel));
+celoRoute("/all_validators", allValidatorsHandler(API));
+celoRoute("/active_validators", activeValidatorsHandler(API));
+celoRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
+celoRoute("/chain_inflation", chainInflationHandler(API));
+celoRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+celoRoute("/chain_pool", chainPoolHandler(API));
+celoRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
+celoRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
+celoRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+celoRoute(
   "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
-neutronRoute(
+celoRoute(
   "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API)
 );
-neutronRoute(
+celoRoute(
   "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API)
 );
-neutronRoute(
+celoRoute(
   "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API)
 );
-neutronRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-neutronRoute("/chain_minting_params", chainMintingParamsHandler(API));
-neutronRoute("/chain_gov_params", chainGovParamsHandler(API));
-neutronRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-neutronRoute("/chain_staking_params", chainStakingParamsHandler(API));
-neutronRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
-neutronRoute("/chain_node_info", chainNodeInfoHandler(API));
-neutronRoute("/chain_proposals", chainProposalsHandler(API));
-neutronRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
-neutronRoute(
+celoRoute("/chain_consensus", chainConsensusStateHandler(RPC));
+celoRoute("/chain_minting_params", chainMintingParamsHandler(API));
+celoRoute("/chain_gov_params", chainGovParamsHandler(API));
+celoRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+celoRoute("/chain_staking_params", chainStakingParamsHandler(API));
+celoRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
+celoRoute("/chain_node_info", chainNodeInfoHandler(API));
+celoRoute("/chain_proposals", chainProposalsHandler(API));
+celoRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+celoRoute(
   "/chain_proposal_voting_options",
   chainProposalVotingOptionsHandler(API)
 );
-neutronRoute(
+celoRoute(
   "/chain_proposal_tally_options",
   chainProposalTallyOptionsHandler(API)
 );
-neutronRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-neutronRoute("/chain_auth_account", chainAuthAccountHandler(API));
-neutronRoute(
+celoRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
+celoRoute("/chain_auth_account", chainAuthAccountHandler(API));
+celoRoute(
   "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API)
 );
-neutronRoute("/chain_account_balance", chainAccountBalanceHandler(API));
-neutronRoute(
+celoRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+celoRoute(
   "/chain_account_delegation_rewards",
   chainAccountDelegationRewardsHandler(API)
 );
-neutronRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
-neutronRoute(
+celoRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+celoRoute(
   "/chain_account_redelegations",
   chainAccountReDelegationsHandler(API)
 );
-neutronRoute(
+celoRoute(
   "/chain_account_undelegations",
   chainAccountUnDelegationsHandler(API)
 );

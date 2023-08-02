@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../Model/Models.jsx");
-const app = express();
 const createCronJob = require("../../../../cron.js");
+const app = express();
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -41,83 +41,83 @@ const {
 } = require("../../../../data/handlers.js");
 const corsMiddleware = require("../../../../corsMiddleware.js");
 
-const API = process.env.NEUTRON_REST_API;
-const RPC = process.env.NEUTRON_RPC_API;
+const API = process.env.IRISNET_REST_API;
+const RPC = process.env.IRISNET_RPC_API;
 
-// cron task for neutron
+//cron task for irisnet
 createCronJob(
-  API, 
-  Model.neutronTxsModel, 
-  Model.neutronBlockModel
+  API,
+  Model.irisnetTxsModel,
+  Model.irisnetBlockModel
 );
 
-// Define a helper function to prefix the routes with "/neutron"
-function neutronRoute(path, handler) {
-  return app.get(`/neutron${path}`, corsMiddleware, handler);
+// Define a helper function to prefix the routes with "/irisnet"
+function irisnetRoute(path, handler) {
+  return app.get(`/irisnet${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
-neutronRoute("/blocks/latest", latestBlocksHandler(Model.neutronBlockModel));
-neutronRoute("/txs", allTxsHandler(Model.neutronTxsModel));
-neutronRoute("/all_validators", allValidatorsHandler(API));
-neutronRoute("/active_validators", activeValidatorsHandler(API));
-neutronRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
-neutronRoute("/chain_inflation", chainInflationHandler(API));
-neutronRoute("/chain_community_pool", chainCommunityPoolHandler(API));
-neutronRoute("/chain_pool", chainPoolHandler(API));
-neutronRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
-neutronRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
-neutronRoute("/chain_txs_hash", chainTxsByHashHandler(API));
-neutronRoute(
+irisnetRoute("/blocks/latest", latestBlocksHandler(Model.irisnetBlockModel));
+irisnetRoute("/txs", allTxsHandler(Model.irisnetTxsModel));
+irisnetRoute("/all_validators", allValidatorsHandler(API));
+irisnetRoute("/active_validators", activeValidatorsHandler(API));
+irisnetRoute("/chain_validator_details", chainValidatorsDetailsHandler(API));
+irisnetRoute("/chain_inflation", chainInflationHandler(API));
+irisnetRoute("/chain_community_pool", chainCommunityPoolHandler(API));
+irisnetRoute("/chain_pool", chainPoolHandler(API));
+irisnetRoute("/block_height_details", chainBlockHeightDetailsHandler(API));
+irisnetRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
+irisnetRoute("/chain_txs_hash", chainTxsByHashHandler(API));
+irisnetRoute(
   "/chain_validator_slashing_signing_info_details",
   chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
-neutronRoute(
+irisnetRoute(
   "/chain_validator_delegations",
   chainValidatorDelegationsHandler(API)
 );
-neutronRoute(
+irisnetRoute(
   "/chain_validator_undelegations",
   chainValidatorUnDelegationsHandler(API)
 );
-neutronRoute(
+irisnetRoute(
   "/chain_validator_redelegations",
   chainValidatorReDelegationsHandler(API)
 );
-neutronRoute("/chain_consensus", chainConsensusStateHandler(RPC));
-neutronRoute("/chain_minting_params", chainMintingParamsHandler(API));
-neutronRoute("/chain_gov_params", chainGovParamsHandler(API));
-neutronRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
-neutronRoute("/chain_staking_params", chainStakingParamsHandler(API));
-neutronRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
-neutronRoute("/chain_node_info", chainNodeInfoHandler(API));
-neutronRoute("/chain_proposals", chainProposalsHandler(API));
-neutronRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
-neutronRoute(
+irisnetRoute("/chain_consensus", chainConsensusStateHandler(RPC));
+irisnetRoute("/chain_minting_params", chainMintingParamsHandler(API));
+irisnetRoute("/chain_gov_params", chainGovParamsHandler(API));
+irisnetRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
+irisnetRoute("/chain_staking_params", chainStakingParamsHandler(API));
+irisnetRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
+irisnetRoute("/chain_node_info", chainNodeInfoHandler(API));
+irisnetRoute("/chain_proposals", chainProposalsHandler(API));
+irisnetRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
+irisnetRoute(
   "/chain_proposal_voting_options",
   chainProposalVotingOptionsHandler(API)
 );
-neutronRoute(
+irisnetRoute(
   "/chain_proposal_tally_options",
   chainProposalTallyOptionsHandler(API)
 );
-neutronRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
-neutronRoute("/chain_auth_account", chainAuthAccountHandler(API));
-neutronRoute(
+irisnetRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
+irisnetRoute("/chain_auth_account", chainAuthAccountHandler(API));
+irisnetRoute(
   "/chain_account_txs_by_events",
   chainAccountTxsByEventsHandler(API)
 );
-neutronRoute("/chain_account_balance", chainAccountBalanceHandler(API));
-neutronRoute(
+irisnetRoute("/chain_account_balance", chainAccountBalanceHandler(API));
+irisnetRoute(
   "/chain_account_delegation_rewards",
   chainAccountDelegationRewardsHandler(API)
 );
-neutronRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
-neutronRoute(
+irisnetRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+irisnetRoute(
   "/chain_account_redelegations",
   chainAccountReDelegationsHandler(API)
 );
-neutronRoute(
+irisnetRoute(
   "/chain_account_undelegations",
   chainAccountUnDelegationsHandler(API)
 );
