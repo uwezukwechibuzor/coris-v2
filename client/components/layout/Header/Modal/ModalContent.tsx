@@ -85,26 +85,31 @@ export function ModalContent({ toggle }) {
                     />
                   </Grid>
                 </Container>
-                {/* <Container className="mt-3">
+                <Container className="mt-3">
+                  <h4 className="text-center">ICS</h4>
+                  <Grid>
+                    <Chain
+                      chain_id={"neutron"}
+                      chainName="NEUTRON"
+                      chainImage="https://avatars.githubusercontent.com/u/108675945?s=200&v=4"
+                    />
+                    <Chain
+                      chain_id={"stride"}
+                      chainName="STRIDE"
+                      chainImage="https://avatars.githubusercontent.com/u/104537275?s=200&v=4"
+                    />
+                  </Grid>
+                </Container>
+                <Container className="mt-3">
                   <h4 className="text-center">Testnets</h4>
                   <Grid>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
-                    <GridItem className={darkMode ? "dark-mode" : ""}>
-                      sddfdf
-                    </GridItem>
+                    <Chain
+                      chain_id={"Re-protocol"}
+                      chainName="RE"
+                      chainImage="https://user-images.githubusercontent.com/66339097/225161063-184973bc-675b-4de9-8b3b-97facd376ed7.png"
+                    />
                   </Grid>
-    </Container> */}
+                </Container>
               </Show>
             </ShowBox>
             <div className="d-table-row" style={{ height: "50px" }}>
@@ -136,7 +141,7 @@ const Container = styled.div`
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   grid-gap: 20px;
   @media screen and (max-width: 778px) {
     grid-template-columns: repeat(2, 1fr);
