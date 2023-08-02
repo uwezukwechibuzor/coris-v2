@@ -69,7 +69,7 @@ services:
      STARGAZE_REST_API: https://stargaze-api.polkachu.com
      STARGAZE_RPC_API: https://stargaze-rpc.polkachu.com
      STRIDE_REST_API: https://stride-api.polkachu.com
-     STRIDE_RPC_API: https://stride-rpc.polkachu.com
+     STRIDE_RPC_API: https://stride-rpc.polkachu.com:443
      IRISNET_REST_API: https://api.irishub-1.irisnet.org
      IRISNET_RPC_API: http://34.82.96.8:26657
      REGEN_REST_API: https://regen.stakesystems.io
