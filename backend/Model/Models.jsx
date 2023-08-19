@@ -154,6 +154,14 @@ const munTransactions = mongoose.model("mun-Transactions", TxsSchema);
 const tenetBlocks = mongoose.model("tenet-Blocks", BlockSchema);
 const tenetTransactions = mongoose.model("tenet-Transactions", TxsSchema);
 
+//set crypto chain schema
+const cryptoBlocks = mongoose.model("crypto-Blocks", BlockSchema);
+const cryptoTransactions = mongoose.model("crypto-Transactions", TxsSchema);
+
+//set emoney chain schema
+const emoneyBlocks = mongoose.model("emoney-Blocks", BlockSchema);
+const emoneyTransactions = mongoose.model("emoney-Transactions", TxsSchema);
+
 module.exports = {
   umeeBlockModel: umeeBlocks,
   umeeTxsModel: umeeTransactions,
@@ -229,4 +237,10 @@ module.exports = {
 
   tenetBlockModel: tenetBlocks,
   tenetTxsModel: tenetTransactions,
+
+  cryptoBlockModel: cryptoBlocks,
+  cryptoTxsModel: cryptoTransactions,
+
+  emoneyBlockModel: emoneyBlocks,
+  emoneyTxsModel: emoneyTransactions,
 };
