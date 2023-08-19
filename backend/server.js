@@ -18,6 +18,14 @@ const osmosisRouter = require("./Routes/Chains/mainnet/osmosis/routes");
 const regenRouter = require("./Routes/Chains/mainnet/regen/routes");
 const sifchainRouter = require("./Routes/Chains/mainnet/sifchain/routes");
 const skaleRouter = require("./Routes/Chains/mainnet/skale/routes");
+const tenetRouter = require("./Routes/Chains/mainnet/juno/routes");
+const bandRouter = require("./Routes/Chains/mainnet/neutron/routes");
+const beezeeRouter = require("./Routes/Chains/mainnet/stargaze/routes");
+const cantoRouter = require("./Routes/Chains/mainnet/stride/routes");
+const cronosRouter = require("./Routes/Chains/mainnet/celo/routes");
+const desmosRouter = require("./Routes/Chains/mainnet/evmos/routes");
+const memeRouter = require("./Routes/Chains/mainnet/irisnet/routes");
+const munRouter = require("./Routes/Chains/mainnet/osmosis/routes");
 require("dotenv").config();
 
 const app = express();
@@ -50,6 +58,14 @@ app.use(osmosisRouter);
 app.use(regenRouter);
 app.use(sifchainRouter);
 app.use(skaleRouter);
+app.use(tenetRouter);
+app.use(bandRouter);
+app.use(beezeeRouter);
+app.use(cantoRouter);
+app.use(cronosRouter);
+app.use(desmosRouter);
+app.use(memeRouter);
+app.use(munRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);
