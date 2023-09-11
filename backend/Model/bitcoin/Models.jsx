@@ -11,7 +11,7 @@ const TxsSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  block_time: {
+   block_time: {
     type: String,
     required: true,
     unique: false,
