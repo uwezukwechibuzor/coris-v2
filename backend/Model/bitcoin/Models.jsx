@@ -1,68 +1,32 @@
 const mongoose = require("mongoose");
 
-const BlockSchema = new mongoose.Schema({
-  height: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
-  hash: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  proposer: {
-    type: String,
-    required: true,
-    unique: false,
-  },
-  noTxs: {
-    type: Number,
-    required: true,
-    unique: false,
-  },
-  time: {
-    type: String,
-    required: true,
-    unique: false,
-  },
-  signatures: [],
-});
-
 const TxsSchema = new mongoose.Schema({
-  txHash: {
+    block_height: {
+        type: Number,
+        required: true,
+        unique: false,
+      },
+    hash: {
     type: String,
     required: true,
     unique: true,
   },
-  messages: [],
-  memo : String,
-  result: {
-    type: Number,
-    required: true,
-    unique: false,
-  },
-  raw_log: String,
-  fee: [],
-  height: {
-    type: Number,
-    required: true,
-    unique: false,
-  },
-  time: {
+  block_time: {
     type: String,
     required: true,
     unique: false,
   },
+  fee : Number,
+  is_double_spend : Boolean,
+  outputs_count : Number,
+  outputs_value : Number,
+  inputs: [],
+  outputs: [],
 });
 
-//set umee chain schema
-const bitcoinBlocks = mongoose.model("bitcoin-Blocks", BlockSchema);
+//set bitcoin chain schema
 const bitcoinTransactions = mongoose.model("bitcoin-Transactions", TxsSchema);
 
-
-
 module.exports = {
-  bitcoinBlockModel: bitcoinBlocks,
   bitcoinTxsModel: bitcoinTransactions,
 };
