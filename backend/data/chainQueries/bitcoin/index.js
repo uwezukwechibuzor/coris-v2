@@ -1,38 +1,39 @@
 const endpoints = require("../../endpoints.jsx");
-const fetchData = require("../index.js");
+const fetch = require("node-fetch");
 
 const fetchBitcoinTxs = async (api, txModel) => {
   try {
     // Get transactions data in each block
-    const getTxs = await fetchData(api + endpoints.bitcoinTxs);
+    const getTxs = await fetch(api + endpoints.bitcoinTxs);
     if (!getTxs.ok) throw new Error("unexpected response");
 
     const txData = await getTxs.json();
-    //const mapTxData = txData.tx_responses.map(async (tx) => {
-    // Skip saving if transaction with the same hash already exists
-    // const existingTx = await txModel.findOne({ hash: tx.hash });
-    //if (existingTx) {
-    //return;
-    //}
-    console.log(txData);
-    const transactionsData = new txModel({
-      //txHash: tx.txhash,
-      //messages: tx.tx.body.messages,
-      //memo: tx.tx.body.memo,
-      //result: tx.code,
-      //raw_log: tx.raw_log,
-      //fee: tx.tx.auth_info.fee.amount,
-      //height: tx.height,
-      //time: tx.timestamp,
+    const mapTxData = txData.data.list.map(async (tx) => {
+      // Skip saving if transaction with the same hash already exists
+      const existingTx = await txModel.findOne({ hash: tx.hash });
+      console.log(existingTx);
+      if (existingTx) {
+        return;
+      }
+
+      const transactionsData = new txModel({
+        block_height: tx.block_height,
+        hash: tx.hash,
+        block_time: tx.block_time,
+        fee: tx.fee,
+        is_double_spend: tx.is_double_spend,
+        outputs_count: tx.outputs_count,
+        outputs_value: tx.outputs_value,
+        inputs: tx.inputs,
+        outputs: tx.outputs,
+      });
+
+      // Save the data
+      await transactionsData.save();
     });
 
-    // Save the data
-    await transactionsData.save();
-
-    // });
-
     // To ensure that the function waits for the save operations to complete before returning
-    // await Promise.all(mapTxData);
+    await Promise.all(mapTxData);
   } catch (err) {
     console.error(err);
     // Handle errors here
