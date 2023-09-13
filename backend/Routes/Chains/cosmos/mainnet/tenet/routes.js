@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
+const { createCronJob } = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,7 +39,8 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.TENET_REST_API;

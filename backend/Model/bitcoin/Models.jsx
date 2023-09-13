@@ -5,7 +5,7 @@ const TxsSchema = new mongoose.Schema({
         type: Number,
         required: true,
         unique: false,
-      },
+    },
     hash: {
     type: String,
     required: true,

@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.EVMOS_REST_API;
 const RPC = process.env.EVMOS_RPC_API;
 
 //cron task for evmos
-createCronJob(
-  API,
-  Model.evmosTxsModel,
-  Model.evmosBlockModel
-);
+createCronJob(API, Model.evmosTxsModel, Model.evmosBlockModel);
 
 // Define a helper function to prefix the routes with "/evmos"
 function evmosRoute(path, handler) {
@@ -103,10 +101,7 @@ evmosRoute(
 );
 evmosRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 evmosRoute("/chain_auth_account", chainAuthAccountHandler(API));
-evmosRoute(
-  "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API)
-);
+evmosRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 evmosRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 evmosRoute(
   "/chain_account_delegation_rewards",

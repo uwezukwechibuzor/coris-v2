@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.MEME_REST_API;
 const RPC = process.env.MEME_RPC_API;
 
 //cron task for meme
-createCronJob(
-  API,
-  Model.memeTxsModel,
-  Model.memeBlockModel
-);
+createCronJob(API, Model.memeTxsModel, Model.memeBlockModel);
 
 // Define a helper function to prefix the routes with "/meme"
 function memeRoute(path, handler) {
@@ -103,10 +101,7 @@ memeRoute(
 );
 memeRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 memeRoute("/chain_auth_account", chainAuthAccountHandler(API));
-memeRoute(
-  "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API)
-);
+memeRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 memeRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 memeRoute(
   "/chain_account_delegation_rewards",

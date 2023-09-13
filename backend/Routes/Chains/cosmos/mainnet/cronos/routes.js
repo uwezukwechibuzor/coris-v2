@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.CRONOS_REST_API;
 const RPC = process.env.CRONOS_RPC_API;
 
 //cron task for cronos
-createCronJob(
-  API,
-  Model.cronosTxsModel,
-  Model.cronosBlockModel
-);
+createCronJob(API, Model.cronosTxsModel, Model.cronosBlockModel);
 
 // Define a helper function to prefix the routes with "/cronos"
 function cronosRoute(path, handler) {

@@ -1,8 +1,8 @@
-const getCache = require("../redis/getCache");
-const setCache = require("../redis/setCache");
-const fetchData = require("./chainQueries");
-const { getLatestBlocks, getAllTxs } = require("./dbQueries");
-const endpoints = require("./endpoints.jsx");
+const getCache = require("../../../redis/getCache");
+const setCache = require("../../../redis/setCache");
+const fetchData = require("..");
+const { getLatestBlocks, getAllTxs } = require("../../dbQueries");
+const endpoints = require("../../endpoints.jsx");
 
 //Set the caching time in seconds (e.g., 600 seconds = 10Mins)
 const cacheExpirationInSeconds = 600;

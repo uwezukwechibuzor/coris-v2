@@ -1,15 +1,15 @@
-const fetch = require("node-fetch");
-const endpoints = require("../endpoints.jsx");
+const endpoints = require("../../endpoints.jsx");
+const fetchData = require("../index.js");
 
 const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
   try {
-    let response = await fetch(api + endpoints.latestBlocks);
+    let response = await fetchData(api + endpoints.latestBlocks);
     if (!response.ok) throw new Error("unexpected response");
 
     const block = await response.json();
 
     // Get transactions data in each block
-    const getTxs = await fetch(
+    const getTxs = await fetchData(
       api + endpoints.chainBlockHeightTxs(block.block.header.height)
     );
     if (!getTxs.ok) throw new Error("unexpected response");

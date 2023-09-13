@@ -28,6 +28,9 @@ const memeRouter = require("./Routes/Chains/cosmos/mainnet/meme/routes");
 const munRouter = require("./Routes/Chains/cosmos/mainnet/mun/routes");
 const cryptoRouter = require("./Routes/Chains/cosmos/mainnet/crypto/routes");
 const emoneyRouter = require("./Routes/Chains/cosmos/mainnet/emoney/routes");
+
+const bitcoinRouter = require("./Routes/Chains/bitcoin/routes");
+
 require("dotenv").config();
 
 const app = express();
@@ -70,6 +73,8 @@ app.use(memeRouter);
 app.use(munRouter);
 app.use(cryptoRouter);
 app.use(emoneyRouter);
+
+app.use(bitcoinRouter)
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);

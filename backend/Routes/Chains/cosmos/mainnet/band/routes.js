@@ -1,7 +1,7 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
 const {
   allValidatorsHandler,
@@ -38,18 +38,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.BAND_REST_API;
 const RPC = process.env.BAND_RPC_API;
 
 //cron task for band
-createCronJob(
-  API,
-  Model.bandTxsModel,
-  Model.bandBlockModel
-);
+createCronJob(API, Model.bandTxsModel, Model.bandBlockModel);
 
 // Define a helper function to prefix the routes with "/band"
 function bandRoute(path, handler) {
@@ -103,10 +100,7 @@ bandRoute(
 );
 bandRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 bandRoute("/chain_auth_account", chainAuthAccountHandler(API));
-bandRoute(
-  "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API)
-);
+bandRoute("/chain_account_txs_by_events", chainAccountTxsByEventsHandler(API));
 bandRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 bandRoute(
   "/chain_account_delegation_rewards",

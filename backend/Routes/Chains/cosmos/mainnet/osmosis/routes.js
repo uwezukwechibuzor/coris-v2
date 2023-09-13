@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.OSMOSIS_REST_API;
 const RPC = process.env.OSMOSIS_RPC_API;
 
 //cron task for osmosis
-createCronJob(
-  API,
-  Model.osmosisTxsModel,
-  Model.osmosisBlockModel
-);
+createCronJob(API, Model.osmosisTxsModel, Model.osmosisBlockModel);
 
 // Define a helper function to prefix the routes with "/osmosis"
 function osmosisRoute(path, handler) {

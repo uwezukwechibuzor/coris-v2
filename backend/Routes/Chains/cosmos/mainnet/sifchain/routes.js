@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.SIFCHAIN_REST_API;
 const RPC = process.env.SIFCHAIN_RPC_API;
 
 //cron task for sifchain
-createCronJob(
-  API,
-  Model.sifchainTxsModel,
-  Model.sifchainBlockModel
-);
+createCronJob(API, Model.sifchainTxsModel, Model.sifchainBlockModel);
 
 // Define a helper function to prefix the routes with "/sifchain"
 function sifchainRoute(path, handler) {
@@ -89,7 +87,10 @@ sifchainRoute("/chain_minting_params", chainMintingParamsHandler(API));
 sifchainRoute("/chain_gov_params", chainGovParamsHandler(API));
 sifchainRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
 sifchainRoute("/chain_staking_params", chainStakingParamsHandler(API));
-sifchainRoute("/chain_distribution_params", chainDistributionParamsHandler(API));
+sifchainRoute(
+  "/chain_distribution_params",
+  chainDistributionParamsHandler(API)
+);
 sifchainRoute("/chain_node_info", chainNodeInfoHandler(API));
 sifchainRoute("/chain_proposals", chainProposalsHandler(API));
 sifchainRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
@@ -112,7 +113,10 @@ sifchainRoute(
   "/chain_account_delegation_rewards",
   chainAccountDelegationRewardsHandler(API)
 );
-sifchainRoute("/chain_account_delegations", chainAccountDelegationsHandler(API));
+sifchainRoute(
+  "/chain_account_delegations",
+  chainAccountDelegationsHandler(API)
+);
 sifchainRoute(
   "/chain_account_redelegations",
   chainAccountReDelegationsHandler(API)

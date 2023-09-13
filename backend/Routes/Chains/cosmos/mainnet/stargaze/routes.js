@@ -1,8 +1,9 @@
 const express = require("express");
 const Model = require("../../../../../Model/cosmos-chains/Models.jsx");
+const { createCronJob } = require("../../../../../cron.js");
 const app = express();
-const createCronJob = require("../../../../../cron.js");
 require("dotenv").config();
+
 const {
   allValidatorsHandler,
   activeValidatorsHandler,
@@ -38,18 +39,15 @@ const {
   chainAccountUnDelegationsHandler,
   latestBlocksHandler,
   allTxsHandler,
-} = require("../../../../../data/handlers.js");
+} = require("../../../../../data/chainQueries/cosmos/handlers.js");
+
 const corsMiddleware = require("../../../../../corsMiddleware.js");
 
 const API = process.env.STARGAZE_REST_API;
 const RPC = process.env.STARGAZE_RPC_API;
 
 // cron task for stargaze
-createCronJob(
-  API,
-  Model.stargazeTxsModel,
-  Model.stargazeBlockModel
-);
+createCronJob(API, Model.stargazeTxsModel, Model.stargazeBlockModel);
 
 // Define a helper function to prefix the routes with "/stargaze"
 function stargazeRoute(path, handler) {
@@ -70,19 +68,19 @@ stargazeRoute("/block_height_txs", chainBlockHeightTxsHandler(API));
 stargazeRoute("/chain_txs_hash", chainTxsByHashHandler(API));
 stargazeRoute(
   "/chain_validator_slashing_signing_info_details",
-  chainValidatorsSlashingSigningInfosDetailsHandler(API),
+  chainValidatorsSlashingSigningInfosDetailsHandler(API)
 );
 stargazeRoute(
   "/chain_validator_delegations",
-  chainValidatorDelegationsHandler(API),
+  chainValidatorDelegationsHandler(API)
 );
 stargazeRoute(
   "/chain_validator_undelegations",
-  chainValidatorUnDelegationsHandler(API),
+  chainValidatorUnDelegationsHandler(API)
 );
 stargazeRoute(
   "/chain_validator_redelegations",
-  chainValidatorReDelegationsHandler(API),
+  chainValidatorReDelegationsHandler(API)
 );
 stargazeRoute("/chain_consensus", chainConsensusStateHandler(RPC));
 stargazeRoute("/chain_minting_params", chainMintingParamsHandler(API));
@@ -91,41 +89,41 @@ stargazeRoute("/chain_slashing_params", chainSlashingParamsHandler(API));
 stargazeRoute("/chain_staking_params", chainStakingParamsHandler(API));
 stargazeRoute(
   "/chain_distribution_params",
-  chainDistributionParamsHandler(API),
+  chainDistributionParamsHandler(API)
 );
 stargazeRoute("/chain_node_info", chainNodeInfoHandler(API));
 stargazeRoute("/chain_proposals", chainProposalsHandler(API));
 stargazeRoute("/chain_proposal_details", chainProposalDetailsHandler(API));
 stargazeRoute(
   "/chain_proposal_voting_options",
-  chainProposalVotingOptionsHandler(API),
+  chainProposalVotingOptionsHandler(API)
 );
 stargazeRoute(
   "/chain_proposal_tally_options",
-  chainProposalTallyOptionsHandler(API),
+  chainProposalTallyOptionsHandler(API)
 );
 stargazeRoute("/chain_proposal_deposits", chainProposalDepositsHandler(API));
 stargazeRoute("/chain_auth_account", chainAuthAccountHandler(API));
 stargazeRoute(
   "/chain_account_txs_by_events",
-  chainAccountTxsByEventsHandler(API),
+  chainAccountTxsByEventsHandler(API)
 );
 stargazeRoute("/chain_account_balance", chainAccountBalanceHandler(API));
 stargazeRoute(
   "/chain_account_delegation_rewards",
-  chainAccountDelegationRewardsHandler(API),
+  chainAccountDelegationRewardsHandler(API)
 );
 stargazeRoute(
   "/chain_account_delegations",
-  chainAccountDelegationsHandler(API),
+  chainAccountDelegationsHandler(API)
 );
 stargazeRoute(
   "/chain_account_redelegations",
-  chainAccountReDelegationsHandler(API),
+  chainAccountReDelegationsHandler(API)
 );
 stargazeRoute(
   "/chain_account_undelegations",
-  chainAccountUnDelegationsHandler(API),
+  chainAccountUnDelegationsHandler(API)
 );
 
 module.exports = app;
