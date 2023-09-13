@@ -11,7 +11,6 @@ const fetchBitcoinTxs = async (api, txModel) => {
     const mapTxData = txData.data.list.map(async (tx) => {
       // Skip saving if transaction with the same hash already exists
       const existingTx = await txModel.findOne({ hash: tx.hash });
-      console.log(existingTx);
       if (existingTx) {
         return;
       }
