@@ -52,8 +52,8 @@ services:
     restart: unless-stopped
     environment:
       MONGOOSE_URL: mongodb://admin:12345@db:27017
-      COSMOS_REST_API: https://api-cosmoshub-ia.cosmosia.notional.ventures
-      COSMOS_RPC_API: https://rpc.cosmos.network
+      COSMOS_REST_API: http://xx.xx.xx.xx:1317
+      COSMOS_RPC_API: http://xx.xx.xx.xx:26657
       PORT: 5001
       REDIS_HOST: redis
       REDIS_PORT: 6379
@@ -80,12 +80,6 @@ services:
     restart: unless-stopped
     environment:
       NEXT_PUBLIC_COSMOS_API: http://localhost:5001/cosmos
-      NEXT_PUBLIC_AGORIC_API: http://localhost:5001/agoric
-      NEXT_PUBLIC_AKASH_API: http://localhost:5001/akash
-      NEXT_PUBLIC_CRESCENT_API: http://localhost:5001/crescent
-      NEXT_PUBLIC_CHIHUAHUA_API: http://localhost:5001/chihuahua
-      NEXT_PUBLIC_JUNO_API: http://localhost:5001/juno
-      NEXT_PUBLIC_STARGAZE_API: http://localhost:5001/stargaze
     volumes:
       - ./client:/usr/app/client
       - client-ignore:/usr/app/client/node_modules
