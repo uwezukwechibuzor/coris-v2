@@ -16,7 +16,7 @@ function createCronJob(apiUrl, txsModel, blockModel) {
 
 // bitcoin cron job
 function createBitcoinCronJob(apiUrl, txsModel) {
-  return cron.schedule("*/5 * * * * *", async () => {
+  return cron.schedule("*/10 * * * * *", async () => {
     try {
       await fetchBitcoinTxs(apiUrl, txsModel);
     } catch (error) {

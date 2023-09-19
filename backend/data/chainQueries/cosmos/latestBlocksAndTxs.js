@@ -15,6 +15,11 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
     if (!getTxs.ok) throw new Error("unexpected response");
 
     const txData = await getTxs.json();
+
+    // Check if txData and txData.tx_responses are not null
+    if (!txData || !txData.tx_responses) {
+      throw new Error("Invalid data structure in the response");
+    }
     const mapTxData = txData.tx_responses.map(async (tx) => {
       // Skip saving if transaction with the same hash already exists
       const existingTx = await txModel.findOne({ txHash: tx.txhash });
