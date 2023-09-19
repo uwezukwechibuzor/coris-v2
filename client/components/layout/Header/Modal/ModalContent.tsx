@@ -49,38 +49,23 @@ export function ModalContent({ toggle }) {
                   <h4 className="text-center">Mainnets</h4>
                   <Grid>
                     <Chain
-                      chain_id={"agoric"}
-                      chainName="AGORIC"
-                      chainImage="https://assets.coingecko.com/coins/images/24487/large/bld-logo.png?1664066088"
-                    />
-                    <Chain
-                      chain_id={"akash-network"}
-                      chainName="AKASH"
-                      chainImage="https://assets.coingecko.com/coins/images/12785/large/akash-logo.png?1615447676"
-                    />
-                    <Chain
-                      chain_id={"chihuahua"}
-                      chainName="CHIHUAHUA"
-                      chainImage="https://assets.coingecko.com/coins/images/22485/large/logo_transparent_notext.png?1641901839"
-                    />
-                    <Chain
                       chain_id={"cosmos"}
                       chainName="COSMOS"
                       chainImage="https://assets.coingecko.com/coins/images/1481/large/cosmos_hub.png?1555657960"
                     />
                     <Chain
                       chain_id={"crescent-network"}
-                      chainName="CRESCENT"
-                      chainImage="https://assets.coingecko.com/coins/images/25061/large/logo_200x200.png?1649943220"
+                      chainName="XXXX"
+                      chainImage="https://assets.coingecko.com/coins/images/25061/large/logo_200x200.png?"
                     />
                     <Chain
                       chain_id={"juno-network"}
-                      chainName="JUNO"
+                      chainName="XXXX"
                       chainImage="https://assets.coingecko.com/coins/images/19249/large/juno.png?1642838082"
                     />
                     <Chain
                       chain_id={"stargaze"}
-                      chainName="STARGAZE"
+                      chainName="XXXX"
                       chainImage="https://assets.coingecko.com/coins/images/22363/large/stars.png?1645256657"
                     />
                   </Grid>
@@ -90,12 +75,12 @@ export function ModalContent({ toggle }) {
                   <Grid>
                     <Chain
                       chain_id={"neutron"}
-                      chainName="NEUTRON"
+                      chainName="XXXX"
                       chainImage="https://avatars.githubusercontent.com/u/108675945?s=200&v=4"
                     />
                     <Chain
                       chain_id={"stride"}
-                      chainName="STRIDE"
+                      chainName="XXXX"
                       chainImage="https://avatars.githubusercontent.com/u/104537275?s=200&v=4"
                     />
                   </Grid>
@@ -105,7 +90,7 @@ export function ModalContent({ toggle }) {
                   <Grid>
                     <Chain
                       chain_id={"Re-protocol"}
-                      chainName="RE"
+                      chainName="XXXX"
                       chainImage="https://user-images.githubusercontent.com/66339097/225161063-184973bc-675b-4de9-8b3b-97facd376ed7.png"
                     />
                   </Grid>
