@@ -17,6 +17,7 @@ const TxsSchema = new mongoose.Schema({
     unique: false,
   },
   fee : Number,
+  is_coinbase : Boolean,
   is_double_spend : Boolean,
   outputs_count : Number,
   outputs_value : Number,

@@ -12,11 +12,15 @@ const BITCOIN_API = process.env.BITCOIN_REST_API;
 createBitcoinCronJob(BITCOIN_API, Model.bitcoinTxsModel);
 
 // Define a helper function to prefix the routes with "/bitcoin"
-function bitcoinRoute(path, handler) {
-  return app.get(`/bitcoin${path}`, corsMiddleware, handler);
+function bitcoinRoute(routePrefix, path, handler) {
+  return app.get(`/${routePrefix}${path}`, corsMiddleware, handler);
 }
 
 // Define the routes
-bitcoinRoute("/txs", bitcoinTxsHandler(Model.bitcoinTxsModel));
+const defineRoutes = (routePrefix, txsModel) => {
+  bitcoinRoute(routePrefix, "/txs", bitcoinTxsHandler(txsModel));
+};
+
+defineRoutes("bitcoin", Model.bitcoinTxsModel);
 
 module.exports = app;

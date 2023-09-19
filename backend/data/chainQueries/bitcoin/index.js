@@ -5,9 +5,17 @@ const fetchBitcoinTxs = async (api, txModel) => {
   try {
     // Get transactions data in each block
     const getTxs = await fetch(api + endpoints.bitcoinTxs);
-    if (!getTxs.ok) throw new Error("unexpected response");
+    if (!getTxs.ok) {
+      throw new Error("Unexpected response");
+    }
 
     const txData = await getTxs.json();
+
+    // Check if txData and txData.data.list are not null
+    if (!txData || !txData.data || !txData.data.list) {
+      throw new Error("Invalid data structure in the response");
+    }
+
     const mapTxData = txData.data.list.map(async (tx) => {
       // Skip saving if transaction with the same hash already exists
       const existingTx = await txModel.findOne({ hash: tx.hash });
@@ -20,6 +28,7 @@ const fetchBitcoinTxs = async (api, txModel) => {
         hash: tx.hash,
         block_time: tx.block_time,
         fee: tx.fee,
+        is_coinbase: tx.is_coinbase,
         is_double_spend: tx.is_double_spend,
         outputs_count: tx.outputs_count,
         outputs_value: tx.outputs_value,
