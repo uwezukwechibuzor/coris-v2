@@ -18,7 +18,7 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
 
     // Check if txData and txData.tx_responses are not null
     if (!txData || !txData.tx_responses) {
-      throw new Error("Invalid data structure in the response");
+      return;
     }
     const mapTxData = txData.tx_responses.map(async (tx) => {
       // Skip saving if transaction with the same hash already exists

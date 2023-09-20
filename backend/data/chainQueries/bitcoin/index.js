@@ -13,7 +13,7 @@ const fetchBitcoinTxs = async (api, txModel) => {
 
     // Check if txData and txData.data.list are not null
     if (!txData || !txData.data || !txData.data.list) {
-      throw new Error("Invalid data structure in the response");
+      return;
     }
 
     const mapTxData = txData.data.list.map(async (tx) => {
