@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
   try {
     let response = await fetch(api + endpoints.latestBlocks);
-    if (!response.ok) throw new Error("unexpected response");
+    if (!response.ok) throw new Error("Unexpected response");
 
     const block = await response.json();
 
@@ -12,7 +12,7 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
     const getTxs = await fetch(
       api + endpoints.chainBlockHeightTxs(block.block.header.height)
     );
-    if (!getTxs.ok) throw new Error("unexpected response");
+    if (!getTxs.ok) throw new Error("Unexpected response");
 
     const txData = await getTxs.json();
 
@@ -20,26 +20,32 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
     if (!txData || !txData.tx_responses) {
       return;
     }
+
     const mapTxData = txData.tx_responses.map(async (tx) => {
-      // Skip saving if transaction with the same hash already exists
-      const existingTx = await txModel.findOne({ txHash: tx.txhash });
-      if (existingTx) {
+      try {
+        // Attempt to find an existing transaction by txHash
+        const existingTx = await txModel.findOne({ txHash: tx.txhash });
+
+        if (existingTx) {
+          return;
+        } else {
+          const transactionsData = new txModel({
+            txHash: tx.txhash,
+            messages: tx.tx.body.messages,
+            memo: tx.tx.body.memo,
+            result: tx.code,
+            raw_log: tx.raw_log,
+            fee: tx.tx.auth_info.fee.amount,
+            height: tx.height,
+            time: tx.timestamp,
+          });
+
+          // Save the data
+          await transactionsData.save();
+        }
+      } catch (error) {
         return;
       }
-
-      const transactionsData = new txModel({
-        txHash: tx.txhash,
-        messages: tx.tx.body.messages,
-        memo: tx.tx.body.memo,
-        result: tx.code,
-        raw_log: tx.raw_log,
-        fee: tx.tx.auth_info.fee.amount,
-        height: tx.height,
-        time: tx.timestamp,
-      });
-
-      // Save the data
-      await transactionsData.save();
     });
 
     // To ensure that the function waits for the save operations to complete before returning

@@ -21,8 +21,12 @@ const TxsSchema = new mongoose.Schema({
   is_double_spend : Boolean,
   outputs_count : Number,
   outputs_value : Number,
-  inputs: [],
-  outputs: [],
+  inputs: {
+    type: Object
+  },
+  outputs: {
+    type: Object
+  },
 });
 
 //set bitcoin chain schema
