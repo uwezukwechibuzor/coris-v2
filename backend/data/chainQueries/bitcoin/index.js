@@ -46,22 +46,6 @@ const fetchBitcoinTxs = async (api, txModel) => {
         return;
       }
 
-      // Convert inputs and outputs arrays to objects
-      const inputs = tx.inputs.map((input) => ({
-        prev_addresses: input.prev_addresses,
-        prev_position: input.prev_position,
-        prev_type: input.prev_type,
-        prev_value: input.prev_value,
-        sequence: input.sequence,
-      }));
-
-      const outputs = tx.outputs.map((output) => ({
-        addresses: output.addresses,
-        value: output.value,
-        type: output.type,
-        spent_by_tx_position: output.spent_by_tx_position,
-      }));
-
       const transactionsData = new txModel({
         block_height: tx.block_height,
         hash: tx.hash,
@@ -71,8 +55,8 @@ const fetchBitcoinTxs = async (api, txModel) => {
         is_double_spend: tx.is_double_spend,
         outputs_count: tx.outputs_count,
         outputs_value: tx.outputs_value,
-        inputs,
-        outputs,
+        inputs: tx.inputs,
+        outputs: tx.inputs,
       });
 
       // Save the data

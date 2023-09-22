@@ -26,9 +26,7 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
         // Attempt to find an existing transaction by txHash
         const existingTx = await txModel.findOne({ txHash: tx.txhash });
 
-        if (existingTx) {
-          return;
-        } else {
+        if (!existingTx) {
           const transactionsData = new txModel({
             txHash: tx.txhash,
             messages: tx.tx.body.messages,
@@ -42,6 +40,8 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
 
           // Save the data
           await transactionsData.save();
+        } else {
+          return;
         }
       } catch (error) {
         return;
@@ -71,6 +71,8 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
       });
 
       await blockData.save();
+    } else {
+      return;
     }
   } catch (err) {
     console.error(err);
