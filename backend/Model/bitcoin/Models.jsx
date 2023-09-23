@@ -25,7 +25,7 @@ const TxsSchema = new mongoose.Schema({
     type: Object
   },
   outputs: {
-    type: Array
+    type: Object
   },
 });
 

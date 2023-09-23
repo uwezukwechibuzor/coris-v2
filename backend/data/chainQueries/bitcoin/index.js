@@ -56,7 +56,7 @@ const fetchBitcoinTxs = async (api, txModel) => {
         outputs_count: tx.outputs_count,
         outputs_value: tx.outputs_value,
         inputs: tx.inputs,
-        outputs: tx.inputs,
+        outputs: tx.outputs,
       });
 
       // Save the data
