@@ -21,6 +21,7 @@ const TxsSchema = new mongoose.Schema({
   is_double_spend : Boolean,
   outputs_count : Number,
   outputs_value : Number,
+  witness_hash: String,
   inputs: {
     type: Object
   },

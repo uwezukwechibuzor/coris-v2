@@ -55,6 +55,7 @@ const fetchBitcoinTxs = async (api, txModel) => {
         is_double_spend: tx.is_double_spend,
         outputs_count: tx.outputs_count,
         outputs_value: tx.outputs_value,
+        witness_hash: tx.witness_hash,
         inputs: tx.inputs,
         outputs: tx.outputs,
       });
