@@ -40,8 +40,6 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
 
           // Save the data
           await transactionsData.save();
-        } else {
-          return;
         }
       } catch (error) {
         return;
@@ -71,8 +69,6 @@ const fetchLatestBlocksAndTxs = async (api, txModel, blockModel) => {
       });
 
       await blockData.save();
-    } else {
-      return;
     }
   } catch (err) {
     console.error(err);
