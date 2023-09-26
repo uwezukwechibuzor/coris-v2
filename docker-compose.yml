@@ -52,8 +52,8 @@ services:
     restart: unless-stopped
     environment:
       MONGOOSE_URL: mongodb://admin:12345@db:27017
-      COSMOS_REST_API: http://xx.xx.xx.xx:1317
-      COSMOS_RPC_API: http://xx.xx.xx.xx:26657
+      COSMOSHUB_REST_API: '[{"address": "http://xx.xx.xx.xx:1317"}, {"address": "https://xxxxxxx.com:443"}, {"address": "https://api-xxxxxx.network"}]'
+      COSMOSHUB_RPC: '[{"address": "http://xx.xx.xx.xx:26657"}, {"address": "https://xxxx.org"}, {"address": "https://rpc.xxxxxxxx.io"}]'
       PORT: 5001
       REDIS_HOST: redis
       REDIS_PORT: 6379
