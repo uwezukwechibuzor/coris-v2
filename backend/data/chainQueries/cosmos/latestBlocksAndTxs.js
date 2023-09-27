@@ -3,12 +3,17 @@ const fetch = require("node-fetch");
 
 // Error handling function
 const handleError = (message, error) => {
+  // Check if the error is a duplicate key error, and if so, simply return without logging it
+  if (error.code === 11000) {
+    return;
+  }
   console.error(message, error);
   // Handle errors here, including any fallback logic if needed
 };
 
 const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
   let response, block;
+  let successFlag = false;
   try {
     // Parameter validation
     if (
@@ -23,9 +28,14 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
 
     for (const api of apis) {
       try {
+        if (successFlag) {
+          break;
+        }
+
         response = await fetch(api.address + endpoints.latestBlocks);
         if (response.ok) {
           // If the request is successful, proceed to process it
+          successFlag = true;
           block = await response.json();
 
           // Get transactions data in each block
@@ -38,19 +48,10 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
             if (getTxs.ok) {
               txData = await getTxs.json();
             } else {
-              // Handle non-successful API request here
-              handleError(
-                `API request failed for provider ${api.provider}: Status ${getTxs.status}`
-              );
               // Continue to the next API if this one fails
               continue;
             }
           } catch (apiError) {
-            // Handle API request errors here
-            handleError(
-              `API request failed for provider ${api.provider}:`,
-              apiError
-            );
             // Continue to the next API if this one fails
             continue;
           }
@@ -80,6 +81,11 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
 
                 // Save the data
                 await transactionsData.save();
+              } else {
+                // Handle duplicate key error (txHash already exists)
+                throw new Error(
+                  `Transaction with txHash ${tx.txhash} already exists.`
+                );
               }
             } catch (error) {
               return;
@@ -113,20 +119,12 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
             await blockData.save();
           }
         } else {
-          // Handle non-successful API request here
-          handleError(
-            `API request failed for provider ${api.provider}: Status ${response.status}`
-          );
           // Continue to the next API if this one fails
           continue;
         }
       } catch (apiError) {
-        // Handle API request errors here
-        handleError(
-          `API request failed for provider ${api.provider}:`,
-          apiError
-        );
-        continue; // Continue to the next API if this one fails
+        // Continue to the next API if this one fails
+        continue;
       }
     }
   } catch (err) {
