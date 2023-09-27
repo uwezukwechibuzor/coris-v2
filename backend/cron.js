@@ -4,7 +4,9 @@ const fetchLatestBlocksAndTxs = require("./data/chainQueries/cosmos/latestBlocks
 const fetchBitcoinTxs = require("./data/chainQueries/bitcoin/index.js");
 
 //cron to run at every 3sec to get latest blocks
-function createCronJob(apiUrl, txsModel, blockModel) {
+function createCronJob(options) {
+  const { apiUrl, txsModel, blockModel } = options;
+
   return cron.schedule("*/3 * * * * *", async () => {
     try {
       await fetchLatestBlocksAndTxs(apiUrl, txsModel, blockModel);

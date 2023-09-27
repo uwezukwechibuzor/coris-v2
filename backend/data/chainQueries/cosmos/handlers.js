@@ -25,130 +25,268 @@ const allTxsHandler = (txModel) => async (req, res) => {
   }
 };
 
-const allValidatorsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.allChainValidators;
+const allValidatorsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.allChainValidators);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.allChainValidators;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        // If data is not found in the cache, make an API request
+        try {
+          data = await fetchData(api.address + endpoints.allChainValidators);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          // Continue to the next API if this one fails
+          continue;
+        }
+      }
+
+      if (data) {
+        // If data is found (either in cache or fetched from an API), break out of the loop
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const activeValidatorsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.activeChainValidators;
+const activeValidatorsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.activeChainValidators);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.activeChainValidators;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.activeChainValidators);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainValidatorsDetailsHandler = (api) => async (req, res) => {
+const chainValidatorsDetailsHandler = (apis) => async (req, res) => {
   const address = req.query.address;
-  const cacheKey = api + endpoints.chainValidatorsDetails(address);
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainValidatorsDetails(address));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainValidatorsDetails(address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.chainValidatorsDetails(address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainInflationHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.chainInflation;
+const chainInflationHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainInflation);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainInflation;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.chainInflation);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainCommunityPoolHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.chainCommunityPool;
+const chainCommunityPoolHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainCommunityPool);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainCommunityPool;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.chainCommunityPool);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainPoolHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.chainPool;
+const chainPoolHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainPool);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainPool;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.chainPool);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainBlockHeightDetailsHandler = (api) => async (req, res) => {
+const chainBlockHeightDetailsHandler = (apis) => async (req, res) => {
   const height = req.query.height;
-  const cacheKey = api + endpoints.chainBlockHeightDetails(height);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainBlockHeightDetails(height));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainBlockHeightDetails(height);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.chainBlockHeightDetails(height)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainBlockHeightTxsHandler = (api) => async (req, res) => {
+const chainBlockHeightTxsHandler = (apis) => async (req, res) => {
   const height = req.query.height;
-  const cacheKey = api + endpoints.chainBlockHeightTxs(height);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainBlockHeightTxs(height));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainBlockHeightTxs(height);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.chainBlockHeightTxs(height)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainTxsByHashHandler = (api) => async (req, res) => {
+const chainTxsByHashHandler = (apis) => async (req, res) => {
   const hash = req.query.hash;
-  const cacheKey = api + endpoints.chainTxsByHash(hash);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.chainTxsByHash(hash));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.chainTxsByHash(hash);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.chainTxsByHash(hash));
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -156,358 +294,718 @@ const chainTxsByHashHandler = (api) => async (req, res) => {
 };
 
 const chainValidatorsSlashingSigningInfosDetailsHandler =
-  (api) => async (req, res) => {
+  (apis) => async (req, res) => {
     const cons_address = req.query.cons_address;
-    const cacheKey =
-      api + endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address);
+
     try {
-      let data = await getCache(cacheKey);
-      if (!data) {
-        data = await fetchData(
-          api +
-            endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address)
-        );
-        await setCache(cacheKey, data, cacheExpirationInSeconds);
+      let data = null;
+
+      for (const api of apis) {
+        const cacheKey =
+          api.address +
+          endpoints.chainValidatorsSlashingSigningInfosDetails(cons_address);
+        data = await getCache(cacheKey);
+
+        if (!data) {
+          try {
+            data = await fetchData(
+              api.address +
+                endpoints.chainValidatorsSlashingSigningInfosDetails(
+                  cons_address
+                )
+            );
+            await setCache(cacheKey, data, cacheExpirationInSeconds);
+          } catch (error) {
+            continue;
+          }
+        }
+
+        if (data) {
+          break;
+        }
       }
+
       res.json(data);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
 
-const chainValidatorDelegationsHandler = (api) => async (req, res) => {
+const chainValidatorDelegationsHandler = (apis) => async (req, res) => {
   const validator_address = req.query.validator_address;
-  const cacheKey = api + endpoints.chainValidatorDelegations(validator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.chainValidatorDelegations(validator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.chainValidatorDelegations(validator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.chainValidatorDelegations(validator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainValidatorUnDelegationsHandler = (api) => async (req, res) => {
+const chainValidatorUnDelegationsHandler = (apis) => async (req, res) => {
   const validator_address = req.query.validator_address;
-  const cacheKey =
-    api + endpoints.chainValidatorUnDelegations(validator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.chainValidatorUnDelegations(validator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.chainValidatorUnDelegations(validator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address +
+              endpoints.chainValidatorUnDelegations(validator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainValidatorReDelegationsHandler = (api) => async (req, res) => {
+const chainValidatorReDelegationsHandler = (apis) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
-  const cacheKey =
-    api + endpoints.chainValidatorReDelegations(delegator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.chainValidatorReDelegations(delegator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.chainValidatorReDelegations(delegator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address +
+              endpoints.chainValidatorReDelegations(delegator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainConsensusStateHandler = (rpc) => async (req, res) => {
-  const cacheKey = rpc + endpoints.consensusState;
+const chainConsensusStateHandler = (rpcs) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(rpc + endpoints.consensusState);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const rpc of rpcs) {
+      const cacheKey = rpc.address + endpoints.consensusState;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(rpc.address + endpoints.consensusState);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainMintingParamsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.mintingParams;
+const chainMintingParamsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.mintingParams);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.mintingParams;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.mintingParams);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainGovParamsHandler = (api) => async (req, res) => {
+const chainGovParamsHandler = (apis) => async (req, res) => {
   const params_type = req.query.params_type;
-  const cacheKey = api + endpoints.govParams(params_type);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.govParams(params_type));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.govParams(params_type);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.govParams(params_type)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainSlashingParamsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.slashingParams;
+const chainSlashingParamsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.slashingParams);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.slashingParams;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.slashingParams);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainStakingParamsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.stakingParams;
+const chainStakingParamsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.stakingParams);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.stakingParams;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.stakingParams);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainDistributionParamsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.distributionParams;
+const chainDistributionParamsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.distributionParams);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.distributionParams;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.distributionParams);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainNodeInfoHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.nodeInfo;
+const chainNodeInfoHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.nodeInfo);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.nodeInfo;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.nodeInfo);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainProposalsHandler = (api) => async (req, res) => {
-  const cacheKey = api + endpoints.proposals;
+const chainProposalsHandler = (apis) => async (req, res) => {
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.proposals);
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.proposals;
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.proposals);
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainProposalDetailsHandler = (api) => async (req, res) => {
+const chainProposalDetailsHandler = (apis) => async (req, res) => {
   const proposal_id = req.query.proposal_id;
-  const cacheKey = api + endpoints.proposalDetails(proposal_id);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.proposalDetails(proposal_id));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.proposalDetails(proposal_id);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.proposalDetails(proposal_id)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainProposalVotingOptionsHandler = (api) => async (req, res) => {
+const chainProposalVotingOptionsHandler = (apis) => async (req, res) => {
   const id = req.query.id;
-  const cacheKey = api + endpoints.proposalVotingOptions(id);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.proposalVotingOptions(id));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.proposalVotingOptions(id);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.proposalVotingOptions(id)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainProposalTallyOptionsHandler = (api) => async (req, res) => {
+const chainProposalTallyOptionsHandler = (apis) => async (req, res) => {
   const id = req.query.id;
-  const cacheKey = api + endpoints.proposalTallyOptions(id);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.proposalTallyOptions(id));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.proposalTallyOptions(id);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.proposalTallyOptions(id)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainProposalDepositsHandler = (api) => async (req, res) => {
+const chainProposalDepositsHandler = (apis) => async (req, res) => {
   const id = req.query.id;
-  const cacheKey = api + endpoints.proposalDeposits(id);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.proposalDeposits(id));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.proposalDeposits(id);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.proposalDeposits(id));
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAuthAccountHandler = (api) => async (req, res) => {
+const chainAuthAccountHandler = (apis) => async (req, res) => {
   const address = req.query.address;
-  const cacheKey = api + endpoints.authAccount(address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.authAccount(address));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.authAccount(address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(api.address + endpoints.authAccount(address));
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountTxsByEventsHandler = (api) => async (req, res) => {
+const chainAccountTxsByEventsHandler = (apis) => async (req, res) => {
   const address = req.query.address;
-  const cacheKey = api + endpoints.accountTxsByEvents(address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.accountTxsByEvents(address));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.accountTxsByEvents(address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountTxsByEvents(address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountBalanceHandler = (api) => async (req, res) => {
+const chainAccountBalanceHandler = (apis) => async (req, res) => {
   const address = req.query.address;
-  const cacheKey = api + endpoints.accountBalance(address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(api + endpoints.accountBalance(address));
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey = api.address + endpoints.accountBalance(address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountBalance(address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountDelegationRewardsHandler = (api) => async (req, res) => {
+const chainAccountDelegationRewardsHandler = (apis) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
-  const cacheKey = api + endpoints.accountDelegationRewards(delegator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.accountDelegationRewards(delegator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.accountDelegationRewards(delegator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountDelegationRewards(delegator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountDelegationsHandler = (api) => async (req, res) => {
+const chainAccountDelegationsHandler = (apis) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
-  const cacheKey = api + endpoints.accountDelegations(delegator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.accountDelegations(delegator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.accountDelegations(delegator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountDelegations(delegator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountReDelegationsHandler = (api) => async (req, res) => {
+const chainAccountReDelegationsHandler = (apis) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
-  const cacheKey = api + endpoints.accountReDelegations(delegator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.accountReDelegations(delegator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.accountReDelegations(delegator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountReDelegations(delegator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-const chainAccountUnDelegationsHandler = (api) => async (req, res) => {
+const chainAccountUnDelegationsHandler = (apis) => async (req, res) => {
   const delegator_address = req.query.delegator_address;
-  const cacheKey = api + endpoints.accountUnDelegations(delegator_address);
+
   try {
-    let data = await getCache(cacheKey);
-    if (!data) {
-      data = await fetchData(
-        api + endpoints.accountUnDelegations(delegator_address)
-      );
-      await setCache(cacheKey, data, cacheExpirationInSeconds);
+    let data = null;
+
+    for (const api of apis) {
+      const cacheKey =
+        api.address + endpoints.accountUnDelegations(delegator_address);
+      data = await getCache(cacheKey);
+
+      if (!data) {
+        try {
+          data = await fetchData(
+            api.address + endpoints.accountUnDelegations(delegator_address)
+          );
+          await setCache(cacheKey, data, cacheExpirationInSeconds);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (data) {
+        break;
+      }
     }
+
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: error.message });
