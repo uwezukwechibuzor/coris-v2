@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cosmosRouter = require("./Routes/Chains/cosmos/mainnet/routes");
 
 const bitcoinRouter = require("./Routes/Chains/bitcoin/routes");
+const ethereumRouter = require("./Routes/Chains/ethereum/routes");
 
 require("dotenv").config();
 
@@ -26,6 +27,7 @@ db.once("open", function () {
 
 app.use(cosmosRouter);
 app.use(bitcoinRouter);
+app.use(ethereumRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running at port ${process.env.PORT}`);
