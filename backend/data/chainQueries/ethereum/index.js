@@ -32,7 +32,12 @@ async function fetchEthereumTxs() {
           networkError.message
         );
 
-        // Add delay before retrying (you can adjust the delay duration)
+        // Check for specific network errors and handle them
+        if (networkError.message.includes("ECONNRESET")) {
+          console.error("Connection Error");
+        }
+
+        // Add delay before retrying
         await new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
@@ -49,8 +54,34 @@ async function fetchEthereumTxs() {
 
     // Fetch transaction details for each transaction in the block
     for (const txHash of block.transactions) {
-      const tx = await alchemy.core.getTransaction(txHash);
+      let tx;
+      let receipt;
+
+      // Retry fetching transaction details for each transaction
+      let txFetchAttempts = 0;
+      while (txFetchAttempts < retryCount) {
+        txFetchAttempts++;
+
+        try {
+          tx = await alchemy.core.getTransaction(txHash);
+          receipt = await alchemy.core.getTransactionReceipt(txHash);
+
+          if (tx && receipt) {
+            break;
+          }
+        } catch (error) {
+          // Add delay before retrying (you can adjust the delay duration)
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          return;
+        }
+      }
+
+      if (!tx || !receipt) {
+        continue;
+      }
+
       const value = web3.utils.hexToNumberString(tx.value._hex);
+
       // convert value to ethers
       const convertValue = value / 10 ** 18;
 
@@ -64,6 +95,7 @@ async function fetchEthereumTxs() {
         to: tx.to,
         value: convertValue,
         nonce: tx.nonce,
+        status: receipt.status,
       });
 
       transactionsDataArray.push(transactionsData);
