@@ -2,6 +2,7 @@ const cron = require("node-cron");
 require("dotenv").config();
 const fetchLatestBlocksAndTxs = require("./data/chainQueries/cosmos/latestBlocksAndTxs.js");
 const fetchBitcoinTxs = require("./data/chainQueries/bitcoin/index.js");
+const fetchEthereumTxs = require("./data/chainQueries/ethereum/index.js");
 
 //cron to run at every 3sec to get latest blocks
 function createCronJob(options) {
@@ -27,7 +28,19 @@ function createBitcoinCronJob(apiUrl, txsModel) {
   });
 }
 
+// ethereum cron job
+function createEthereumCronJob() {
+  return cron.schedule("*/5 * * * * *", async () => {
+    try {
+      await fetchEthereumTxs();
+    } catch (error) {
+      console.error("Error", error);
+    }
+  });
+}
+
 module.exports = {
   createCronJob,
   createBitcoinCronJob,
+  createEthereumCronJob,
 };
