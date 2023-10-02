@@ -16,8 +16,8 @@ const TxsSchema = new mongoose.Schema({
   from: String,
   to: String,
   value: String,
-  nonce: Number
-
+  nonce: Number,
+  status: Number
 });
 
 //set bitcoin chain schema

@@ -51,6 +51,7 @@ async function fetchEthereumTxs() {
     for (const txHash of block.transactions) {
       const tx = await alchemy.core.getTransaction(txHash);
       const value = web3.utils.hexToNumberString(tx.value._hex);
+      const receipt = await alchemy.core.getTransactionReceipt(txHash);
       // convert value to ethers
       const convertValue = value / 10 ** 18;
 
@@ -64,6 +65,7 @@ async function fetchEthereumTxs() {
         to: tx.to,
         value: convertValue,
         nonce: tx.nonce,
+        status: receipt.status,
       });
 
       transactionsDataArray.push(transactionsData);
