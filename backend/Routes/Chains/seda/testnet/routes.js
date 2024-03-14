@@ -48,35 +48,35 @@ const {
 const { BlockModel: cosmosBlockModel, TxsModel: cosmosTxsModel } =
   createBlockchainModels("cosmos");
 
-const COSMOSHUB_REST_API = process.env.COSMOSHUB_REST_API;
-const COSMOSHUB_RPC = process.env.COSMOSHUB_RPC;
+const SEDA_REST_API = process.env.SEDA_REST_API;
+const SEDA_RPC = process.env.SEDA_RPC;
 
 let RESTAPI = [];
 let RPC = [];
 
-if (COSMOSHUB_REST_API) {
+if (SEDA_REST_API) {
   try {
-    RESTAPI = JSON.parse(COSMOSHUB_REST_API);
+    RESTAPI = JSON.parse(SEDA_REST_API);
   } catch (error) {
-    console.error("Error parsing COSMOSHUB_REST_API:", error);
+    console.error("Error parsing SEDA_REST_API:", error);
   }
 }
 
-if (COSMOSHUB_RPC) {
+if (SEDA_RPC) {
   try {
-    RPC = JSON.parse(COSMOSHUB_RPC);
+    RPC = JSON.parse(SEDA_RPC);
   } catch (error) {
-    console.error("Error parsing COSMOSHUB_RPC:", error);
+    console.error("Error parsing SEDA_RPC:", error);
   }
 }
 
-const cosmosHubCronOptions = {
+const SedaCronOptions = {
   apiUrl: RESTAPI,
   txsModel: cosmosTxsModel,
   blockModel: cosmosBlockModel,
 };
-// cron task for cosmos
-createCronJob(cosmosHubCronOptions);
+// cron task for SEDA
+createCronJob(SedaCronOptions);
 
 function prefixedRoute(routePrefix, path, handler) {
   return app.get(`/${routePrefix}${path}`, corsMiddleware, handler);
@@ -142,7 +142,7 @@ const options = {
   rpc: RPC,
 };
 
-// Use the generic route function for "cosmos" prefix
-defineRoutes("cosmos", options);
+// Use the generic route function for "seda" prefix
+defineRoutes("seda-1-testnet", options);
 
 module.exports = app;

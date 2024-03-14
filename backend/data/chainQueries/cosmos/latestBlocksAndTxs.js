@@ -32,7 +32,9 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
           break;
         }
 
-        response = await fetch(api.address + endpoints.latestBlocks);
+        response = await fetch(
+          api.address + endpoints.latestBlocksRecentVersion
+        );
         if (response.ok) {
           // If the request is successful, proceed to process it
           successFlag = true;

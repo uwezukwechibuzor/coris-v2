@@ -1,6 +1,6 @@
 module.exports = {
     // cosmos chains
-    latestBlocks: '/blocks/latest',
+    // latestBlocks: '/blocks/latest',
     latestBlocksRecentVersion: '/cosmos/base/tendermint/v1beta1/blocks/latest',
     allChainValidators: '/cosmos/staking/v1beta1/validators?pagination.limit=500',
     activeChainValidators: '/cosmos/staking/v1beta1/validators?status=BOND_STATUS_BONDED&pagination.limit=500',
@@ -12,8 +12,8 @@ module.exports = {
     chainTxsByHash:  (hash) =>  `/cosmos/tx/v1beta1/txs/${hash}`,
     chainValidatorsDetails: (address) => `/cosmos/staking/v1beta1/validators/${address}`,
     chainValidatorsSlashingSigningInfosDetails: (cons_address) => `/cosmos/slashing/v1beta1/signing_infos/${cons_address}`,
-    chainValidatorDelegations: (validator_address) => `/cosmos/staking/v1beta1/validators/${validator_address}/delegations?pagination.limit=500&pagination.reverse=true`,
-    chainValidatorUnDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.limit=500&pagination.reverse=true`,
+    chainValidatorDelegations: (validator_address) => `/cosmos/staking/v1beta1/validators/${validator_address}/delegations?pagination.limit=15&pagination.reverse=true`,
+    chainValidatorUnDelegations: (validator_addr) => `/cosmos/staking/v1beta1/validators/${validator_addr}/unbonding_delegations?pagination.limit=15&pagination.reverse=true`,
     chainValidatorReDelegations: (delegator_addr) => `/cosmos/staking/v1beta1/delegators/${delegator_addr}/redelegations?pagination.limit=600`,
     consensusState: '/consensus_state?',
     mintingParams: `/cosmos/mint/v1beta1/params`,
@@ -22,7 +22,7 @@ module.exports = {
     stakingParams: `/cosmos/staking/v1beta1/params`,
     distributionParams: `/cosmos/distribution/v1beta1/params`,
     nodeInfo:  `/node_info`,
-    proposals:  `/cosmos/gov/v1beta1/proposals?pagination.limit=500&pagination.reverse=true`,
+    proposals:  `/cosmos/gov/v1beta1/proposals?pagination.limit=10&pagination.reverse=true`,
     proposalDetails:  (proposal_id) =>  `/cosmos/gov/v1beta1/proposals/${proposal_id}`,
     proposalVotingOptions: (id) =>  `/cosmos/gov/v1beta1/proposals/${id}/votes`,
     proposalTallyOptions: (id) =>  `/cosmos/gov/v1beta1/proposals/${id}/tally`,
