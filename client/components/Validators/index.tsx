@@ -16,6 +16,7 @@ import SearchButton from "./SearchButton";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../../lib/hooks";
 import DelegateButton from "./DelegateButton";
+import { assetSymbol } from "../../lib/Util/constants";
 
 const bondDenom = 1000000;
 
@@ -49,7 +50,14 @@ function ValidatorsContent(props) {
   //uptimeByBlocksHeights
   const convertedSignatures = uptimeByBlocksHeights?.map((data) => {
     const convertedSigs = data.signatures?.map((sig) => {
-      return toBech32(chain_id + "valcons", fromHex(sig?.validator_address));
+      if (
+        !sig?.validator_address ||
+        !sig.validator_address.match(/^[0-9a-fA-F]+$/)
+      ) {
+        // Handle the case where sig is null
+        return null;
+      }
+      return toBech32(chain_id + "valcons", fromHex(sig.validator_address));
     });
     return convertedSigs;
   });
@@ -63,7 +71,7 @@ function ValidatorsContent(props) {
         : "";
     const ed25519PubkeyRaw = fromBase64(consensusPubkey);
     const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-    const bech32Address = Bech32.encode(chain_id + "valcons", addressData);
+    const bech32Address = Bech32.encode("sedavalcons", addressData);
 
     let totalSignedBlocks = 0;
     let totalBlocks = 0;
@@ -193,7 +201,8 @@ function ValidatorsContent(props) {
                             <div className="sub">
                               {data?.tokens
                                 ? formatNumbers(data?.tokens / bondDenom)
-                                : 0}
+                                : 0}{" "}
+                              {assetSymbol(chain_id)}
                             </div>
                           </td>
                           <td>

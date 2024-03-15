@@ -13,25 +13,25 @@ function BlocksContent(props) {
   const { getBlocks, getAllTxs, activeValidators, chain_id } = props;
 
   getBlocks?.map((block) => {
-    //convert proposer address to cosmosvalcons
-    const proposerToBech32 = toBech32("umeevalcons", fromHex(block?.proposer));
+    // Check if block.proposer is valid
+    if (block?.proposer) {
+      activeValidators?.validators?.map((validator) => {
+        //fetch just the active validators
+        //get the consensus pubkey
+        const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
+        const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+        const bech32Address = Bech32.encode("sedavalcons", addressData);
 
-    activeValidators?.validators?.map((validator) => {
-      //fetch just the active validators
-      //get the consensus pubkey
-      const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
-      const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-      const bech32Address = Bech32.encode("umeevalcons", addressData);
-
-      //attached validators details to the blocks they proposed
-      if (bech32Address?.includes(proposerToBech32)) {
-        block.operator_address = validator?.operator_address;
-        block.website = validator?.description?.website;
-        block.moniker = validator?.description?.moniker;
-        delete block.signatures;
-        return block;
-      }
-    });
+        //attached validators details to the blocks they proposed
+        if (bech32Address?.includes(block?.proposer)) {
+          block.operator_address = validator?.operator_address;
+          block.website = validator?.description?.website;
+          block.moniker = validator?.description?.moniker;
+          delete block.signatures;
+          return block;
+        }
+      });
+    }
   });
 
   return (

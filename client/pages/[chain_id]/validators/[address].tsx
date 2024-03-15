@@ -61,7 +61,7 @@ function ValidatorsDetails(props) {
         : "";
     const ed25519PubkeyRaw = fromBase64(consensusPubkey);
     const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-    bech32Address = Bech32.encode(chain_id + "valcons", addressData);
+    bech32Address = Bech32.encode("sedavalcons", addressData);
 
     //get operator address to get account address and hex address
     operatorAddress =
@@ -70,7 +70,7 @@ function ValidatorsDetails(props) {
         : " ";
 
     accountAddress = toBech32(
-      chain_id,
+      "seda",
       fromHex(toHex(fromBech32(operatorAddress).data))
     );
 

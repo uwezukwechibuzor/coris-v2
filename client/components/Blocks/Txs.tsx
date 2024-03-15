@@ -10,7 +10,7 @@ const TxsData = (props) => {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
   const allTxs = props?.getAllTxs;
-
+  console.log(allTxs);
   return (
     <table className={darkMode ? "mt-3 dark-mode w-100" : "w-100 mt-3"}>
       <thead>

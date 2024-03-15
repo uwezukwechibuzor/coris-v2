@@ -10,101 +10,86 @@ const TxsByHeightEvent = (props) => {
   const darkMode = useAppSelector((state) => state.general.darkMode);
 
   const { txs, chain_id } = props;
- 
+
   const [currentTxsPage, setCurrentTxsPage] = useState(0);
 
   //add pagination to TXS
   const PER_PAGE = 10;
   const txsPER_PAGE = 5;
   const offsetTxs = currentTxsPage * txsPER_PAGE;
-  const currentTxsData = txs?.tx_responses?.slice(
-    offsetTxs,
-    offsetTxs + PER_PAGE
-  );
-  const txspageCount = Math.ceil(txs?.tx_responses?.length / txsPER_PAGE);
+  const currentTxsData = txs?.txs?.slice(offsetTxs, offsetTxs + PER_PAGE);
+  const txspageCount = Math.ceil(txs?.txs?.length / txsPER_PAGE);
   function handleTxsPageClick({ selected: selectedPage }) {
     setCurrentTxsPage(selectedPage);
   }
 
   return (
     <Card className={darkMode ? "dark-mode w-100" : "w-100"}>
-    <Responsive className="p-3">
-            <table
-              className={
-                darkMode
-                  ? "dark-mode w-100 mt-3 table table-responsive"
-                  : "w-100 mt-3 table table-responsive"
-              }
-            >
-              <thead>
-                <tr style={{ fontWeight: "bold" }}>
-                  <th>Tx hash</th>
-                  <th>Height</th>
-                  <th>Status</th>
-                  <th>Fee</th>
-                  <th>Message</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              {currentTxsData?.length !== 0 ? (
-                currentTxsData?.map((tx) => (
-                  <tbody>
-                    <tr>
-                      <td
-                        onClick={() =>
-                          router.push(`/${chain_id}/transaction/${tx.txhash}`)
-                        }
-                      >
-                        {formatHash(tx?.txhash, 20, "..")}
-                      </td>
-                      <td>{tx?.height}</td>
-                      <td
-                        className={
-                          tx.code === 0 ? "text-success" : "text-danger"
-                        }
-                      >
-                        {tx.code === 0 ? "Success" : "failed"}
-                      </td>
-                      <td>
-                        {tx?.tx?.auth_info?.fee?.amount[0]?.amount / DENOM}{" "}
-                        {assetSymbol(chain_id)}
-                      </td>
-                      <td>{abbrMessage(tx.tx.body.messages)}</td>
-                      <td>{toDay(tx?.timestamp, "from")}</td>
-                    </tr>
-                  </tbody>
-                ))
-              ) : (
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td>No Txs</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              )}
-            </table>
-          </Responsive>
+      <Responsive className="p-3">
+        <table
+          className={
+            darkMode
+              ? "dark-mode w-100 mt-3 table table-responsive"
+              : "w-100 mt-3 table table-responsive"
+          }
+        >
+          <thead>
+            <tr style={{ fontWeight: "bold" }}>
+              <th>Tx hash</th>
+              <th>Height</th>
+              <th>Status</th>
+              <th>Fee</th>
+              <th>Message</th>
+              <th>Time</th>
+            </tr>
+          </thead>
           {currentTxsData?.length !== 0 ? (
-            <ReactPaginate
-              previousLabel={"←"}
-              nextLabel={"→"}
-              pageCount={txspageCount}
-              onPageChange={handleTxsPageClick}
-              containerClassName={"pagination"}
-              previousLinkClassName={"pagination__link"}
-              nextLinkClassName={"pagination__link"}
-              disabledClassName={"pagination__link--disabled"}
-              activeClassName={"pagination__link--active"}
-            />
-          ) : null}
-          </Card>
+            currentTxsData?.map((tx) => (
+              <tbody>
+                <tr>
+                  <td>{formatHash(txs?.block_id?.hash, 20, "..")}</td>
+                  <td>{txs?.block?.header?.height}</td>
+                  <td
+                    className={tx.code === 0 ? "text-success" : "text-danger"}
+                  >
+                    {tx.code === 0 ? "Success" : "failed"}
+                  </td>
+                  <td>0{assetSymbol(chain_id)}</td>
+                  <td>{abbrMessage(tx?.body.messages)}</td>
+                  <td>{toDay(tx?.timestamp, "from")}</td>
+                </tr>
+              </tbody>
+            ))
+          ) : (
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>No Txs</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          )}
+        </table>
+      </Responsive>
+      {currentTxsData?.length !== 0 ? (
+        <ReactPaginate
+          previousLabel={"←"}
+          nextLabel={"→"}
+          pageCount={txspageCount}
+          onPageChange={handleTxsPageClick}
+          containerClassName={"pagination"}
+          previousLinkClassName={"pagination__link"}
+          nextLinkClassName={"pagination__link"}
+          disabledClassName={"pagination__link--disabled"}
+          activeClassName={"pagination__link--active"}
+        />
+      ) : null}
+    </Card>
   );
 };
-
 
 const Card = styled.div`
   border-radius: 20px;

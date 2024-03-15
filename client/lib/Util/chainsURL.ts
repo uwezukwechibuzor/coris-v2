@@ -1,6 +1,6 @@
 
 export const chainURL = {
-    COSMOS_API: process.env.NEXT_PUBLIC_COSMOS_API,
+    SEDA_API: process.env.NEXT_PUBLIC_SEDA_API,
     AGORIC_API: process.env.NEXT_PUBLIC_AGORIC_API,
     AKASH_API: process.env.NEXT_PUBLIC_AKASH_API,
     CRESCENT_API: process.env.NEXT_PUBLIC_CRESCENT_API,

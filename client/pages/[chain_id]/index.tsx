@@ -37,10 +37,10 @@ function Home(props) {
   const chainPoolValue = getChainPool ? getChainPool : null;
 
   // Fetch coin data
-  const { data: coinData } = useSWR(coinsAPI(chain_id), fetcher);
+  const { data: coinData } = useSWR(coinsAPI("flux-token"), fetcher);
 
   // Fetch price chart data
-  const { data } = useSWR(coinsPriceChart(chain_id), fetcher, swrOptions);
+  const { data } = useSWR(coinsPriceChart("flux-token"), fetcher, swrOptions);
   const priceChart = data ? data?.prices : [];
 
   // Fetch inflation data

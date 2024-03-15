@@ -1,9 +1,9 @@
 import { chainURL } from "./Util/chainsURL";
 
 export const BaseChainApi = (chain_id) => {
-  let getApi = chainURL.COSMOS_API;
-  if (chain_id === "cosmos") {
-    getApi = chainURL.COSMOS_API;
+  let getApi = chainURL.SEDA_API;
+  if (chain_id === "seda-1-testnet") {
+    getApi = chainURL.SEDA_API;
   } else if (chain_id === "agoric") {
     getApi = chainURL.AGORIC_API;
   } else if (chain_id === "akash-network") {
