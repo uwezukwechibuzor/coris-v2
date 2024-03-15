@@ -46,7 +46,7 @@ const {
 } = require("../../../../Model/cosmos-chains/Models.jsx");
 
 const { BlockModel: cosmosBlockModel, TxsModel: cosmosTxsModel } =
-  createBlockchainModels("cosmos");
+  createBlockchainModels("seda-chain");
 
 const SEDA_REST_API = process.env.SEDA_REST_API;
 const SEDA_RPC = process.env.SEDA_RPC;

@@ -59,14 +59,16 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
           }
 
           // Check if txData and txData.tx_responses are not null
-          if (!txData || !txData.tx_responses) {
+          if (!txData) {
             // Continue to the next API if this one doesn't have valid data
             continue;
           }
 
-          const mapTxData = txData.tx_responses.map(async (tx) => {
+          const mapTxData = txData.txs.map(async (tx) => {
             try {
+              // TODO
               // Attempt to find an existing transaction by txHash
+
               const existingTx = await txModel.findOne({ txHash: tx.txhash });
 
               if (!existingTx) {
@@ -104,12 +106,12 @@ const fetchLatestBlocksAndTxs = async (apis, txModel, blockModel) => {
           if (!existingBlock) {
             // Save latest blocks
             const blockData = new blockModel({
-              height: block.block.header.height,
+              height: block.sdk_block.header.height,
               hash: block.block_id.hash,
-              proposer: block.block.header.proposer_address,
-              noTxs: block.block.data.txs.length,
-              time: block.block.header.time,
-              signatures: block.block.last_commit.signatures.map(
+              proposer: block.sdk_block.header.proposer_address,
+              noTxs: block.sdk_block.data.txs.length,
+              time: block.sdk_block.header.time,
+              signatures: block.sdk_block.last_commit.signatures.map(
                 (validatorDetails) => {
                   return {
                     validator_address: validatorDetails.validator_address,
