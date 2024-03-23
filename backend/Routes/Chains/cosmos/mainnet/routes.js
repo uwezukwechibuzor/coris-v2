@@ -46,7 +46,7 @@ const {
 } = require("../../../../Model/cosmos-chains/Models.jsx");
 
 const { BlockModel: cosmosBlockModel, TxsModel: cosmosTxsModel } =
-  createBlockchainModels("cosmos");
+  createBlockchainModels("akash");
 
 const COSMOSHUB_REST_API = process.env.COSMOSHUB_REST_API;
 const COSMOSHUB_RPC = process.env.COSMOSHUB_RPC;
@@ -143,6 +143,6 @@ const options = {
 };
 
 // Use the generic route function for "cosmos" prefix
-defineRoutes("cosmos", options);
+defineRoutes("akash-network", options);
 
 module.exports = app;

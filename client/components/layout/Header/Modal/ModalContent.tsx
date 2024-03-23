@@ -49,9 +49,9 @@ export function ModalContent({ toggle }) {
                   <h4 className="text-center">Mainnets</h4>
                   <Grid>
                     <Chain
-                      chain_id={"cosmos"}
-                      chainName="COSMOS"
-                      chainImage="https://assets.coingecko.com/coins/images/1481/large/cosmos_hub.png?1555657960"
+                      chain_id={"akash-network"}
+                      chainName="AKASH"
+                      chainImage="https://avatars.githubusercontent.com/u/120607601?s=200&v=4"
                     />
                     <Chain
                       chain_id={"crescent-network"}

@@ -47,7 +47,7 @@ function ValidatorsDetailsContent(props) {
   //uptimeByBlocksHeights and convert to consensus(valcons) Operator Address
   const convertedSignatures = getUptimeByBlocksHeights?.map((data) => {
     const convertedSigs = data.signatures?.map((sig) => {
-      return toBech32(chain_id + "valcons", fromHex(sig?.validator_address));
+      return toBech32("akash" + "valcons", fromHex(sig?.validator_address));
     });
     return convertedSigs;
   });

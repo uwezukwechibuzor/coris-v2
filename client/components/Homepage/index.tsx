@@ -52,27 +52,29 @@ function HomePageContent(props) {
   } = props;
 
   getBlocks?.map((block) => {
-    //convert proposer address to cosmosvalcons
-    const proposerToBech32 = toBech32(
-      "cosmosvalcons",
-      fromHex(block?.proposer)
-    );
-    activeValidators?.validators?.map((validator) => {
-      //fetch just the active validators
-      //get the consensus pubkey
-      const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
-      const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
-      const bech32Address = Bech32.encode("cosmosvalcons", addressData);
+    // Check if proposer exists and is a valid hexadecimal string
+    if (block?.proposer) {
+      // Convert proposer address to cosmosvalcons
+      const proposerToBech32 = toBech32(
+        "akashvalcons",
+        fromHex(block.proposer)
+      );
+      activeValidators?.validators?.forEach((validator) => {
+        // Fetch just the active validators
+        // Get the consensus pubkey
+        const ed25519PubkeyRaw = fromBase64(validator?.consensus_pubkey?.key);
+        const addressData = sha256(ed25519PubkeyRaw).slice(0, 20);
+        const bech32Address = Bech32.encode("akashvalcons", addressData);
 
-      //attached validators details to the blocks they proposed
-      if (bech32Address?.includes(proposerToBech32)) {
-        block.operator_address = validator.operator_address;
-        block.website = validator.description?.website;
-        block.moniker = validator.description?.moniker;
-        delete block.signatures;
-        return block;
-      }
-    });
+        // Attach validators details to the blocks they proposed
+        if (bech32Address?.includes(proposerToBech32)) {
+          block.operator_address = validator.operator_address;
+          block.website = validator.description?.website;
+          block.moniker = validator.description?.moniker;
+          delete block.signatures;
+        }
+      });
+    }
   });
 
   //get Bonded Token and Not bonded Token
@@ -267,7 +269,7 @@ function HomePageContent(props) {
             <FlexCol className="w-50 align-items-center justify-content-center">
               <Chain className={darkMode ? "dark-mode" : ""}>chain</Chain>
               <Corichain1 className={darkMode ? "dark-mode" : ""}>
-                {coinData ? coinData?.symbol?.toUpperCase() : null}
+                Akash
               </Corichain1>
             </FlexCol>
           </Flex>

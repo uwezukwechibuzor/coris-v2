@@ -2,7 +2,7 @@ import { chainURL } from "./Util/chainsURL";
 
 export const BaseChainApi = (chain_id) => {
   let getApi = chainURL.COSMOS_API;
-  if (chain_id === "cosmos") {
+  if (chain_id === "akash-network") {
     getApi = chainURL.COSMOS_API;
   } else if (chain_id === "agoric") {
     getApi = chainURL.AGORIC_API;
