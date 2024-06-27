@@ -3,14 +3,13 @@
     "node": true,
     "es2021": true
   },
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  //"extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "extends": "next",
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-page-custom-font": "off"
+  },
   "parserOptions": {
     "ecmaVersion": 2021
-  },
-  "rules": {
-    "arrow-body-style": "off",
-    "prefer-arrow-callback": "off",
-    "quotes": "off",
-    "prettier/prettier": "off"
   }
 }
